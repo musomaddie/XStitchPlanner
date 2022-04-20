@@ -39,7 +39,7 @@ Options:
            mode requires either --keypage or --keypath to be given in order to
            generate the mapping of identifiers to symbols.
 """
-from ExtractorMode import ExtractorMode
+from extractor_mode import ExtractorMode
 from docopt import docopt
 
 import pdfplumber
@@ -49,14 +49,14 @@ API DOCUMENATION: TODO: BETTER OPENING and use consistent language/ terms.
 
 
 Methods:
-    parse_pdf(pdf_name):        parses the given pdf.
+    extract_pdf(pdf_name):        extracts the pattern from the given pdf.
 """
 
 def _open_pdf(pdf_name):
     """ Helper method to open PDFs using pdfplumber.
 
     Parameters:
-        pdf_name    (str):  the name of the pdf to open.
+        pdf_name    (str)   the name of the pdf to open.
 
     Returns:
         pdfplumber.PDF      if a file exists with the name pdf_name.pdf
@@ -70,13 +70,13 @@ def _open_pdf(pdf_name):
         print(f"The PDF {pdf_name} could not be found.")
         return None
 
-def parse_pdf(pdf_name, extractor_mode):
+def extract_pdf(pdf_name, extractor_mode):
     """ Extracts the pattern information from the provided PDF.
 
     Parameters:
-        pdf_name        (str):              the name of the pdf from which to
+        pdf_name        (str)               the name of the pdf from which to
                                             export the pattern.
-        extractor_mode  (ExtractorMode):    determines how the pattern is to be
+        extractor_mode  (ExtractorMode)     determines how the pattern is to be
                                             read from the PDF.
     Returns:
 
@@ -95,6 +95,6 @@ def parse_pdf(pdf_name, extractor_mode):
 
 if __name__ == "__main__":
     args = docopt(__doc__)
-    parse_pdf(args["PDF"],
-              ExtractorMode.find_mode_from_string(args["--mode"])
-              )
+    extract_pdf(args["PDF"],
+                ExtractorMode.find_mode_from_string(args["--mode"])
+                )
