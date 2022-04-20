@@ -16,6 +16,10 @@ class PatternExtractor(ABC):
         extract_pattern(*args, **kwargs):   extracts the pattern
         extract_key(key_page_idx):  extracts the key from the provided page of
                                     the PDF.
+        extract_pattern_given_pages(get_rows_fn, width, height,
+            start_page_idx=None, end_page_idx=None, overlap=0, verbose=False)
+                                    Does the work of actually extracting the
+                                    pattern.
 
     Static Methods:
         _rgb_from_img(pdf_image):   returns the colour in the image extracted
@@ -78,14 +82,14 @@ class PatternExtractor(ABC):
         return Image.open(
             BytesIO(pdf_img["stream"].get_data())).getpixel((0, 0))
 
-    def extract_pattern_given_rows(self,
-                                   get_rows_fn,
-                                   width,
-                                   height,
-                                   start_page_idx=None,
-                                   end_page_idx=None,
-                                   overlap=0,
-                                   verbose=False):
+    def extract_pattern_given_pages(self,
+                                    get_rows_fn,
+                                    width,
+                                    height,
+                                    start_page_idx=None,
+                                    end_page_idx=None,
+                                    overlap=0,
+                                    verbose=False):
         """ Returns some stuff
         TODO: fix this description and move this to be above the static method.
 
@@ -145,7 +149,7 @@ class PatternExtractor(ABC):
                                             f"but expected {height} after "
                                             "parsing whole pattern")
             assert len(pattern[0] == width), (f"{len(pattern[0])} stitches "
-                                              f"but exepcted {width} after "
+                                              f"but expected {width} after "
                                               "parsing whole pattern")
         print(pattern)
         return pattern
