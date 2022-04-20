@@ -1,7 +1,7 @@
 from pattern_extractor import PatternExtractor
 from string import ascii_letters, punctuation
 
-import Counter
+from typing import Counter
 
 class ShapePatternExtractor(PatternExtractor):
 
@@ -75,7 +75,7 @@ class ShapePatternExtractor(PatternExtractor):
         if not self.ident_map:
             raise ValueError("Cannot extract pattern before generating or "
                              "loading a key.")
-        return PatternExtractor.extract_pattern_given_pages(self.get_rows,
+        return self.extract_pattern_given_pages(self.get_rows,
                                                             *args, **kwargs)
 
     def load_ident_map(self, path):
@@ -118,7 +118,7 @@ class ShapePatternExtractor(PatternExtractor):
             "Number of colors extracted does not equal number of symbols "
             f"extracted ({len(colors)} vs {len(idents)})")
 
-        key_table = key_page.extract_table(self.COLOR_TABLE_SETTINGS)
+        key_table = key_page.extract_table(self.COLOUR_TABLE_SETTINGS)
         stitches = []
         last_col_stitches = []
         for row in key_table:

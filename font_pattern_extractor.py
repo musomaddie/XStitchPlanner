@@ -14,7 +14,7 @@ class FontPatternExtractor(PatternExtractor):
 
     def extract_pattern(self, *args, **kwargs):
         """ Implementing abstract method. """
-        return PatternExtractor.extract_pattern_given_pages(
+        return self.extract_pattern_given_pages(
             self.get_rows, *args, **kwargs)
 
     def extract_key(self, key_page_idx):
@@ -25,6 +25,8 @@ class FontPatternExtractor(PatternExtractor):
         colour_data = []
         # TODO: I'm worried about the case where the key table isn't in this
         # form.
+        # TODO: doesn't currently work on Disney pattern as the key is not in
+        # a table.
         for row in key_page.extract_table()[1:]:
             colour_data.append(row[2:5])
             colour_data.append(row[7:])

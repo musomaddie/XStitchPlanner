@@ -39,8 +39,10 @@ Options:
            mode requires either --keypage or --keypath to be given in order to
            generate the mapping of identifiers to symbols.
 """
-from extractor_mode import ExtractorMode
 from docopt import docopt
+from extractor_mode import ExtractorMode
+from font_pattern_extractor import FontPatternExtractor
+from shape_pattern_extractor import ShapePatternExtractor
 
 import pdfplumber
 
@@ -52,25 +54,16 @@ Methods:
     extract_pdf(pdf_name):        extracts the pattern from the given pdf.
 """
 
-def _open_pdf(pdf_name):
-    """ Helper method to open PDFs using pdfplumber.
-
-    Parameters:
-        pdf_name    (str)   the name of the pdf to open.
-
-    Returns:
-        pdfplumber.PDF      if a file exists with the name pdf_name.pdf
-        None                if no file was found.
-
-    """
-    try:
-        with pdfplumber.open(pdf_name) as pdf:
-            return pdf
-    except FileNotFoundError:
-        print(f"The PDF {pdf_name} could not be found.")
-        return None
-
-def extract_pdf(pdf_name, extractor_mode):
+def extract_from_pdf(pdf_name,
+                     extractor_mode,
+                     width,
+                     height,
+                     start_page_idx=None,
+                     end_page_idx=None,
+                     overlap=0,
+                     verbose=False,
+                     key_page=None,
+                     key_path=None):
     """ Extracts the pattern information from the provided PDF.
 
     Parameters:
@@ -78,23 +71,100 @@ def extract_pdf(pdf_name, extractor_mode):
                                             export the pattern.
         extractor_mode  (ExtractorMode)     determines how the pattern is to be
                                             read from the PDF.
+        width           (int)               the width of the pattern in
+                                            stitches.
+        height          (int)               the height of the pattern in
+                                            stitches.
+        start_page_idx  (int)               the index of first page containing
+                                            the pattern. [default: None]
+        end_page_idx    (int)               the index of the last page
+                                            containing the pattern. [default
+                                            None]
+        overlap         (int)               the number of cells that overlap
+                                            between pattern pages. [default
+                                            0]
+        verbose         (bool)              whether to print detailed debugging
+                                            statements. [default: False]
+        key_page        (int)               the page that the key can be found
+                                            on. [default: None]
+        key_path        (str)               a file path to read the key from.
+                                            [default: None]
     Returns:
 
     Raises:
-        ValueError      if the pdf_name does not exist.
-        ValueError      if the extractor_mode is unknown.
+        FileNotFoundError       if the pdf_name does not exist.
+        ValueError              if the extractor_mode is unknown.
+        ValueError              if no key files exists and no key page provided
     """
-    pdf = _open_pdf(pdf_name)
-    if not pdf:
-        raise ValueError(f"The file {pdf_name}.pdf does not exist.")
+    with pdfplumber.open(pdf_name) as pdf:
+        if not pdf:
+            raise ValueError(f"The file {pdf_name} does not exist.")
 
-    if extractor_mode == ExtractorMode.UNKNOWN:
-        raise ValueError("The extractor mode is unknown. It should either be"
-                         '"font" or "shape"')
+        if extractor_mode == ExtractorMode.UNKNOWN:
+            raise ValueError("The extractor mode is unknown. It should either "
+                             'be "font" or "shape"')
+        if extractor_mode == ExtractorMode.FONT:
+            extractor = FontPatternExtractor(pdf)
+        elif extractor_mode == ExtractorMode.SHAPE:
+            extractor = ShapePatternExtractor(pdf)
+            if not key_path and not key_page:
+                try:
+                    key_path = pdf_name.replace(".pdf", "_key.tsv")
+                except FileNotFoundError:
+                    raise ValueError(
+                        "No key file exists and no key page provided.")
+
+            if key_path:
+                extractor.load_ident_map(key_path)
+
+        if key_page:
+            key = extractor.extract_key(key_page - 1)
+
+        pat = extractor.extract_pattern(
+            width, height, start_page_idx, end_page_idx, overlap, verbose)
+
+        print(pat)
 
 
 if __name__ == "__main__":
+    """ Bunch of random helper functions because I'm too lazy to write llambdas
+    right now """
+    def _make_int(string):
+        """ Helper to turn all the CLI args to ints (if they exist) so that the
+        extract method can take in sensible types.
+        """
+        if string:
+            try:
+                return int(string)
+            except ValueError:
+                return None
+        return None
+
+
+    def _subtract_one(v):
+        """ Helper for the page idx as if they exist we need to subtract one. """
+        if v:
+            return v - 1
+        return None
+
+    def _make_zero(v):
+        """ Helper that makes a None a 0. Again I'm lazy. """
+        if not v:
+            return 0
+        return v
+
     args = docopt(__doc__)
-    extract_pdf(args["PDF"],
-                ExtractorMode.find_mode_from_string(args["--mode"])
+    print(args)
+    extract_from_pdf(args["PDF"],
+                     ExtractorMode.find_mode_from_string(args["--mode"]),
+                     int(args["WIDTH"]),
+                     int(args["HEIGHT"]),
+                     start_page_idx=_subtract_one(
+                         _make_int(args["STARTPAGE"])),
+                     end_page_idx=_subtract_one(
+                         _make_int(args["ENDPAGE"])),
+                     overlap=_make_zero(_make_int(args["--overlap"])),
+                     verbose=bool(args["--verbose"]),
+                     key_page=_make_int(args["--keypage"]),
+                     key_path=args["--keypath"]
                 )
