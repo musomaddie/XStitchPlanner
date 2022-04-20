@@ -65,6 +65,7 @@ class ShapePatternExtractor(PatternExtractor):
             ident = self.bbox_to_ident(page, cell)
             assert ident in self.ident_map, (
                 f"Encountered unknown identifier '{ident} not found in key.")
+        print("Calling the correct (shape) get_rows")
         page = self.pdf.pages[page_idx]
         table = page.find_tables(self.PATTERN_TABLE_SETTINGS)[0]
         return [[get_symbol(page, cell) for cell in row.cells]
@@ -76,8 +77,7 @@ class ShapePatternExtractor(PatternExtractor):
         if not self.ident_map:
             raise ValueError("Cannot extract pattern before generating or "
                              "loading a key.")
-        return self.extract_pattern_given_pages(self.get_rows,
-                                                            *args, **kwargs)
+        return self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
     def load_ident_map(self, path):
         ident_map = {}

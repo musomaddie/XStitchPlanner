@@ -139,8 +139,11 @@ class PatternExtractor(ABC):
         expected_page_height = 0
 
         for page_idx in range(start_page_idx, end_page_idx+1):
+            rows = get_rows_fn(page_idx)
+            print(rows)
+            return
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
-                pattern, page_idx, get_rows_fn(page_idx),
+                pattern, page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,
                 overlap, verbose)
 

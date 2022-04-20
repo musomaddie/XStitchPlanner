@@ -124,50 +124,24 @@ def extract_from_pdf(pdf_name,
         pat = extractor.extract_pattern(
             width, height, start_page_idx, end_page_idx, overlap, verbose)
         print(pat)
-        print(type(pat))
-        for x in pat:
-            print(type(x))
+        # print(type(pat))
+        # print(type(pat[0]))
 
 
 if __name__ == "__main__":
-    """ Bunch of random helper functions because I'm too lazy to write llambdas
-    right now """
-    def _make_int(string):
-        """ Helper to turn all the CLI args to ints (if they exist) so that the
-        extract method can take in sensible types.
-        """
-        if string:
-            try:
-                return int(string)
-            except ValueError:
-                return None
-        return None
-
-
-    def _subtract_one(v):
-        """ Helper for the page idx as if they exist we need to subtract one. """
-        if v:
-            return v - 1
-        return None
-
-    def _make_zero(v):
-        """ Helper that makes a None a 0. Again I'm lazy. """
-        if not v:
-            return 0
-        return v
+    make_zero = lambda value: value if value else 0
+    subtract_one = lambda value: value -1 if value else None
+    make_int = lambda string: int(string) if string else None
 
     args = docopt(__doc__)
-    print(args)
     extract_from_pdf(args["PDF"],
                      ExtractorMode.find_mode_from_string(args["--mode"]),
                      int(args["WIDTH"]),
                      int(args["HEIGHT"]),
-                     start_page_idx=_subtract_one(
-                         _make_int(args["STARTPAGE"])),
-                     end_page_idx=_subtract_one(
-                         _make_int(args["ENDPAGE"])),
-                     overlap=_make_zero(_make_int(args["--overlap"])),
+                     start_page_idx=subtract_one(make_int(args["STARTPAGE"])),
+                     end_page_idx=subtract_one(make_int(args["ENDPAGE"])),
+                     overlap=make_zero(make_int(args["--overlap"])),
                      verbose=bool(args["--verbose"]),
-                     key_page=_make_int(args["--keypage"]),
+                     key_page=make_int(args["--keypage"]),
                      key_path=args["--keypath"]
                 )
