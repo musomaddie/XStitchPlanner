@@ -140,8 +140,6 @@ class PatternExtractor(ABC):
 
         for page_idx in range(start_page_idx, end_page_idx+1):
             rows = get_rows_fn(page_idx)
-            print(rows)
-            return
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
                 pattern, page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,
@@ -154,7 +152,6 @@ class PatternExtractor(ABC):
             assert len(pattern[0] == width), (f"{len(pattern[0])} stitches "
                                               f"but expected {width} after "
                                               "parsing whole pattern")
-        print(pattern)
         return pattern
 
     def _extract_from_this_page(self,

@@ -121,12 +121,17 @@ def extract_from_pdf(pdf_name,
             key = extractor.extract_key(key_page - 1)
             print(key)
 
-        pat = extractor.extract_pattern(
+        pattern = extractor.extract_pattern(
             width, height, start_page_idx, end_page_idx, overlap, verbose)
-        print(pat)
-        # print(type(pat))
-        # print(type(pat[0]))
 
+        pat_name = pdf_name.replace(".pdf", ".pat")
+        with open(pat_name, "w", encoding="utf-8") as f:
+            print(*["".join(row) for row in pattern], sep="\n", file=f)
+
+
+def save_pattern(pattern, path):
+    with open(path, "w", encoding="utf-8") as f:
+        print(*["".join(row) for row in pattern], sep="\n", file=f)
 
 if __name__ == "__main__":
     make_zero = lambda value: value if value else 0
