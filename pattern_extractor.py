@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from io import BytesIO
+from PIL import Image
 
 class PatternExtractor(ABC):
     """ A super class for the different types of extractor classes.
@@ -48,9 +50,23 @@ class PatternExtractor(ABC):
         """
         pass
 
+    @abstractmethod
+    def extract_key(self, key_page_idx):
+        """ Extracts the key which is found on the key_page_idx'th page of the
+            PDF.
+
+        Parameters:
+            key_page_idx: the index of the page that contains the key.
+
+        Returns:
+            ??
+        """
+        pass
+
     @staticmethod
     def _rgb_from_img(pdf_img):
-        """ Returns the colour in the image extracted from the PDF image stream.
+        """ Returns the colour in the image extracted from the PDF image
+            stream.
 
         Parameters:
             pdf_image   pdfplumber.Image    the image to extract colours from.
