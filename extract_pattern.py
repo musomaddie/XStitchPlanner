@@ -119,11 +119,14 @@ def extract_from_pdf(pdf_name,
 
         if key_page:
             key = extractor.extract_key(key_page - 1)
+            print(key)
 
         pat = extractor.extract_pattern(
             width, height, start_page_idx, end_page_idx, overlap, verbose)
-
         print(pat)
+        print(type(pat))
+        for x in pat:
+            print(type(x))
 
 
 if __name__ == "__main__":

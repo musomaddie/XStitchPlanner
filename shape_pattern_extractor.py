@@ -46,13 +46,14 @@ class ShapePatternExtractor(PatternExtractor):
             ???
         """
         def objs_ident(objs, prefix):
-            return [prefix + "".join(sorted(
-                [f"x{int(x - obj['x0'])}y{int(y - obj['y0'])}"
-                 for x, y in obj["pts"]])) for obj in objs]
-            page_sect = page.within_bbox(bbox)
-            return "-".join(sorted(
-                objs_ident(page_sect.curves, "c")
-                + objs_ident(page_sect.lines, "l")))
+            return [
+                prefix + "".join(sorted(
+                    [f"x{int(x - obj['x0'])}y{int(y - obj['y0'])}"
+                     for x, y in obj['pts']])) for obj in objs]
+        page_sect = page.within_bbox(bbox)
+        return "-".join(sorted(
+            objs_ident(page_sect.curves, "c") + objs_ident(
+                page_sect.lines, "l")))
 
     def get_rows(self, page_idx):
         """ Implementing abstract method.
