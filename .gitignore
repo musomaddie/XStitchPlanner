@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore PDF files so I don't upload patterns by mistake
+*.pdf
