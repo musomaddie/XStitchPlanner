@@ -21,9 +21,6 @@ class PatternExtractor(ABC):
                                     Does the work of actually extracting the
                                     pattern.
 
-    Static Methods:
-        _rgb_from_img(pdf_image):   returns the colour in the image extracted
-                                    from the PDF image stream.
     """
 
     def __init__(self, pdf):
@@ -68,19 +65,6 @@ class PatternExtractor(ABC):
         """
         pass
 
-    @staticmethod
-    def _rgb_from_img(pdf_img):
-        """ Returns the colour in the image extracted from the PDF image
-            stream.
-
-        Parameters:
-            pdf_image   pdfplumber.Image    the image to extract colours from.
-
-        Returns:
-            ??? (what is the type??
-        """
-        return Image.open(
-            BytesIO(pdf_img["stream"].get_data())).getpixel((0, 0))
 
     def extract_pattern_given_pages(self,
                                     get_rows_fn,
@@ -226,3 +210,18 @@ class PatternExtractor(ABC):
             cur_y += page_height
 
         return (cur_x, cur_y, expected_page_height)
+
+    @staticmethod
+    def _rgb_from_img(pdf_img):
+        """ Returns the colour in the image extracted from the PDF image
+            stream.
+
+        Parameters:
+            pdf_image   pdfplumber.Image    the image to extract colours from.
+
+        Returns:
+            ??? (what is the type??
+        """
+        return Image.open(
+            BytesIO(pdf_img["stream"].get_data())
+        ).getpixel((0, 0))
