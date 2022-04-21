@@ -12,7 +12,8 @@ class ShapePatternExtractor(PatternExtractor):
         ident_map: maps every pdf shape to an ascii letter or punctuation.
 
     Static Methods:
-        bbox_to_ident(page, bbox): does some magic I don't understand yet.
+        bbox_to_ident(page, bbox):  converts the symbol in the PDF to a text
+                                    form to allow storage, comparison etc.
     """
 
     PATTERN_TABLE_SETTINGS = {
@@ -37,13 +38,16 @@ class ShapePatternExtractor(PatternExtractor):
 
     @staticmethod
     def bbox_to_ident(page, bbox):
-        """ ?>???
+        """ Given a symbol in the PDF made up of lines and curves and
+        transforms it into a string that will be consistently recognised as an
+        identifier across the pattern.
 
         Parameters:
             page:   pdfplumber.Page     the page we are interested in.
-            bbox:                       the bounding box.
+            bbox:                       the bounding box containing the symbol.
         Returns:
-            ???
+            ident:  string      the string identifier generated from the list
+                                of lines and curves.
         """
         def objs_ident(objs, prefix):
             return [
@@ -80,6 +84,8 @@ class ShapePatternExtractor(PatternExtractor):
         return self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
     def load_ident_map(self, path):
+        """ Given a path to a key file this loads the ident map (all the
+        symbols to their corresponding colour. """
         ident_map = {}
         with open(path) as f:
             for row in f:
