@@ -1,7 +1,4 @@
 """ Cross Stitch Pattern Extractor.
-As well as containing an API this extractor can be called from the command line
-in which case it will save the result as a csv.
-
 Credit for the original of this goes to Kelly Stewart:
     https://gitlab.com/miscoined/critchpat
 
@@ -38,6 +35,15 @@ Options:
            matched up with arbitrary symbols for displaying the pattern. This
            mode requires either --keypage or --keypath to be given in order to
            generate the mapping of identifiers to symbols.
+
+Notes:
+  - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2,
+    pass 2 for start page.
+  - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2,
+    3, 4, and 5.
+  - A general guideline for determining the mode is to open the pattern in a
+    PDF browser. If you can select the pattern symbols and copy them it is
+    probably best to use 'font'.
 """
 from docopt import docopt
 from extractor_mode import ExtractorMode
@@ -81,8 +87,6 @@ def extract_from_pdf(pdf_name,
                                             on. [default: None]
         key_path        (str)               a file path to read the key from.
                                             [default: None]
-    Returns:
-
     Raises:
         FileNotFoundError       if the pdf_name does not exist.
         ValueError              if the extractor_mode is unknown.

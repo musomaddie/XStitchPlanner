@@ -3,7 +3,7 @@ from io import BytesIO
 from PIL import Image
 
 class PatternExtractor(ABC):
-    """ A super class for the different types of extractor classes.
+    """ A super class for the different types of pattern extractor classes.
 
     Parameters:
         pdf     pdfplumber.PDF      the PDF to parse.
@@ -58,7 +58,7 @@ class PatternExtractor(ABC):
     @abstractmethod
     def extract_key(self, key_page_idx):
         """ Extracts the key which is found on the key_page_idx'th page of the
-            PDF.
+            PDF. (Counting from 0 in typical programmer way).
 
         Parameters:
             key_page_idx: the index of the page that contains the key.
