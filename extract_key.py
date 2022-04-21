@@ -34,6 +34,7 @@ Options:
 """
 from docopt import docopt
 from extractor_mode import ExtractorMode
+from key_extractors.font_key_extractor import FontKeyExtractor
 
 import pdfplumber
 
@@ -69,11 +70,15 @@ def extract_key_from_pdf(pdf_name,
             raise ValueError("The extractor mode is unknown. It should either "
                              "be 'font' or 'shape'")
         if extractor_mode == ExtractorMode.FONT:
-            extractor = "font"
+            extractor = FontKeyExtractor(pdf)
         elif extractor_mode == ExtractorMode.SHAPE:
             extractor = "shape"
 
         print(extractor)
+        # Sort out the pages (magic!!!)
+        if start_page_idx is None and end_page_idx is None:
+            start_page_idx = 0
+        extractor.extract_key(start_page_idx, end_page_idx)
 
 
 if __name__ == "__main__":

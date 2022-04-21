@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from io import BytesIO
-from PIL import Image
 
 class KeyExtractor(ABC):
     """ A super class for the different types of key extractor classes.
@@ -14,10 +12,6 @@ class KeyExtractor(ABC):
     Abstract Methods:
         extract_key(start_page_idx, end_page_idx): extracts the key from the
                                                    given pages of the PDF.
-
-    Static Methods:
-        _rgb_from_img(pdf_image):   returns the colour in the image extracted
-                                    from the PDF image stream.
     """
 
     def __init__(self, pdf):
@@ -43,21 +37,7 @@ class KeyExtractor(ABC):
                                         page specified by key_start_page_idx is
                                         parsed. [default: None]
         Returns:
-            list(list(???))
+            list(tuple(str))    a list of three tuples in the form (identifer,
+                                dmc value, colour_description)
         """
         pass
-
-    @staticmethod
-    def _rgb_from_img(pdf_img):
-        """ Returns the colour in the image extracted from the PDF image
-            stream.
-
-        Parameters:
-            pdf_image   pdfplumber.Image    the image to extract colours from.
-
-        Returns:
-            ??? (what is the type??
-        """
-        return Image.open(
-            BytesIO(pdf_img["stream"].get_data())
-        ).getpixel((0, 0))

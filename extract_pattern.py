@@ -94,7 +94,7 @@ def extract_from_pdf(pdf_name,
     """
     with pdfplumber.open(pdf_name) as pdf:
         if not pdf:
-            raise ValueError(f"The file {pdf_name} does not exist.")
+            raise ValueError
 
         if extractor_mode == ExtractorMode.UNKNOWN:
             raise ValueError("The extractor mode is unknown. It should either "
@@ -123,7 +123,6 @@ def extract_from_pdf(pdf_name,
         pat_name = pdf_name.replace(".pdf", ".pat")
         with open(pat_name, "w", encoding="utf-8") as f:
             print(*["".join(row) for row in pattern], sep="\n", file=f)
-
 
 def save_pattern(pattern, path):
     with open(path, "w", encoding="utf-8") as f:
