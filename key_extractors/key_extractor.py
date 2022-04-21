@@ -39,5 +39,7 @@ class KeyExtractor(ABC):
         Returns:
             list(tuple(str))    a list of three tuples in the form (identifer,
                                 dmc value, colour_description)
+                                TODO: make this a data class so this can be
+                                consistent even if some fields are missing.
         """
         pass
