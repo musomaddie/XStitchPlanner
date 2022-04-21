@@ -1,4 +1,4 @@
-from pattern_extractor import PatternExtractor
+from pattern_extractors.pattern_extractor import PatternExtractor
 
 class FontPatternExtractor(PatternExtractor):
 

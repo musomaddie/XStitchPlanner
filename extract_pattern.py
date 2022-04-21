@@ -41,8 +41,8 @@ Options:
 """
 from docopt import docopt
 from extractor_mode import ExtractorMode
-from font_pattern_extractor import FontPatternExtractor
-from shape_pattern_extractor import ShapePatternExtractor
+from pattern_extractors.font_pattern_extractor import FontPatternExtractor
+from pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 
 import pdfplumber
 

@@ -1,4 +1,4 @@
-from pattern_extractor import PatternExtractor
+from pattern_extractors.pattern_extractor import PatternExtractor
 from string import ascii_letters, punctuation
 
 from typing import Counter
