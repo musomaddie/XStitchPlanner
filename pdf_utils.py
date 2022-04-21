@@ -58,3 +58,8 @@ def load_dmc_data(filename="dmc_data.csv"):
                                    HEX_KEY: row["Hex"]})
 
     return resulting_rows
+
+def verbose_print(message, verbose=True):
+    """ Prints the given message if verbose is set to true. """
+    if verbose:
+        print(message)
