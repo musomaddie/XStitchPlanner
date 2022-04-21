@@ -36,8 +36,11 @@ from docopt import docopt
 from extractor_mode import ExtractorMode
 from key_extractors.font_key_extractor import FontKeyExtractor
 from key_extractors.shape_key_extractor import ShapeKeyExtractor
+from pdf_utils import load_dmc_data
 
 import pdfplumber
+
+DMC_DATA = load_dmc_data()
 
 
 def extract_key_from_pdf(pdf_name,
@@ -66,6 +69,8 @@ def extract_key_from_pdf(pdf_name,
         FileNotFoundError                   if the pdf_name does not exist.
         ValueError                          if the extractor_mode is unkonwn.
     """
+    print(DMC_DATA)
+    return
     with pdfplumber.open(pdf_name) as pdf:
         if extractor_mode == ExtractorMode.UNKNOWN:
             raise ValueError("The extractor mode is unknown. It should either "
@@ -91,7 +96,9 @@ if __name__ == "__main__":
                     f"'{string}' is not a valid page number as it is not a "
                     "number. Please provide a valid number.") from None
         return None
-    _subtract_one = lambda value: value - 1 if value else None
+
+    def _subtract_one(value):
+        return value - 1 if value else None
     args = docopt(__doc__)
     extract_key_from_pdf(args["PDF"],
                          ExtractorMode.find_mode_from_string(args["--mode"]),

@@ -1,5 +1,5 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils.shape_utils import bbox_to_ident
+from pdf_utils import bbox_to_ident
 from typing import Counter
 from string import ascii_letters, punctuation
 
