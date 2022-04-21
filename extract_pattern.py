@@ -46,14 +46,6 @@ from pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 
 import pdfplumber
 
-"""
-API DOCUMENATION: TODO: BETTER OPENING and use consistent language/ terms.
-
-
-Methods:
-    extract_pdf(pdf_name):        extracts the pattern from the given pdf.
-"""
-
 def extract_from_pdf(pdf_name,
                      extractor_mode,
                      width,
@@ -133,9 +125,10 @@ def save_pattern(pattern, path):
     with open(path, "w", encoding="utf-8") as f:
         print(*["".join(row) for row in pattern], sep="\n", file=f)
 
+
 if __name__ == "__main__":
     make_zero = lambda value: value if value else 0
-    subtract_one = lambda value: value -1 if value else None
+    subtract_one = lambda value: value - 1 if value else None
     make_int = lambda string: int(string) if string else None
 
     args = docopt(__doc__)
@@ -149,4 +142,4 @@ if __name__ == "__main__":
                      verbose=bool(args["--verbose"]),
                      key_page=make_int(args["--keypage"]),
                      key_path=args["--keypath"]
-                )
+                     )
