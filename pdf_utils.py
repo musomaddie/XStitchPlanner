@@ -96,13 +96,11 @@ def make_thread(dmc_value, ident, symbol, desc=None, verbose=False):
         Thread      the newly constructed thread type containing the given
                     information.
     """
-    # print(dmc_value, ident, symbol, desc, verbose)
-    thread = Thread(dmc_value,
-                    ident,
-                    symbol,
-                    desc if desc else DMC_DATA[dmc_value][DESC_KEY],
-                    DMC_DATA[dmc_value][HEX_KEY])
-    print(thread)
+    return Thread(dmc_value,
+                  ident,
+                  symbol,
+                  desc if desc else DMC_DATA[dmc_value][DESC_KEY],
+                  DMC_DATA[dmc_value][HEX_KEY])
 
 def verbose_print(message, verbose=True):
     """ Prints the given message if verbose is set to true. """

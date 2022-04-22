@@ -45,7 +45,6 @@ class ShapeKeyExtractor(KeyExtractor):
                 r for r in rects
                 if int(r["width"]) == majority_width
                 and int(r["height"]) == majority_height]
-
         key_page = self.pdf.pages[key_start_page_idx]
         verbose_print(f"Loading key on page {key_start_page_idx + 1}", verbose)
         idents = filter_majority_rects(
@@ -93,9 +92,5 @@ class ShapeKeyExtractor(KeyExtractor):
         verbose_print(f"Successfully created an ident map of {self.ident_map}",
                       verbose)
 
-        for s in stitches:
-            make_thread(s["dmc_num"], s["ident"], s["symbol"], s["name"],
-                        verbose)
-
-        return [(s["symbol"], s["dmc_num"], s["name"], *s["color"], s["ident"])
-                for s in stitches]
+        return [make_thread(s["dmc_num"], s["ident"], s["symbol"], s["name"],
+                            verbose) for s in stitches]

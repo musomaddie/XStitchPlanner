@@ -36,15 +36,37 @@ from docopt import docopt
 from extractor_mode import ExtractorMode
 from key_extractors.font_key_extractor import FontKeyExtractor
 from key_extractors.shape_key_extractor import ShapeKeyExtractor
+from pdf_utils import verbose_print
 
+import csv
 import pdfplumber
+
+def save_key(key, filename, verbose=False):
+    """ Save the given key in a file with the given name.
+
+    Parameters:
+        key         list(Thread)    a list of all the threads included in the
+                                    key.
+        filename    str             the file name of where to save this key.
+        verbose     bool            whether to print detailed debugging
+                                    statements. [default: False]
+    """
+    with open(filename, "w") as key_file:
+        writer = csv.writer(key_file)
+        [writer.writerow([t.dmc_value,
+                          t.identifier,
+                          t.symbol,
+                          t.name,
+                          t.hex_colour])
+         for t in key]
+    verbose_print(f"Successfully wrote to {filename}", verbose)
 
 def extract_key_from_pdf(pdf_name,
                          extractor_mode,
                          start_page_idx=None,
                          end_page_idx=None,
                          verbose=False):
-    """ Extracts the key from the provided PDF file and saves it as a .tsv
+    """ Extracts the key from the provided PDF file and saves it as a .key
     file.
 
     Parameters:
@@ -74,11 +96,11 @@ def extract_key_from_pdf(pdf_name,
         elif extractor_mode == ExtractorMode.SHAPE:
             extractor = ShapeKeyExtractor(pdf)
 
-        # Sort out the pages (magic!!!)
         if start_page_idx is None and end_page_idx is None:
             start_page_idx = 0
-        threads = extractor.extract_key(start_page_idx, end_page_idx, verbose)
-        # print(extractor.extract_key(start_page_idx, end_page_idx, verbose))
+        save_key(
+            extractor.extract_key(start_page_idx, end_page_idx, verbose),
+            pdf_name.replace(".pdf", ".key"))
 
 
 if __name__ == "__main__":
