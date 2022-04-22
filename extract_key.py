@@ -52,7 +52,7 @@ def save_key(key, filename, verbose=False):
                                     statements. [default: False]
     """
     with open(filename, "w") as key_file:
-        writer = csv.writer(key_file)
+        writer = csv.writer(key_file, delimiter="\t")
         [writer.writerow([t.dmc_value,
                           t.identifier,
                           t.symbol,
