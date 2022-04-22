@@ -1,4 +1,39 @@
 Floss#,Description,Red,Green,Blue,Hex
+1,White Tin,239,238,240,EFEEF0
+2,Tin,197,196,201,C5C4C9
+3,Medium Tin,176,176,181,B0B0B5
+4,Dark Tin,156,155,157,9C9B9D
+5,Light Driftwood,227,204,190,E3CCBE
+6,Medium Light Driftwood,220,198,184,DCC6B8
+7,Driftwood,204,184,170,CCB8AA
+8,Dark Driftwood,157,125,113,9D7D71
+9,Very Dark Cocoa,85,32,20,552014
+10,Very Light Tender Green,237,254,217,EDFED9
+11,Light Tender Green,226,237,181,E2EDB5
+12,Tender Green,205,217,154,CDD99A
+13,Medium Light Nile Green,191,246,224,BFF6E0
+14,Pale Apple Green,208,251,178,D0FBB2
+15,Apple Green,209,237,164,D1EDA4
+16,Light Chartreuse,164,214,124,A4D67C
+17,Light Yellow Plum,229,226,114,E5E272
+18,Yellow Plum,217,213,109,D9D56D
+19,Medium Light Autumn Gold,247,201,95,F7C95F
+20,Shrimp,247,175,147,F7AF93
+21,Light Alizarian,215,153,130,D79982
+22,Alizarian,188,96,78,BC604E
+23,Apple Blossom,237,226,237,EDE2ED
+24,White Lavender,224,215,238,E0D7EE
+25,Ultra Light Lavender,218,210,233,DAD2E9
+26,Pale Lavender,207,200,222,CFC8DE
+27,White Violet,233,236,252,E9ECFC
+28,Medium Light Eggplant,125,78,146,7D4E92
+29,Eggplant,103,64,118,674076
+30,Medium Light Blueberry,109,84,211,6D54D3
+31,Blueberry,88,52,163,5834A3
+32,Dark Blueberry,77,46,138,4D2E8A
+33,Fuchsia,217,83,159,D9539F
+34,Dark Fuchsia,174,66,128,AE4280
+35,Very Dark Fuchsia,115,43,85
 3713,Salmon Very Light,255,226,226,FFE2E2
 761,Salmon Light,255,201,201,FFC9C9
 760,Salmon,245,173,173,F5ADAD
