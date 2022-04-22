@@ -99,7 +99,7 @@ def make_thread(dmc_value, ident, symbol, desc=None, verbose=False):
     return Thread(dmc_value,
                   ident,
                   symbol,
-                  desc if desc else DMC_DATA[dmc_value][DESC_KEY],
+                  desc.title() if desc else DMC_DATA[dmc_value][DESC_KEY],
                   DMC_DATA[dmc_value][HEX_KEY])
 
 def verbose_print(message, verbose=True):
