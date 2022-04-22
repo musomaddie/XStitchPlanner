@@ -1,5 +1,5 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils import bbox_to_ident
+from pdf_utils import bbox_to_ident, verbose_print, make_thread
 from typing import Counter
 from string import ascii_letters, punctuation
 
@@ -30,7 +30,10 @@ class ShapeKeyExtractor(KeyExtractor):
                              "keep_blank_chars": True}
     PLACEHOLDERS = ascii_letters + punctuation
 
-    def extract_key(self, key_start_page_idx, key_end_page_idx=None):
+    def extract_key(self,
+                    key_start_page_idx,
+                    key_end_page_idx=None,
+                    verbose=False):
         """ Implementing abstractmethod from KeyExtractor. """
         def filter_majority_rects(rects):
             """ Return the rects with the majority size to try and guess at
@@ -43,16 +46,18 @@ class ShapeKeyExtractor(KeyExtractor):
                 if int(r["width"]) == majority_width
                 and int(r["height"]) == majority_height]
 
-        # TODO: handle multiple pages well.
         key_page = self.pdf.pages[key_start_page_idx]
+        verbose_print(f"Loading key on page {key_start_page_idx + 1}", verbose)
         idents = filter_majority_rects(
             [r for r in key_page.rects if not r["fill"]])
+
         idents = [bbox_to_ident(key_page,
-                                (r["x0"], r["top"], r["x1"], r["bottom"])
-                                ) for r in idents]
+                                (r["x0"], r["top"], r["x1"], r["bottom"]),
+                                verbose) for r in idents]
         assert len(idents) <= len(self.PLACEHOLDERS), (
             "Too many symbols to automatically generate all symbols, "
             "file a bug to generate more.")
+        verbose_print(f"Found {len(idents)} identifiers.", verbose)
 
         colors = filter_majority_rects(
             [r for r in key_page.rects if r["fill"]])
@@ -75,6 +80,9 @@ class ShapeKeyExtractor(KeyExtractor):
             "Number of rows extracted does not equal number of colors "
             f"extracted ({len(stitches)} vs {len(colors)})")
 
+        verbose_print(f"Successfully extracted {len(stitches)} stitches",
+                      verbose)
+
         symbols = list(self.PLACEHOLDERS)
         for stitch in stitches:
             stitch["symbol"] = symbols.pop(0)
@@ -82,6 +90,12 @@ class ShapeKeyExtractor(KeyExtractor):
             stitch["ident"] = idents.pop(0)
 
         self.ident_map = {s["ident"]: s["symbol"] for s in stitches}
+        verbose_print(f"Successfully created an ident map of {self.ident_map}",
+                      verbose)
+
+        for s in stitches:
+            make_thread(s["dmc_num"], s["ident"], s["symbol"], s["name"],
+                        verbose)
 
         return [(s["symbol"], s["dmc_num"], s["name"], *s["color"], s["ident"])
                 for s in stitches]

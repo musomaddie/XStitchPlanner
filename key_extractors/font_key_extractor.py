@@ -12,9 +12,6 @@ class FontKeyExtractor(KeyExtractor):
 
     def extract_key(self, key_start_page_idx, key_end_page_idx=None):
         """ Implementing abstractmethod from KeyExtractor.
-
-        This differs to Kelly's version as I'm leaving out getting the RGB
-        images from the PDF as that is proving painful.
         """
         # TODO: implement for multiple pages.
         # TODO: handle different forms --> probably have a way of defining it

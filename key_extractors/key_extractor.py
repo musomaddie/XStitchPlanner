@@ -23,7 +23,10 @@ class KeyExtractor(ABC):
         self.pdf = pdf
 
     @abstractmethod
-    def extract_key(self, key_start_page_idx, key_end_page_idx=None):
+    def extract_key(self,
+                    key_start_page_idx,
+                    key_end_page_idx=None,
+                    verbose=False):
         """ Extracts the key which is found on the key page range provided.
 
         TODO: actually handle multiple pages. (For now goal is to maintain
@@ -36,10 +39,10 @@ class KeyExtractor(ABC):
                                         found. If this is not passed only the
                                         page specified by key_start_page_idx is
                                         parsed. [default: None]
+            verbose             bool    whether to print detailed messages
+                                        [default: False]
         Returns:
-            list(tuple(str))    a list of three tuples in the form (identifer,
-                                dmc value, colour_description)
-                                TODO: make this a data class so this can be
-                                consistent even if some fields are missing.
+            list(Thread)        a list of of all the threads contained in this
+                                pattern.
         """
         pass
