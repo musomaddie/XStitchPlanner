@@ -5,7 +5,7 @@ class Thread:
     """ A class for storing and interacting with all the threads used in the
     pattern as identified by the key.
 
-    Paramaters:
+    Parameters:
         dmc_value   str     the value of the dmc identifier for this thread.
         identifier  str     the unique symbol used to identify this thread when
                             reading from the pattern PDF.
@@ -15,7 +15,7 @@ class Thread:
         hex_colour  str     the colour of the thread in hex form.
     """
     dmc_value: str
-    identifer: str
+    identifier: str
     symbol: str
     name: str
     hex_colour: str
