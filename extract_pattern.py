@@ -3,7 +3,7 @@ Credit for the original of this goes to Kelly Stewart:
     https://gitlab.com/miscoined/critchpat
 
 Usage:
-  extract_pattern [-v] [-m MODE] [-k PAGE | -K PATH] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
+  extract_pattern [-v] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
 
 Arguments:
   PDF         input pdf path
@@ -18,10 +18,6 @@ Arguments:
 Options:
   -h  -help                       show this help message and exit
   -v --verbose                    print status messages
-  -k PAGE --keypage=PAGE          attempt to extract the key from the given
-                                  page number.
-  -K PATH --keypath=PATH          a file path to read the key from when
-                                  extracting, used for shape mode only.
   -o OVERLAPH --overlap=OVERLAP   number of rows/columns of overlap on each
                                   page to trim before concatenating pages
   -m MODE --mode=MODE             extraction mode can either be "font" or
@@ -37,6 +33,8 @@ Options:
            generate the mapping of identifiers to symbols.
 
 Notes:
+  - A key for this pattern must have already been created by extract_key and
+    should be found in the same file path as the provided pdf with .key
   - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2,
     pass 2 for start page.
   - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2,
@@ -46,6 +44,7 @@ Notes:
     probably best to use 'font'.
 """
 from docopt import docopt
+from pdf_utils import read_key, verbose_print
 from extractor_mode import ExtractorMode
 from pattern_extractors.font_pattern_extractor import FontPatternExtractor
 from pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
@@ -83,18 +82,19 @@ def extract_from_pdf(pdf_name,
                                             0]
         verbose         (bool)              whether to print detailed debugging
                                             statements. [default: False]
-        key_page        (int)               the page that the key can be found
-                                            on. [default: None]
-        key_path        (str)               a file path to read the key from.
-                                            [default: None]
     Raises:
         FileNotFoundError       if the pdf_name does not exist.
+        FileNotFoundError       if there is no associated key file (found at
+                                pdf_name.replace('pdf', 'key).
         ValueError              if the extractor_mode is unknown.
         ValueError              if no key files exists and no key page provided
     """
     with pdfplumber.open(pdf_name) as pdf:
         if not pdf:
             raise ValueError
+
+        # Load the key.
+        key = read_key(pdf_name.replace(".pdf", ".key"))
 
         if extractor_mode == ExtractorMode.UNKNOWN:
             raise ValueError("The extractor mode is unknown. It should either "
@@ -103,26 +103,16 @@ def extract_from_pdf(pdf_name,
             extractor = FontPatternExtractor(pdf)
         elif extractor_mode == ExtractorMode.SHAPE:
             extractor = ShapePatternExtractor(pdf)
-            if not key_path and not key_page:
-                try:
-                    key_path = pdf_name.replace(".pdf", "_key.tsv")
-                except FileNotFoundError:
-                    raise ValueError(
-                        "No key file exists and no key page provided.")
-
-            if key_path:
-                extractor.load_ident_map(key_path)
-
-        if key_page:
-            key = extractor.extract_key(key_page - 1)
-            print(key)
+            extractor.load_ident_map(key)
+        verbose_print("Successfully loaded the extractor", verbose)
 
         pattern = extractor.extract_pattern(
-            width, height, start_page_idx, end_page_idx, overlap, verbose)
+            key, width, height, start_page_idx, end_page_idx, overlap, verbose)
 
-        pat_name = pdf_name.replace(".pdf", ".pat")
-        with open(pat_name, "w", encoding="utf-8") as f:
-            print(*["".join(row) for row in pattern], sep="\n", file=f)
+        verbose_print("Successfully loaded the pattern", verbose)
+
+        save_pattern(pattern, pdf_name.replace(".pdf", ".pat"))
+
 
 def save_pattern(pattern, path):
     with open(path, "w", encoding="utf-8") as f:
@@ -130,9 +120,21 @@ def save_pattern(pattern, path):
 
 
 if __name__ == "__main__":
-    make_zero = lambda value: value if value else 0
-    subtract_one = lambda value: value - 1 if value else None
-    make_int = lambda string: int(string) if string else None
+    def make_zero(value):
+        return value if value else 0
+
+    def subtract_one(value):
+        return value - 1 if value else None
+
+    def make_int(string):
+        if not string:
+            return None
+        try:
+            return int(string)
+        except ValueError:
+            raise ValueError(
+                f"'{string}' is not a valid page number as it is not a number."
+                "Please provide a valid number.") from None
 
     args = docopt(__doc__)
     extract_from_pdf(args["PDF"],
@@ -142,7 +144,4 @@ if __name__ == "__main__":
                      start_page_idx=subtract_one(make_int(args["STARTPAGE"])),
                      end_page_idx=subtract_one(make_int(args["ENDPAGE"])),
                      overlap=make_zero(make_int(args["--overlap"])),
-                     verbose=bool(args["--verbose"]),
-                     key_page=make_int(args["--keypage"]),
-                     key_path=args["--keypath"]
-                     )
+                     verbose=bool(args["--verbose"]))

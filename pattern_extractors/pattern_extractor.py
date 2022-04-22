@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from io import BytesIO
-from PIL import Image
+from pdf_utils import verbose_print
 
 class PatternExtractor(ABC):
     """ A super class for the different types of pattern extractor classes.
@@ -52,22 +51,9 @@ class PatternExtractor(ABC):
         """
         pass
 
-    @abstractmethod
-    def extract_key(self, key_page_idx):
-        """ Extracts the key which is found on the key_page_idx'th page of the
-            PDF. (Counting from 0 in typical programmer way).
-
-        Parameters:
-            key_page_idx: the index of the page that contains the key.
-
-        Returns:
-            ??
-        """
-        pass
-
-
     def extract_pattern_given_pages(self,
                                     get_rows_fn,
+                                    key,
                                     width,
                                     height,
                                     start_page_idx=None,
@@ -102,12 +88,7 @@ class PatternExtractor(ABC):
             AssertionError  if the pattern is not the expected height
             AssertionError  if the pattern is not the expected width
         """
-        def verbose_print(message):
-            """ A quick and dirty helper to print statements if verbose. """
-            if verbose:
-                print(message)
-
-        verbose_print("Starting to extract pattern from rows.")
+        verbose_print("Starting to extract pattern from rows.", verbose)
         all_pages = end_page_idx is None and start_page_idx is None
         if end_page_idx is None and start_page_idx is not None:
             end_page_idx = start_page_idx
@@ -115,7 +96,7 @@ class PatternExtractor(ABC):
             start_page_idx = 0
             end_page_idx = len(self.pdf.pages) - 1
         verbose_print(f"Pages set up starting from {start_page_idx} to "
-                      f"{end_page_idx} ({all_pages})")
+                      f"{end_page_idx} ({all_pages})", verbose)
 
         pattern = []
         cur_x = 0
@@ -154,11 +135,6 @@ class PatternExtractor(ABC):
                 (cur_x, cur_y, expected_page_height)
                 All the other modified values that are passed by reference.
         """
-        def verbose_print(message):
-            """ Same quick and dirty helper as above. """
-            if verbose:
-                print(message)
-
         if cur_y > 0:
             rows = rows[overlap:]
         if cur_x > 0:
@@ -188,7 +164,7 @@ class PatternExtractor(ABC):
 
         verbose_print(
             f"Extracting page {pi_p} ({page_width}x{page_height} ), pat size "
-            f"{cur_width}x{cur_height}")
+            f"{cur_width}x{cur_height}", verbose)
 
         if cur_x != 0 and pattern:
             # New columns, so just need to add these to the end of existing
@@ -200,9 +176,7 @@ class PatternExtractor(ABC):
             # New rows, so just need to add them to the end of existing
             # pattern.
             pattern += rows
-            verbose_print(f"\t(new rows) {rows}")
-
-        verbose_print("")
+            verbose_print(f"\t(new rows) {rows}", verbose)
 
         cur_x += len(rows[0])
         if cur_x == width:
@@ -210,18 +184,3 @@ class PatternExtractor(ABC):
             cur_y += page_height
 
         return (cur_x, cur_y, expected_page_height)
-
-    @staticmethod
-    def _rgb_from_img(pdf_img):
-        """ Returns the colour in the image extracted from the PDF image
-            stream.
-
-        Parameters:
-            pdf_image   pdfplumber.Image    the image to extract colours from.
-
-        Returns:
-            ??? (what is the type??
-        """
-        return Image.open(
-            BytesIO(pdf_img["stream"].get_data())
-        ).getpixel((0, 0))

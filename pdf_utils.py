@@ -11,7 +11,7 @@ DESC_KEY = "desc"
 HEX_KEY = "hex"
 
 
-def bbox_to_ident(page, bbox, verbose):
+def bbox_to_ident(page, bbox, verbose=False):
     """ Given a symbol in the PDF made up of lines and curves and
     transforms it into a string that will be consistently recognised as an
     identifier across the pattern.
@@ -20,6 +20,7 @@ def bbox_to_ident(page, bbox, verbose):
         page:   pdfplumber.Page     the page we are interested in.
         bbox:                       the bounding box containing the symbol.
         verbose: bool               whether to print detailed messages.
+                                    [default: False]
     Returns:
         ident:  string      the string identifier generated from the list
                             of lines and curves.
@@ -101,6 +102,26 @@ def make_thread(dmc_value, ident, symbol, desc=None, verbose=False):
                   symbol,
                   desc.title() if desc else DMC_DATA[dmc_value][DESC_KEY],
                   DMC_DATA[dmc_value][HEX_KEY])
+
+def read_key(filename, verbose=False):
+    """ Reads the key from the given filename.
+
+    Parameters:
+        filename    str     the filename where the key can be found.
+        verbose     bool    whether to print detailed debug messages.
+
+    Returns:
+        list[thread]    a list of threads that are found in this pattern.
+
+    Raises:
+        FileNotFoundError   if the file with the given filename doesn't exist.
+    """
+    with open(filename) as key_file:
+        reader = csv.reader(key_file, delimiter="\t")
+        # For whatever reason unpacking the arguments using *row isn't working
+        # so I'm doing it the more manual way.
+        return [Thread(row[0], row[1], row[2], row[3], row[4])
+                for row in reader]
 
 def verbose_print(message, verbose=True):
     """ Prints the given message if verbose is set to true. """
