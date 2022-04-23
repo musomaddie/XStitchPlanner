@@ -3,7 +3,7 @@ Credit for the original of this goes to Kelly Stewart:
     https://gitlab.com/miscoined/critchpat
 
 Usage:
-  extract_pattern [-v] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
+  extract_pattern [-v] [-k] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
 
 Arguments:
   PDF         input pdf path
@@ -18,7 +18,10 @@ Arguments:
 Options:
   -h  -help                       show this help message and exit
   -v --verbose                    print status messages
-  -o OVERLAPH --overlap=OVERLAP   number of rows/columns of overlap on each
+  -k --withkey                    whether to enforce that every symbol found in
+                                  the pattern is also found in the key found at
+                                  pdf_name.key. [default: False]
+  -o OVERLAP --overlap=OVERLAP    number of rows/columns of overlap on each
                                   page to trim before concatenating pages
   -m MODE --mode=MODE             extraction mode can either be "font" or
                                   "shape". [default: font]
@@ -28,13 +31,9 @@ Options:
            in the pattern by extracting the text from the PDF.
     shape: Extract symbols from the PDF by attempting to identify and match
            reoccuring lines and shapes on the page. These identifiers are then
-           matched up with arbitrary symbols for displaying the pattern. This
-           mode requires either --keypage or --keypath to be given in order to
-           generate the mapping of identifiers to symbols.
+           matched up with arbitrary symbols for displaying the pattern.
 
 Notes:
-  - A key for this pattern must have already been created by extract_key and
-    should be found in the same file path as the provided pdf with .key
   - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2,
     pass 2 for start page.
   - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2,
@@ -44,7 +43,7 @@ Notes:
     probably best to use 'font'.
 """
 from docopt import docopt
-from pdf_utils import read_key, verbose_print
+from pdf_utils import verbose_print
 from extractor_mode import ExtractorMode
 from pattern_extractors.font_pattern_extractor import FontPatternExtractor
 from pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
@@ -58,9 +57,8 @@ def extract_from_pdf(pdf_name,
                      start_page_idx=None,
                      end_page_idx=None,
                      overlap=0,
-                     verbose=False,
-                     key_page=None,
-                     key_path=None):
+                     withkey=False,
+                     verbose=False):
     """ Extracts the pattern information from the provided PDF.
 
     Parameters:
@@ -78,8 +76,9 @@ def extract_from_pdf(pdf_name,
                                             containing the pattern. [default
                                             None]
         overlap         (int)               the number of cells that overlap
-                                            between pattern pages. [default
-                                            0]
+                                            between pattern pages. [default 0]
+        withkey         (bool)              whether to ensure that every symbol
+                                            found also exists in the key.
         verbose         (bool)              whether to print detailed debugging
                                             statements. [default: False]
     Raises:
@@ -93,9 +92,6 @@ def extract_from_pdf(pdf_name,
         if not pdf:
             raise ValueError
 
-        # Load the key.
-        key = read_key(pdf_name.replace(".pdf", ".key"))
-
         if extractor_mode == ExtractorMode.UNKNOWN:
             raise ValueError("The extractor mode is unknown. It should either "
                              'be "font" or "shape"')
@@ -103,11 +99,17 @@ def extract_from_pdf(pdf_name,
             extractor = FontPatternExtractor(pdf)
         elif extractor_mode == ExtractorMode.SHAPE:
             extractor = ShapePatternExtractor(pdf)
-            extractor.load_ident_map(key)
         verbose_print("Successfully loaded the extractor", verbose)
 
+        if withkey:
+            extractor.load_key(pdf_name.replace(".pdf", ".key"))
+            verbose_print("Successfully loaded the key", verbose)
+
         pattern = extractor.extract_pattern(
-            key, width, height, start_page_idx, end_page_idx, overlap, verbose)
+            width, height,
+            start_page_idx, end_page_idx, overlap,
+            withkey=withkey,
+            verbose=verbose)
 
         verbose_print("Successfully loaded the pattern", verbose)
 
@@ -144,4 +146,5 @@ if __name__ == "__main__":
                      start_page_idx=subtract_one(make_int(args["STARTPAGE"])),
                      end_page_idx=subtract_one(make_int(args["ENDPAGE"])),
                      overlap=make_zero(make_int(args["--overlap"])),
+                     withkey=bool(args["--withkey"]),
                      verbose=bool(args["--verbose"]))

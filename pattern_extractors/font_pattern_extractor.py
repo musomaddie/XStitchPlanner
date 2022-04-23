@@ -1,17 +1,34 @@
 from pattern_extractors.pattern_extractor import PatternExtractor
+from pdf_utils import read_key
 
 class FontPatternExtractor(PatternExtractor):
 
     """ A class for extracting from the pdf when it is in font mode.
+    Parameters:
+        symbols:    a list of every symbol that appears in the key (if the key
+                    is loaded).
     """
     def __init__(self, pdf):
         super().__init__(pdf)
+        self.symbols = []
 
-    def get_rows(self, page_idx, verbose=False):
-        # TODO: add similar check here as is in shapes: need to make sure all
-        # of them are valid identifiers.
-        return self.pdf.pages[page_idx].extract_table(
+    def get_rows(self, page_idx, withkey=False, verbose=False):
+        result = self.pdf.pages[page_idx].extract_table(
             {"vertical_strategy": "lines_strict"})
+
+        if withkey:
+            for row in result:
+                for cell in row:
+                    print(cell)
+                    assert cell in self.symbols, (
+                        f"Encountered a symbol not found in the key")
+
+        return result
+
+    def load_key(self, filename):
+        """ Implementing abstractmethod. """
+        self.symbols = [t.symbol for t in read_key(filename)]
+        print(self.symbols)
 
     def extract_pattern(self, *args, **kwargs):
         """ Implementing abstract method. """

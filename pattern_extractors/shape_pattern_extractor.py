@@ -1,5 +1,6 @@
 from pattern_extractors.pattern_extractor import PatternExtractor
-from pdf_utils import bbox_to_ident
+from pdf_utils import bbox_to_ident, read_key, verbose_print
+from string import ascii_letters, punctuation
 
 class ShapePatternExtractor(PatternExtractor):
 
@@ -7,7 +8,13 @@ class ShapePatternExtractor(PatternExtractor):
     using shapes.
 
     Parameters:
-        ident_map: maps every pdf shape to an ascii letter or punctuation.
+        ident_map       dict[str:str]   maps every shape in the key to an
+                                        ident. Populated by the key if it is
+                                        loaded otherwise generated as the
+                                        cells are read.
+        _used_symbols   list            a list of symbols already used in the
+                                        pattern. Only populated if no key is
+                                        provided.
     """
 
     PATTERN_TABLE_SETTINGS = {
@@ -21,20 +28,36 @@ class ShapePatternExtractor(PatternExtractor):
         "edge_min_length": 200
     }
 
+    PLACEHOLDERS = ascii_letters + punctuation
+
     def __init__(self, pdf):
         super().__init__(pdf)
-        self.ident_map = None
+        self.ident_map = {}
+        self._used_symbols = []
 
-    def get_rows(self, page_idx, verbose=False):
-        """ Implementing abstract method.
+    def get_rows(self, page_idx, withkey=False, verbose=False):
+        """ Implementing abstract method.  """
+        def find_next_placeholder():
+            assert len(self._used_symbols) <= len(self.PLACEHOLDERS), (
+                "Too many symbols to automatically generate all symbols")
+            for x in self.PLACEHOLDERS:
+                if x not in self._used_symbols:
+                    self._used_symbols.append(x)
+                    return x
 
-        Raises:
-            AssertionError if it finds a shape not found in key.
-        """
         def get_symbol(page, cell):
             ident = bbox_to_ident(page, cell, verbose)
-            assert ident in self.ident_map, (
-                f"Encountered unknown identifier '{ident}' not found in key.")
+            if withkey:
+                assert ident in self.ident_map, (
+                    f"Encountered unknown identifier '{ident}' not found in "
+                    "key.")
+            else:
+                # If this ident hasn't already been seen we should add it to
+                # the ident map.
+                if ident not in self.ident_map:
+                    verbose_print("The ident does not already exist", verbose)
+                    self.ident_map[ident] = find_next_placeholder()
+
             return self.ident_map[ident]
 
         page = self.pdf.pages[page_idx]
@@ -45,13 +68,11 @@ class ShapePatternExtractor(PatternExtractor):
     def extract_pattern(self, *args, **kwargs):
         """ Implementing abstract method.
         """
-        if not self.ident_map:
+        if kwargs["withkey"] and not self.ident_map:
             raise ValueError("Cannot extract pattern before generating or "
                              "loading a key.")
         return self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
-    def load_ident_map(self, key):
-        """ Given a list of threads this loads the values into the ident map.
-        """
-        # TODO: I don't think this is actually being used anywhere.
-        self.ident_map = {t.identifier: t.symbol for t in key}
+    def load_key(self, filename):
+        """ Implements the abstractmethod """
+        self.ident_map = {t.identifier: t.symbol for t in read_key(filename)}

@@ -5,7 +5,7 @@ class PatternExtractor(ABC):
     """ A super class for the different types of pattern extractor classes.
 
     Parameters:
-        pdf     pdfplumber.PDF      the PDF to parse.
+        pdf         pdfplumber.PDF      the PDF to parse.
 
     Methods:
         __init__(pdf):              creates a new instance of pattern extractor
@@ -31,7 +31,7 @@ class PatternExtractor(ABC):
         self.pdf = pdf
 
     @abstractmethod
-    def get_rows(self, page_idx, verbose=False):
+    def get_rows(self, page_idx, withkey=False, verbose=False):
         """ Returns the rows extracted from the given page number.
 
         Parameters:
@@ -39,7 +39,12 @@ class PatternExtractor(ABC):
             verbose     bool    whether to print detailed debugging.
 
         Returns:
-            ?? type??
+            list[list[str]]     a list of lists containing all the symbols
+                                translated from the pdf pattern maintaining the
+
+        Raises:
+            AssertionError      if withkey is true and a symbol is identified
+                                thats not found in the key.
         """
         pass
 
@@ -48,21 +53,37 @@ class PatternExtractor(ABC):
         """ Extracts the pattern.
 
         Returns:
-            ???
+            list[list[str]]     a list of lists containing all the symbols
+                                translated from the pdf pattern maintaining the
+                                rows and columns.
+        """
+        pass
+
+    @abstractmethod
+    def load_key(self, filename):
+        """ Loads the key from the given file.
+
+        Parameters:
+            filename    str     the filename containing the key as a tsv.
+
+        Returns:
+            None    the key is saved as a class variable.
+
+        Raises:
+            FileNotFoundError   if the given file cannot be found.
         """
         pass
 
     def extract_pattern_given_pages(self,
                                     get_rows_fn,
-                                    key,
                                     width,
                                     height,
                                     start_page_idx=None,
                                     end_page_idx=None,
                                     overlap=0,
+                                    withkey=False,
                                     verbose=False):
-        """ Returns some stuff
-        TODO: fix this description and move this to be above the static method.
+        """ Returns a list of symbols extracted from the pdf pattern.
 
         Parameters:
             get_rows_fn     (function)  A function that returns the rows of a
@@ -75,12 +96,16 @@ class PatternExtractor(ABC):
                                         ends.
             overlap         (int)       the number of cells that overlap on
                                         each page edge of the pattern.
+            withkey         (key)       whether to ensure that each symbol in
+                                        the pattern is also found in the
+                                        associated key.
             verbose         (bool)      whether progress statements should be
                                         printed.
 
         Returns:
-            ???
-
+            list[list[str]]     a list of lists containing all the symbols
+                                translated from the pdf pattern maintaining the
+                                rows and columns.
         Raises:
             AssertionError  if the pattern has an uneven width on any page.
             AssertionError  if the pattern has an unexpected height on any
@@ -105,7 +130,7 @@ class PatternExtractor(ABC):
         expected_page_height = 0
 
         for page_idx in range(start_page_idx, end_page_idx+1):
-            rows = get_rows_fn(page_idx, verbose)
+            rows = get_rows_fn(page_idx, withkey=withkey, verbose=verbose)
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
                 pattern, page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,

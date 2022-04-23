@@ -24,9 +24,17 @@ class FontKeyExtractor(KeyExtractor):
         colour_data = []
         for row in key_page.extract_table()[1:]:
             colour_data.append(row[2:5])
-            colour_data.append(row[7:])
+            colour_data.append(row[-3:])
         verbose_print(f"Successfully loaded a maximum of {len(colour_data)} "
                       "threads", verbose)
+
+        # Checking that every dmc colour has a symbol to go along with it. For
+        # some reason the testing pdf isn't picking up every symbol.
+        for colour in colour_data:
+            if colour[0] == "":
+                print(
+                    "WARNING: will need to manually add symbol for "
+                    f"{colour[1]}")
 
         return [make_thread(colour[1],
                             colour[0],  # Identifier and symbol are the same in
@@ -34,4 +42,4 @@ class FontKeyExtractor(KeyExtractor):
                             colour[2],
                             verbose)
                 for colour in colour_data
-                if colour[0] != ""]  # Remove any blank lines.
+                if colour[1] != ""]  # Remove any blank lines.
