@@ -40,14 +40,21 @@ def bbox_to_ident(page, bbox, verbose=False):
 
     # If there are no lines and curves we can try using rects instead.
     if len(page_sect.curves) == 0 and len(page_sect.lines) == 0:
-        # Will always at least have the bbox.
-        if len(page_sect.rects) == 1:
+        # Make sure that the rect it has doesn't match the bbox by checking the
+        # x0 coordinate with the given bbox. This is required as there are some
+        # cases where the bbox is not passed.
+        check_rects = []
+        for rect in page_sect.rects:
+            if rect["x0"] != bbox[0]:
+                check_rects.append(rect)
+
+        if len(check_rects) == 0:
             verbose_print(
                 "This symbol has no curves lines or rects (besides the bbox) "
-                "found at X", verbose)
+                f"found at {bbox}", verbose)
             return ""
         return "-".join(sorted(
-            objs_ident(page_sect.rects[1:], "r")))
+            objs_ident(check_rects, "r")))
 
     return "-".join(sorted(
         objs_ident(page_sect.curves, "c") + objs_ident(
