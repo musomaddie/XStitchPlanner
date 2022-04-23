@@ -60,6 +60,24 @@ def bbox_to_ident(page, bbox, verbose=False):
         objs_ident(page_sect.curves, "c") + objs_ident(
             page_sect.lines, "l")))
 
+def determine_pages(page_start_idx, page_end_idx):
+    """ Determines which page numbers are we are interested in exporting. Both
+    values can be None but page_start_idx must have a value if page_end_idx
+    does.
+
+    Parameters:
+        page_start_idx      int     the index of the first page
+        page_end_idx        int     the index of the last page
+
+    Returns:
+        tuple[int, int]         the determined pages to export from (inclusive)
+    """
+    if page_start_idx is None and page_end_idx is None:
+        return (0, 0)
+    if not page_end_idx:
+        return (page_start_idx, page_start_idx)
+    return (page_start_idx, page_end_idx)
+
 def load_dmc_data(filename="dmc_data.csv"):
     """ Loads the additional data about all dmc colours from the given file.
 

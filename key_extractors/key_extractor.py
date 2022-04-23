@@ -29,9 +29,6 @@ class KeyExtractor(ABC):
                     verbose=False):
         """ Extracts the key which is found on the key page range provided.
 
-        TODO: actually handle multiple pages. (For now goal is to maintain
-        functionality). --> include some error checking / handlding.
-
         Parameters:
             key_start_page_idx  int     The first page where the key can be
                                         found.

@@ -1,5 +1,5 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils import bbox_to_ident, verbose_print, make_thread
+from pdf_utils import bbox_to_ident, determine_pages, make_thread, verbose_print
 from typing import Counter
 from string import ascii_letters, punctuation
 
@@ -35,6 +35,18 @@ class ShapeKeyExtractor(KeyExtractor):
                     key_end_page_idx=None,
                     verbose=False):
         """ Implementing abstractmethod from KeyExtractor. """
+        first_page, last_page = determine_pages(key_start_page_idx,
+                                                key_end_page_idx)
+        key = []
+        for key_page_idx in range(first_page, last_page + 1):
+            verbose_print(f"Loading key on page {key_start_page_idx + 1}",
+                          verbose)
+            key += self._extract_key_from_page(
+                self.pdf.pages[key_page_idx], verbose)
+
+        return key
+
+    def _extract_key_from_page(self, key_page, verbose=False):
         def filter_majority_rects(rects):
             """ Return the rects with the majority size to try and guess at
             which rects hold the right key components. """
@@ -45,8 +57,7 @@ class ShapeKeyExtractor(KeyExtractor):
                 r for r in rects
                 if int(r["width"]) == majority_width
                 and int(r["height"]) == majority_height]
-        key_page = self.pdf.pages[key_start_page_idx]
-        verbose_print(f"Loading key on page {key_start_page_idx + 1}", verbose)
+
         idents = filter_majority_rects(
             [r for r in key_page.rects if not r["fill"]])
 

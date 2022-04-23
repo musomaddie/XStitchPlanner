@@ -1,5 +1,5 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils import make_thread, verbose_print
+from pdf_utils import determine_pages, make_thread, verbose_print
 
 class FontKeyExtractor(KeyExtractor):
     """ A class for extracting the key when the PDF can be accessed via the
@@ -15,12 +15,19 @@ class FontKeyExtractor(KeyExtractor):
                     key_start_page_idx,
                     key_end_page_idx=None,
                     verbose=False):
-        """ Implementing abstractmethod from KeyExtractor.
-        """
-        # TODO: implement for multiple pages.
+        """ Implementing abstractmethod from KeyExtractor.  """
         # TODO: handle different forms --> probably have a way of defining it
         # or some helper function or something
-        key_page = self.pdf.pages[key_start_page_idx]
+        first_page, last_page = determine_pages(key_start_page_idx,
+                                                key_end_page_idx)
+        key = []
+        for key_page_idx in range(first_page, last_page + 1):
+            verbose_print(f"Loading key on page {key_start_page_idx + 1}",
+                          verbose)
+            key += self._extract_key_from_page(
+                self.pdf.pages[key_page_idx], verbose)
+
+    def _extract_key_from_page(self, key_page, verbose=False):
         colour_data = []
         for row in key_page.extract_table()[1:]:
             colour_data.append(row[2:5])
