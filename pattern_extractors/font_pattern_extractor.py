@@ -7,7 +7,7 @@ class FontPatternExtractor(PatternExtractor):
     def __init__(self, pdf):
         super().__init__(pdf)
 
-    def get_rows(self, page_idx):
+    def get_rows(self, page_idx, verbose=False):
         # TODO: add similar check here as is in shapes: need to make sure all
         # of them are valid identifiers.
         return self.pdf.pages[page_idx].extract_table(

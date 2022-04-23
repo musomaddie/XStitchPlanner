@@ -31,11 +31,12 @@ class PatternExtractor(ABC):
         self.pdf = pdf
 
     @abstractmethod
-    def get_rows(self, page_idx):
+    def get_rows(self, page_idx, verbose=False):
         """ Returns the rows extracted from the given page number.
 
         Parameters:
-            page_idx    (int)   the page to extract rows from.
+            page_idx    int     the page to extract rows from.
+            verbose     bool    whether to print detailed debugging.
 
         Returns:
             ?? type??
@@ -104,7 +105,7 @@ class PatternExtractor(ABC):
         expected_page_height = 0
 
         for page_idx in range(start_page_idx, end_page_idx+1):
-            rows = get_rows_fn(page_idx)
+            rows = get_rows_fn(page_idx, verbose)
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
                 pattern, page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,
