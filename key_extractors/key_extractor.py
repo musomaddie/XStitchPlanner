@@ -24,6 +24,10 @@ class KeyExtractor(ABC):
                                                    given pages of the PDF.
     """
 
+    COLOUR_TABLE_SETTINGS = {"horizontal_strategy": "text",
+                             "vertical_strategy": "text",
+                             "keep_blank_chars": True}
+
     def __init__(self, pdf, key_form):
         """ Creates a new instance of the key extractor for the given PDF.
 
@@ -110,7 +114,8 @@ class KeyExtractor(ABC):
             it for now.
             # TODO: also might be worth trying to detect automatically.
             """
-            num_rows_start = int(input("On what row do the key values start? "))
+            num_rows_start = int(
+                input("On what row do the key values start? "))
             num_rows_end = int(input("How many rows from the bottom do the "
                                      "key values end? "))
             num_rows_end_pages = 1
