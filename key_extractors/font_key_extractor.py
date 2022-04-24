@@ -18,17 +18,16 @@ class FontKeyExtractor(KeyExtractor):
         # Set up
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
-
         self.multipage = first_page != last_page
         self.get_layout_info(layout_file_name)
 
         key = []
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(f"Loading key on page {key_start_page_idx + 1}",
+            verbose_print(f"Loading key on page {key_page_idx + 1}",
                           verbose)
             key.extend(self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
-                key_page_idx == key_start_page_idx,
+                key_page_idx == first_page,
                 verbose))
         return key
 
@@ -77,6 +76,8 @@ class FontKeyExtractor(KeyExtractor):
                 if c[num_idx] != ""]
 
         rows = self.get_key_table(key_page)
+        # TODO: if this returns None print the warning and ask to double
+        # check if page num passed.
 
         # Special case for end_idx being 0 because trying to loop to -0
         # does not loop at all.
