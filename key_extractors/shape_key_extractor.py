@@ -81,6 +81,7 @@ class ShapeKeyExtractor(KeyExtractor):
             return (resulting_list, count)
 
         key_table = self.get_key_table(key_page)
+        # TODO: worry about start / end indices here?? Probably should.
         result = []
         count = 0
         for row in key_table:

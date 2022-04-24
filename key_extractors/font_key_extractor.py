@@ -30,14 +30,13 @@ class FontKeyExtractor(KeyExtractor):
                 self.pdf.pages[key_page_idx],
                 key_page_idx == key_start_page_idx,
                 verbose))
-            return key
         return key
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
         ref = self.layout_params.headings  # Variable for readability
-        start_idx = (self.layout_params.n_rows_start
+        start_idx = (self.layout_params.n_rows_start - 1
                      if is_first_page
-                     else self.layout_params.n_rows_start_pages)
+                     else self.layout_params.n_rows_start_pages - 1)
         end_idx = (self.layout_params.n_rows_end - 1
                    if is_first_page
                    else self.layout_params.n_rows_end_pages - 1)
