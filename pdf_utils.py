@@ -96,6 +96,24 @@ def determine_pages(page_start_idx, page_end_idx):
         return (page_start_idx, page_start_idx)
     return (page_start_idx, page_end_idx)
 
+def divide_row(row, n):
+    """ Divides the given row into n rows and returns them as a list of lists.
+
+    Paramaters:
+        row     list[str]   the row to divide
+        n       int         the number to divide the row by.
+
+    Returns:
+        list[list[str]]     a list of lists containing the split lists.
+
+    Raises:
+        AssertionError      if the list cannot be evenly divided.
+    """
+    assert len(row) % n == 0, ("The row does not evenly divide into the "
+                               "number of colours provided.")
+    sub_size = len(row) // n
+    return [row[i * sub_size:(i + 1) * sub_size] for i in range(n)]
+
 def load_dmc_data(filename="dmc_data.csv"):
     """ Loads the additional data about all dmc colours from the given file.
 

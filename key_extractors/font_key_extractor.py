@@ -1,5 +1,6 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils import TextFormat, determine_pages, make_thread, verbose_print
+from pdf_utils import TextFormat, determine_pages, divide_row, make_thread
+from pdf_utils import verbose_print
 
 class FontKeyExtractor(KeyExtractor):
     """ A class for extracting the key when the PDF can be accessed via the
@@ -55,21 +56,8 @@ class FontKeyExtractor(KeyExtractor):
 
             # Break up the row into n distinct sections: it should evenly
             # divide -- if it doesn't COMPLAIN!
-            # Assume colour square is there - consider this when dividing
-            assert len(row) % self.layout_params.n_colours_per_row == 0, (
-                "The row does not evenly divide into the number of colours "
-                "provided.")
-            # The "colour square" fills two columns of the table per colour in
-            # row as it takes up the cell its in and the square is counted as
-            # another cell. assuming this is the first two cells.
-            # TODO: I can probably add another assert in here with a request
-            # for a bug if there is a pattern where this doesn't occur.
-
             # Vars for readability
-            sub_size = len(row) // self.layout_params.n_colours_per_row
-            colours = [
-                row[n * sub_size:(n + 1) * sub_size]
-                for n in range(self.layout_params.n_colours_per_row)]
+            colours = divide_row(row, self.layout_params.n_colours_per_row)
 
             # Ensure that the colour has a symbol and print a warning
             symb_idx = ref.index("Symbol")

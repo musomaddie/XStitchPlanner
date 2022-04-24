@@ -1,8 +1,6 @@
 from key_extractors.key_extractor import KeyExtractor
-from key_form import KeyForm
-from pdf_utils import bbox_to_ident, determine_pages, make_thread
-from pdf_utils import verbose_print
-from string import ascii_letters, punctuation
+from pdf_utils import PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row
+from pdf_utils import make_thread, verbose_print
 from typing import Counter
 
 class ShapeKeyExtractor(KeyExtractor):
@@ -21,11 +19,6 @@ class ShapeKeyExtractor(KeyExtractor):
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
 
-    def __init__(self, pdf, key_form):
-        assert key_form != KeyForm.LINE, (
-            "KeyForm.LINE is currently not supported with ExtractorMode.SHAPE")
-        super().__init__(pdf, key_form)
-
     def extract_key(self,
                     key_start_page_idx,
                     key_end_page_idx=None,
@@ -34,10 +27,10 @@ class ShapeKeyExtractor(KeyExtractor):
         """ Implementing abstractmethod from KeyExtractor. """
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
-        # TODO: add custom layout options here
+        self.get_layout_info(layout_file_name)
         key = []
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(f"Loading key on page {key_start_page_idx + 1}",
+            verbose_print(f"Loading key on page {key_page_idx + 1}",
                           verbose)
             key += self._extract_key_from_page(
                 self.pdf.pages[key_page_idx], verbose)
@@ -55,7 +48,6 @@ class ShapeKeyExtractor(KeyExtractor):
                 r for r in rects
                 if int(r["width"]) == majority_width
                 and int(r["height"]) == majority_height]
-
         idents = filter_majority_rects(
             [r for r in key_page.rects if not r["fill"]])
 
@@ -66,39 +58,34 @@ class ShapeKeyExtractor(KeyExtractor):
             "Too many symbols to automatically generate all symbols, "
             "file a bug to generate more.")
         verbose_print(f"Found {len(idents)} identifiers.", verbose)
+        ref = self.layout_params.headings
 
-        colors = filter_majority_rects(
-            [r for r in key_page.rects if r["fill"]])
-        colors = [[int(c*255) for c in r["non_stroking_color"]]
-                  for r in colors]
-        assert len(idents) == len(colors), (
-            "Number of colors extracted does not equal number of symbols "
-            f"extracted ({len(colors)} vs {len(idents)})")
+        def read_row(row, count):
+            """ Returns both the made row and the new count value """
+            if self.layout_params.n_colours_per_row == 1:
+                return ([make_thread(
+                    row[ref.index("Number")],
+                    idents[count],
+                    PLACEHOLDERS[count],
+                    verbose=verbose)], count + 1)
+            colours = divide_row(row, self.layout_params.n_colours_per_row)
+            resulting_list = []
+            for c in colours:
+                if c[ref.index("Number")] == "":
+                    continue
+                resulting_list.append(make_thread(c[ref.index("Number")],
+                                                  idents[count],
+                                                  PLACEHOLDERS[count],
+                                                  verbose=verbose))
+                count += 1
+            return (resulting_list, count)
 
-        key_table = key_page.extract_table(self.COLOUR_TABLE_SETTINGS)
-        stitches = []
-        last_col_stitches = []
+        key_table = self.get_key_table(key_page)
+        result = []
+        count = 0
         for row in key_table:
-            if row[2] and row[1]:
-                stitches.append({"name": row[2], "dmc_num": row[1]})
-            if row[3] and row[4]:
-                last_col_stitches.append({"name": row[5], "dmc_num": row[4]})
-        stitches += last_col_stitches
-        assert len(stitches) == len(idents), (
-            "Number of rows extracted does not equal number of colors "
-            f"extracted ({len(stitches)} vs {len(colors)})")
+            formatted_row, count = read_row(row, count)
+            print(count)
+            result.extend(formatted_row)
 
-        verbose_print(f"Successfully extracted {len(stitches)} stitches",
-                      verbose)
-
-        symbols = list(PLACEHOLDERS)
-        for stitch in stitches:
-            stitch["symbol"] = symbols.pop(0)
-            stitch["ident"] = idents.pop(0)
-
-        self.ident_map = {s["ident"]: s["symbol"] for s in stitches}
-        verbose_print(f"Successfully created an ident map of {self.ident_map}",
-                      verbose)
-
-        return [make_thread(s["dmc_num"], s["ident"], s["symbol"],
-                            verbose) for s in stitches]
+        return result

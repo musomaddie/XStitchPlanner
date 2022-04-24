@@ -11,7 +11,7 @@
 " [only if multi-page key] the row where the values start for future pages
 " Number of colours per row
 " The heading of each column for the keys (each heading separated by a newline).
-" 	Must include 'Symbol' and 'Number' (exactly).
+" 	Must include 'Number' and if read mode is font 'Symbol' (exactly).
 "	If there is a colour square this will cover two columns. if this is table
 "	If there is more than one colour per row the headings should only be there 
 " 	once. i.e. If the original heading is: "Col, Sym, No., Colour Name, Col,
