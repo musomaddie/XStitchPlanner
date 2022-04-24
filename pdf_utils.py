@@ -11,6 +11,20 @@ DESC_KEY = "desc"
 HEX_KEY = "hex"
 
 
+class TextFormat:
+    # PURPLE = '\033[95m'
+    # CYAN = '\033[96m'
+    # DARKCYAN = '\033[36m'
+    # BLUE = '\033[94m'
+    # GREEN = '\033[92m'
+    # YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BRIGHT_RED ='\033[31;1m'
+
+    # BOLD = '\033[1m'
+    # UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
 def bbox_to_ident(page, bbox, verbose=False):
     """ Given a symbol in the PDF made up of lines and curves and
     transforms it into a string that will be consistently recognised as an
@@ -105,7 +119,7 @@ def load_dmc_data(filename="dmc_data.csv"):
                                              HEX_KEY: row["Hex"]}
     return resulting_dict
 
-def make_thread(dmc_value, ident, symbol, desc=None, verbose=False):
+def make_thread(dmc_value, ident, symbol, verbose=False):
     """ Returns a Thread constructed by the given parameters with additional
     detail from the dmc data passed. TODO: improve description its BAD
 
@@ -122,10 +136,20 @@ def make_thread(dmc_value, ident, symbol, desc=None, verbose=False):
         Thread      the newly constructed thread type containing the given
                     information.
     """
+    if dmc_value not in DMC_DATA:
+        print(f"{TextFormat.BRIGHT_RED}WARNING '{dmc_value}' is not found in "
+              "our database. Default (black) description and hex code have "
+              f"been assigned instead.{TextFormat.END}")
+        return Thread(dmc_value,
+                      ident,
+                      symbol,
+                      DMC_DATA["310"][DESC_KEY],
+                      DMC_DATA["310"][HEX_KEY])
+
     return Thread(dmc_value,
                   ident,
                   symbol,
-                  desc.title() if desc else DMC_DATA[dmc_value][DESC_KEY],
+                  DMC_DATA[dmc_value][DESC_KEY],
                   DMC_DATA[dmc_value][HEX_KEY])
 
 def read_key(filename, verbose=False):

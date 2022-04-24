@@ -1,14 +1,9 @@
 """" Cross Stitch Key Extractor for Patterns.
-
-TODO: need a way to specify how to extract the key since it seems very
-pattern specific and I don't want to have to add a custom variation for ALL of
-them.
-
 This will save the key - with additional thread information (if it was
 provided) as a .tsv for future use.
 
 Usage:
-  extract_key [-v] [-m MODE] PDF [STARTPAGE] [ENDPAGE]
+  extract_key [-v] [-l] [-f FORM] [-m MODE] PDF [STARTPAGE] [ENDPAGE]
 
 Arguments:
   PDF           input pdf path
@@ -20,6 +15,12 @@ Arguments:
 Options:
   -h -help              show this help message and exit
   -v --verbose          print status messages
+  -n --no_table         if the key is not saved in a table. [default: False]
+  -l --layout_file      if the key layout is stored in a file (named
+                        PDF.key_layout). See `patterns/example.key_layout` for
+                        details. [default: False].
+  -f FORM --form=FORM   form of the key, can either be "table" or "list".
+                        [default: table].
   -m MODE --mode=MODE   extract mode can either be "font" or "shape".
                         [default: font].
   MODE:
@@ -31,9 +32,15 @@ Options:
             reoccuring lines and shapes. These identifiers are then matched up
             with arbitrary symbols for displaying. These identifiers may bear
             no resemblance to the original symbols.
+  FORM:
+    table:  the default form if FORM is not given. Identifies the key by
+            looking for a table in the PDF.
+    list    identifies the key by extracting text from the PDF in rows. Use
+            if there is no dividing line between each symbol in the key.
 """
 from docopt import docopt
 from extractor_mode import ExtractorMode
+from key_form import KeyForm
 from key_extractors.font_key_extractor import FontKeyExtractor
 from key_extractors.shape_key_extractor import ShapeKeyExtractor
 from pdf_utils import verbose_print
@@ -63,8 +70,10 @@ def save_key(key, filename, verbose=False):
 
 def extract_key_from_pdf(pdf_name,
                          extractor_mode,
+                         key_form,
                          start_page_idx=None,
                          end_page_idx=None,
+                         has_layout_file=False,
                          verbose=False):
     """ Extracts the key from the provided PDF file and saves it as a .key
     file.
@@ -72,12 +81,17 @@ def extract_key_from_pdf(pdf_name,
     Parameters:
         pdf_name        (str)               the name of the PDF to export the
                                             key from.
-        extractor_mode  (ExtractorMode)     determines how the key is to be
-                                            read from the PDF.
+        extractor_mode  (ExtractorMode)     determines how the symbols in the
+                                            key are to be read from the PDF.
+        key_form        (KeyForm)           determines how the key itself is to
+                                            be read from the PDF.
         start_page_idx  (int)               the index of the first page
                                             containing the key. [default: None]
         end_page_idx    (int)               the index of the last page
                                             containing the key. [default: None]
+        has_layout_file (bool)              whether the layout for the key can
+                                            be found in the associated file.
+                                            [default: False]
         verbose         (bool)              whether to print detailed debugging
                                             statements. [default: False]
 
@@ -85,21 +99,28 @@ def extract_key_from_pdf(pdf_name,
         pdfminer.pdfparser.PDFSyntaxError   if the file found at pdf_name does
                                             exist but it isn't a PDF.
         FileNotFoundError                   if the pdf_name does not exist.
-        ValueError                          if the extractor_mode is unkonwn.
+        ValueError                          if the extractor_mode is unknown.
+        ValueError                          if the key_form is unknown.
     """
     with pdfplumber.open(pdf_name) as pdf:
         if extractor_mode == ExtractorMode.UNKNOWN:
             raise ValueError("The extractor mode is unknown. It should either "
                              "be 'font' or 'shape'")
+        if key_form == KeyForm.UNKNOWN:
+            raise ValueError("The key form is unknown. It should either be "
+                             "'table' or 'line'")
         if extractor_mode == ExtractorMode.FONT:
-            extractor = FontKeyExtractor(pdf)
+            extractor = FontKeyExtractor(pdf, key_form)
         elif extractor_mode == ExtractorMode.SHAPE:
-            extractor = ShapeKeyExtractor(pdf)
+            extractor = ShapeKeyExtractor(pdf, key_form)
 
-        if start_page_idx is None and end_page_idx is None:
-            start_page_idx = 0
+        layout_file_name = (
+            pdf_name.replace(".pdf", ".key_layout")
+            if has_layout_file else None)
         save_key(
-            extractor.extract_key(start_page_idx, end_page_idx, verbose),
+            extractor.extract_key(start_page_idx,
+                                  end_page_idx,
+                                  layout_file_name=layout_file_name),
             pdf_name.replace(".pdf", ".key"))
 
 
@@ -119,8 +140,10 @@ if __name__ == "__main__":
     args = docopt(__doc__)
     extract_key_from_pdf(args["PDF"],
                          ExtractorMode.find_mode_from_string(args["--mode"]),
+                         KeyForm.find_form_from_string(args["--form"]),
                          start_page_idx=_subtract_one(
                              _make_int(args["STARTPAGE"])),
                          end_page_idx=_subtract_one(
                              _make_int(args["ENDPAGE"])),
+                         has_layout_file=bool(args["--layout_file"]),
                          verbose=bool(args["--verbose"]))

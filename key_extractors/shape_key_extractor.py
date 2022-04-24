@@ -1,7 +1,9 @@
 from key_extractors.key_extractor import KeyExtractor
-from pdf_utils import bbox_to_ident, determine_pages, make_thread, verbose_print
-from typing import Counter
+from key_form import KeyForm
+from pdf_utils import bbox_to_ident, determine_pages, make_thread
+from pdf_utils import verbose_print
 from string import ascii_letters, punctuation
+from typing import Counter
 
 class ShapeKeyExtractor(KeyExtractor):
     """ A class for extracting the key from a PDF when it can only be acessed
@@ -19,24 +21,26 @@ class ShapeKeyExtractor(KeyExtractor):
                                         lookup the key in the PDF. If having
                                         trouble with reading the key on a new
                                         file, trying tweaking these.
-
-    Parameters:
-        ident_map:  maps every pdf shape to an ascii letter or punctuation
-                    which acts as its identifier
-
     """
     COLOUR_TABLE_SETTINGS = {"horizontal_strategy": "text",
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
-    PLACEHOLDERS = ascii_letters + punctuation
+    PLACEHOLDERS = ascii_letters + punctuation.replace(",", "")
+
+    def __init__(self, pdf, key_form):
+        assert key_form != KeyForm.LINE, (
+            "KeyForm.LINE is currently not supported with ExtractorMode.SHAPE")
+        super().__init__(pdf, key_form)
 
     def extract_key(self,
                     key_start_page_idx,
                     key_end_page_idx=None,
+                    layout_file_name=None,
                     verbose=False):
         """ Implementing abstractmethod from KeyExtractor. """
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
+        # TODO: add custom layout options here
         key = []
         for key_page_idx in range(first_page, last_page + 1):
             verbose_print(f"Loading key on page {key_start_page_idx + 1}",
@@ -96,12 +100,11 @@ class ShapeKeyExtractor(KeyExtractor):
         symbols = list(self.PLACEHOLDERS)
         for stitch in stitches:
             stitch["symbol"] = symbols.pop(0)
-            stitch["color"] = colors.pop(0)
             stitch["ident"] = idents.pop(0)
 
         self.ident_map = {s["ident"]: s["symbol"] for s in stitches}
         verbose_print(f"Successfully created an ident map of {self.ident_map}",
                       verbose)
 
-        return [make_thread(s["dmc_num"], s["ident"], s["symbol"], s["name"],
+        return [make_thread(s["dmc_num"], s["ident"], s["symbol"],
                             verbose) for s in stitches]

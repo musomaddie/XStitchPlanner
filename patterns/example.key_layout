@@ -1,0 +1,30 @@
+" An example file for how to format key_layout Files. Any line starting with "
+" should not be included in actual file but is there to provide context.
+" Include the data requested by user prompt on each new line:
+"
+" The row where the key values start (from the top)
+" The row where the key values end (from the bottom)
+" [only if multi-page key] the row where values end for future pages
+" 	i.e. if they go right to the last row the value is 1.
+" [only if multi-page key] the row where the values start for future pages
+" Number of colours per row
+" The heading of each column for the keys (each heading separated by a newline).
+" 	Must include 'Symbol' and 'Number' (exactly).
+"	If there is a colour square this will cover two columns. if this is table
+"	If there is more than one colour per row the headings should only be there 
+" 	once. i.e. If the original heading is: "Col, Sym, No., Colour Name, Col,
+" 	Sym, No., Colour Name", then the list of headings in the file should be: 
+" 	"Col, , Symbol, Number, Colour Name". 
+"
+"
+" EXAMPLE
+3
+1
+2
+1
+1
+Symbol
+Strands
+Type
+Number
+Colour
