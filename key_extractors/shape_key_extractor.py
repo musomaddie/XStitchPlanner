@@ -12,11 +12,6 @@ class ShapeKeyExtractor(KeyExtractor):
     Extends KeyExtractor.
 
     Static Parameters:
-        PLACEHOLDERS    list (string)   a list of symbols that will be used
-                                        as identifiers for each colour stitch
-                                        throughout the program. These will not
-                                        necessarily match with the original
-                                        symbol nor the displayed one.
         COLOUR_TABLE_SETTINGS   dict    the dictionary specifying the params to
                                         lookup the key in the PDF. If having
                                         trouble with reading the key on a new
@@ -25,7 +20,6 @@ class ShapeKeyExtractor(KeyExtractor):
     COLOUR_TABLE_SETTINGS = {"horizontal_strategy": "text",
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
-    PLACEHOLDERS = ascii_letters + punctuation.replace(",", "")
 
     def __init__(self, pdf, key_form):
         assert key_form != KeyForm.LINE, (
@@ -68,7 +62,7 @@ class ShapeKeyExtractor(KeyExtractor):
         idents = [bbox_to_ident(key_page,
                                 (r["x0"], r["top"], r["x1"], r["bottom"]),
                                 verbose) for r in idents]
-        assert len(idents) <= len(self.PLACEHOLDERS), (
+        assert len(idents) <= len(PLACEHOLDERS), (
             "Too many symbols to automatically generate all symbols, "
             "file a bug to generate more.")
         verbose_print(f"Found {len(idents)} identifiers.", verbose)
@@ -97,7 +91,7 @@ class ShapeKeyExtractor(KeyExtractor):
         verbose_print(f"Successfully extracted {len(stitches)} stitches",
                       verbose)
 
-        symbols = list(self.PLACEHOLDERS)
+        symbols = list(PLACEHOLDERS)
         for stitch in stitches:
             stitch["symbol"] = symbols.pop(0)
             stitch["ident"] = idents.pop(0)

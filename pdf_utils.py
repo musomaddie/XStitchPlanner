@@ -4,11 +4,15 @@ multiple PDF extractors regardless of mode and type.
 Functions are found in alphabetical order.
 """
 from floss_thread import Thread
+from string import ascii_letters, punctuation
+
 import csv
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"
 HEX_KEY = "hex"
+
+PLACEHOLDERS = ascii_letters + punctuation.remove(",").remove(" ")
 
 
 class TextFormat:

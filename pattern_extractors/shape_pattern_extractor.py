@@ -1,6 +1,5 @@
 from pattern_extractors.pattern_extractor import PatternExtractor
-from pdf_utils import bbox_to_ident, read_key, verbose_print
-from string import ascii_letters, punctuation
+from pdf_utils import PLACEHOLDERS, bbox_to_ident, read_key, verbose_print
 
 class ShapePatternExtractor(PatternExtractor):
 
@@ -28,8 +27,6 @@ class ShapePatternExtractor(PatternExtractor):
         "edge_min_length": 200
     }
 
-    PLACEHOLDERS = ascii_letters + punctuation
-
     def __init__(self, pdf):
         super().__init__(pdf)
         self.ident_map = {}
@@ -38,9 +35,9 @@ class ShapePatternExtractor(PatternExtractor):
     def get_rows(self, page_idx, withkey=False, verbose=False):
         """ Implementing abstract method.  """
         def find_next_placeholder():
-            assert len(self._used_symbols) <= len(self.PLACEHOLDERS), (
+            assert len(self._used_symbols) <= len(PLACEHOLDERS), (
                 "Too many symbols to automatically generate all symbols")
-            for x in self.PLACEHOLDERS:
+            for x in PLACEHOLDERS:
                 if x not in self._used_symbols:
                     self._used_symbols.append(x)
                     return x
