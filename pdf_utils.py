@@ -12,7 +12,7 @@ DMC_KEY = "dmc"
 DESC_KEY = "desc"
 HEX_KEY = "hex"
 
-PLACEHOLDERS = ascii_letters + punctuation.remove(",").remove(" ")
+PLACEHOLDERS = ascii_letters + punctuation.replace(",", "").replace(" ", "")
 
 
 class TextFormat:
@@ -23,7 +23,7 @@ class TextFormat:
     # GREEN = '\033[92m'
     # YELLOW = '\033[93m'
     RED = '\033[91m'
-    BRIGHT_RED ='\033[31;1m'
+    BRIGHT_RED = '\033[31;1m'
 
     # BOLD = '\033[1m'
     # UNDERLINE = '\033[4m'

@@ -1,5 +1,4 @@
 from key_extractors.key_extractor import KeyExtractor
-from key_form import KeyForm
 from pdf_utils import TextFormat, determine_pages, make_thread, verbose_print
 
 class FontKeyExtractor(KeyExtractor):
@@ -90,27 +89,7 @@ class FontKeyExtractor(KeyExtractor):
                 verbose=verbose) for c in colours
                 if c[num_idx] != ""]
 
-        rows = []
-        if self.key_form == KeyForm.LINE:
-            # TODO: neaten this up
-            # Trying to get the original starting line - find the longest rect
-            bounding_box = [0, 0, key_page.width, key_page.height]
-            starting_line = key_page.rects[0]
-            starting_rects = []
-            for rect in key_page.rects:
-                if rect["width"] > starting_line["width"]:
-                    starting_line = rect
-            # it didn't cover the entire thing
-            for rect in key_page.rects:
-                if rect["y0"] == starting_line["y0"]:
-                    starting_rects.append(rect)
-            # find the x / top value
-            bounding_box[0] = min([rect["x0"] for rect in starting_rects])
-            bounding_box[1] = starting_line["top"]
-            return key_page.crop(bounding_box).extract_table(
-                self.COLOUR_TABLE_SETTINGS)
-        else:
-            rows = [row for row in key_page.extract_table()]
+        rows = self.get_key_table(key_page)
 
         # Special case for end_idx being 0 because trying to loop to -0
         # does not loop at all.

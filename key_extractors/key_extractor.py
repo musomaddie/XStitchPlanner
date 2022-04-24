@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from key_layout import KeyLayout
+from key_layout import KeyForm, KeyLayout
 from pdf_utils import TextFormat
 
 class KeyExtractor(ABC):
@@ -15,7 +15,10 @@ class KeyExtractor(ABC):
 
     Methods:
         __init__(pdf)                       creates a new instance of the key
-                                            extractor for the
+                                            extractor for the given PDF
+        get_key_table(page)                 return a table to extract the
+                                            values from depending on the
+                                            KeyForm in layout params
         read_from_layout_file(filename)     loads the layout params from the
                                             filename given or user input
 
@@ -28,15 +31,13 @@ class KeyExtractor(ABC):
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
 
-    def __init__(self, pdf, key_form):
+    def __init__(self, pdf):
         """ Creates a new instance of the key extractor for the given PDF.
 
         Paramaters:
             pdf         pdfplumber.PDF      the PDF to read the key from.
-            key_form    KeyForm             how to read the key from the PDF.
         """
         self.pdf = pdf
-        self.key_form = key_form
         self.multipage = False
         self.layout_params = None
 
@@ -67,6 +68,32 @@ class KeyExtractor(ABC):
         """
         pass
 
+    def get_key_table(self, page):
+        assert self.layout_params, ("The Layout Params must first be set up "
+                                    "before attempting to extract a table.")
+        assert self.layout_params.key_form != KeyForm.UNKNOWN, (
+            "Please ensure that the key form is valid.")
+
+        if self.layout_params.key_form == KeyForm.FULL_LINES:
+            return page.extract_table()
+        if self.layout_params.key_form == KeyForm.NO_LINES:
+            return page.extract_table(self.COLOUR_TABLE_SETTINGS)
+        if self.layout_params.key_form == KeyForm.ONLY_HEADER_LINE:
+            # TODO: need an alternative way if the rect isn't a longer one.
+            bbox = [0, 0, page.width, page.height]
+            starting_line = page.rects[0]
+            for rect in page.rects:
+                if rect["width"] > starting_line["width"]:
+                    starting_line = rect
+            # Getting all the rects in this vertical line in case they weren't
+            # all grabbed
+            starting_rects = [rect for rect in page.rects
+                              if rect["y0"] == starting_line["y0"]]
+            bbox[0] = min([rect["x0"] for rect in starting_rects])
+            bbox[1] = starting_line["top"]
+            return page.crop(bbox).extract_table(
+                self.COLOUR_TABLE_SETTINGS)
+
     def get_layout_info(self, layout_file_name=None):
         """ Gets information on the layout of the key from the user.
 
@@ -90,6 +117,7 @@ class KeyExtractor(ABC):
                 with open(filename) as f:
                     try:
                         self.layout_params = KeyLayout(
+                            KeyForm.from_string(f.readline().strip()),
                             int(f.readline().strip()),  # Rows start
                             int(f.readline().strip()),  # Rows end
                             # Pages for the above
@@ -114,6 +142,8 @@ class KeyExtractor(ABC):
             it for now.
             # TODO: also might be worth trying to detect automatically.
             """
+            key_form = input("What form is the key table in? (one of 'full "
+                             "lines', 'only header line', 'no lines'")
             num_rows_start = int(
                 input("On what row do the key values start? "))
             num_rows_end = int(input("How many rows from the bottom do the "
@@ -136,7 +166,8 @@ class KeyExtractor(ABC):
                 headings.append(heading)
                 heading = input("Heading? ")
             headings = ["Symbol", "Strands", "Type", "Number", "Colour"]
-            self.layout_params = KeyLayout(num_rows_start,
+            self.layout_params = KeyLayout(key_form,
+                                           num_rows_start,
                                            num_rows_end,
                                            num_rows_start_pages,
                                            num_rows_end_pages,

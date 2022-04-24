@@ -1,7 +1,9 @@
 " An example file for how to format key_layout Files. Any line starting with "
 " should not be included in actual file but is there to provide context.
-" Include the data requested by user prompt on each new line:
+" Includes the data requested by user prompt on each new line:
 "
+" The format of the key table (either 'full lines', 'only header line' or 
+" 	'no lines'.
 " The row where the key values start (from the top)
 " The row where the key values end (from the bottom)
 " [only if multi-page key] the row where values end for future pages
@@ -18,6 +20,7 @@
 "
 "
 " EXAMPLE
+full lines
 3
 1
 2
