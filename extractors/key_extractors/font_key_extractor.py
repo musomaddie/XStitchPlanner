@@ -30,6 +30,7 @@ class FontKeyExtractor(KeyExtractor):
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
         ref = self.layout_params.headings  # Variable for readability
+        # TODO: add this index getting to shared method.
         start_idx = (self.layout_params.n_rows_start - 1
                      if is_first_page
                      else self.layout_params.n_rows_start_pages - 1)
@@ -75,15 +76,12 @@ class FontKeyExtractor(KeyExtractor):
         rows = self.get_key_table(key_page)
         # TODO: if this returns None print the warning and ask to double
         # check if page num passed.
+        end_idx = len(rows) - end_idx
 
         # Special case for end_idx being 0 because trying to loop to -0
         # does not loop at all.
         result = []
-        if end_idx == 0:
-            for row in rows[start_idx:]:
-                result.extend(read_row(row))
-        else:
-            for row in rows[start_idx:end_idx]:
-                result.extend(read_row(row))
+        for row in rows[start_idx:end_idx]:
+            result.extend(read_row(row))
 
         return result

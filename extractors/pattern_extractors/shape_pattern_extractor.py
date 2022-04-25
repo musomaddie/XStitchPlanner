@@ -58,6 +58,7 @@ class ShapePatternExtractor(PatternExtractor):
             return self.ident_map[ident]
 
         page = self.pdf.pages[page_idx]
+        # page.to_image().save("????.png")
         table = page.find_tables(self.PATTERN_TABLE_SETTINGS)[0]
         return [[get_symbol(page, cell) for cell in row.cells]
                 for row in table.rows]

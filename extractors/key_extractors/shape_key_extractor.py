@@ -31,9 +31,11 @@ class ShapeKeyExtractor(KeyExtractor):
             verbose_print(f"Loading key on page {key_page_idx + 1}",
                           verbose)
             self.key += self._extract_key_from_page(
-                self.pdf.pages[key_page_idx], verbose)
+                self.pdf.pages[key_page_idx],
+                key_page_idx == first_page,
+                verbose)
 
-    def _extract_key_from_page(self, key_page, verbose=False):
+    def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
         def filter_majority_rects(rects):
             """ Return the rects with the majority size to try and guess at
             which rects hold the right key components. """
@@ -78,9 +80,18 @@ class ShapeKeyExtractor(KeyExtractor):
 
         key_table = self.get_key_table(key_page)
         # TODO: worry about start / end indices here?? Probably should.
+        ref = self.layout_params.headings  # Variable for readability
+        start_idx = (self.layout_params.n_rows_start - 1
+                     if is_first_page
+                     else self.layout_params.n_rows_start_pages - 1)
+        end_idx = (self.layout_params.n_rows_end - 1
+                   if is_first_page
+                   else self.layout_params.n_rows_end_pages - 1)
+        end_idx = len(key_table) - end_idx
+
         result = []
         count = 0
-        for row in key_table:
+        for row in key_table[start_idx:end_idx]:
             formatted_row, count = read_row(row, count)
             result.extend(formatted_row)
 
