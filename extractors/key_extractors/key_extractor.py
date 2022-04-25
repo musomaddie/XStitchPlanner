@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from extractors.extractor import Extractor
 from key_layout import KeyForm, KeyLayout
-from pdf_utils import TextFormat
 
+import csv
 import json
 
 # Variables for JSON keys (just to make them obvious / consistent.
@@ -36,8 +36,9 @@ class KeyExtractor(Extractor):
         get_key_table(page)                 return a table to extract the
                                             values from depending on the
                                             KeyForm in layout params
-        read_from_layout_file(filename)     loads the layout params from the
-                                            filename given or user input
+        read_from_layout_file()             loads the layout params
+        save_key()                          saves the key that has been
+                                            extracted by this extractor.
 
     Abstract Methods:
         extract_key(start_page_idx, end_page_idx): extracts the key from the
@@ -57,14 +58,15 @@ class KeyExtractor(Extractor):
                                                 filename without the extension)
         """
         super().__init__(pdf, pattern_name)
+        self.key_config_filename = (f"{pattern_name}_key_layout_config.json")
         self.multipage = False
         self.layout_params = None
+        self.key = []
 
     @abstractmethod
     def extract_key(self,
                     key_start_page_idx,
                     key_end_page_idx=None,
-                    layout_file_name=None,
                     verbose=False):
         """ Extracts the key which is found on the key page range provided.
 
@@ -75,10 +77,6 @@ class KeyExtractor(Extractor):
                                         found. If this is not passed only the
                                         page specified by key_start_page_idx is
                                         parsed. [default: None]
-            layout_file_name    str     the name of the associated key_layout
-                                        file if it exists (None otherwise)
-                                        [default: None]
-                                        associated layout file [default: False]
             verbose             bool    whether to print detailed messages
                                         [default: False]
         Returns:
@@ -113,15 +111,12 @@ class KeyExtractor(Extractor):
             return page.crop(bbox).extract_table(
                 self.COLOUR_TABLE_SETTINGS)
 
-    def get_layout_info(self, layout_file_name=None):
-        """ Gets information on the layout of the key from the user.
-
-        Parameters:
-            layout_file_name    str     the name of the associated key_layout
-                                        file if it exists (None otherwise)
-                                        [default: None]
+    def get_layout_info(self):
+        """ Gets information on the layout of the key from the user. First
+        attempts to read the layout params from the config file and if it
+        doesn't exist get it from user input and save it.
         """
-        def read_from_layout_file(filename):
+        def read_from_layout_file():
             """ Reads from a layout file, if there are any issues reverts to
             prompting for user input.
 
@@ -133,7 +128,7 @@ class KeyExtractor(Extractor):
                 no return value     assigns the result to self.layout_params
             """
             try:
-                with open(filename) as f:
+                with open(self.key_config_filename) as f:
                     config = json.load(f)
                     self.layout_params = KeyLayout(
                         KeyForm.from_string(config[JK_KF]),  # key form
@@ -145,9 +140,6 @@ class KeyExtractor(Extractor):
                         config[JK_H])
                     # TODO: what happens if it's a string??
             except FileNotFoundError:
-                print(f"{TextFormat.RED}The layout file '{filename}' could "
-                      f"not be found.{TextFormat.END} \nPrompting for user "
-                      "input instead (or use <CTRL-C> to force quit).")
                 read_from_user_input()
 
         def read_from_user_input():
@@ -179,8 +171,19 @@ class KeyExtractor(Extractor):
             while heading:
                 headings.append(heading)
                 heading = input("Heading? ")
-            headings = ["Symbol", "Strands", "Type", "Number", "Colour"]
-            self.layout_params = KeyLayout(key_form,
+
+            # Save JSON file
+            # TODO: double check this.
+            with open(self.key_layout_config_filename, "w",
+                      encoding="utf-8") as f:
+                json.dump({JK_KF: key_form,
+                           JK_SF: num_rows_start,
+                           JK_EF: num_rows_end,
+                           JK_SO: num_rows_start_pages,
+                           JK_EO: num_rows_end_pages,
+                           JK_NC: num_colours_per_row,
+                           JK_H: headings}, f, indent=4)
+            self.layout_params = KeyLayout(KeyForm.from_string(key_form),
                                            num_rows_start,
                                            num_rows_end,
                                            num_rows_start_pages,
@@ -188,7 +191,25 @@ class KeyExtractor(Extractor):
                                            num_colours_per_row,
                                            headings)
 
-        if layout_file_name:
-            read_from_layout_file(layout_file_name)
-        else:
-            read_from_user_input()
+        read_from_layout_file()
+
+    def save_key(self):
+        """ Saves the key extracted by this extractor.
+
+        Raises:
+            AssertionError  if the key is empty (i.e. there is nothing to
+                            save).
+
+        """
+        assert len(self.key) > 0, (
+            "No key to save please ensure the key has first been "
+            "extracted.")
+
+        with open(self.key_filename, "w") as key_file:
+            writer = csv.writer(key_file, delimiter="\t")
+            [writer.writerow([t.dmc_value,
+                              t.identifier,
+                              t.symbol,
+                              t.name,
+                              t.hex_colour])
+             for t in self.key]

@@ -12,24 +12,21 @@ class FontKeyExtractor(KeyExtractor):
     def extract_key(self,
                     key_start_page_idx,
                     key_end_page_idx=None,
-                    layout_file_name=None,
                     verbose=False):
         """ Implementing abstractmethod from KeyExtractor.  """
         # Set up
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
         self.multipage = first_page != last_page
-        self.get_layout_info(layout_file_name)
+        self.get_layout_info()
 
-        key = []
         for key_page_idx in range(first_page, last_page + 1):
             verbose_print(f"Loading key on page {key_page_idx + 1}",
                           verbose)
-            key.extend(self._extract_key_from_page(
+            self.key.extend(self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
                 verbose))
-        return key
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
         ref = self.layout_params.headings  # Variable for readability

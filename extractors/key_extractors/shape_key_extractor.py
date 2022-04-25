@@ -22,20 +22,16 @@ class ShapeKeyExtractor(KeyExtractor):
     def extract_key(self,
                     key_start_page_idx,
                     key_end_page_idx=None,
-                    layout_file_name=None,
                     verbose=False):
         """ Implementing abstractmethod from KeyExtractor. """
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
-        self.get_layout_info(layout_file_name)
-        key = []
+        self.get_layout_info()
         for key_page_idx in range(first_page, last_page + 1):
             verbose_print(f"Loading key on page {key_page_idx + 1}",
                           verbose)
-            key += self._extract_key_from_page(
+            self.key += self._extract_key_from_page(
                 self.pdf.pages[key_page_idx], verbose)
-
-        return key
 
     def _extract_key_from_page(self, key_page, verbose=False):
         def filter_majority_rects(rects):

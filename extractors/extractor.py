@@ -19,3 +19,4 @@ class Extractor(ABC):
     def __init__(self, pdf, pattern_name):
         self.pdf = pdf
         self.pattern_name = pattern_name
+        self.key_filename = f"{pattern_name}.key"
