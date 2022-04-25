@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from extractors.extractor import Extractor
 from pdf_utils import verbose_print
 
-class PatternExtractor(ABC):
+class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
 
     Parameters:
@@ -21,14 +22,6 @@ class PatternExtractor(ABC):
                                     pattern.
 
     """
-
-    def __init__(self, pdf):
-        """ Creates a new instance of the pattern extractor for the given PDF.
-
-        Parameters:
-            pdf     pdfplumber.PDF      the PDF to parse.
-        """
-        self.pdf = pdf
 
     @abstractmethod
     def get_rows(self, page_idx, withkey=False, verbose=False):

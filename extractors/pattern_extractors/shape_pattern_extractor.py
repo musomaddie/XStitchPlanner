@@ -27,8 +27,8 @@ class ShapePatternExtractor(PatternExtractor):
         "edge_min_length": 200
     }
 
-    def __init__(self, pdf):
-        super().__init__(pdf)
+    def __init__(self, pdf, pattern_name):
+        super().__init__(pdf, pattern_name)
         self.ident_map = {}
         self._used_symbols = []
 

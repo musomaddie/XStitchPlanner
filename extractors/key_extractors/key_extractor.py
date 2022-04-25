@@ -1,4 +1,5 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from extractors.extractor import Extractor
 from key_layout import KeyForm, KeyLayout
 from pdf_utils import TextFormat
 
@@ -17,7 +18,7 @@ JK_EO = f"{JK_RE} {JK_OP}"
 JK_NC = "number of colours per row"
 JK_H = "column headings"
 
-class KeyExtractor(ABC):
+class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
     Parameters:
@@ -55,8 +56,7 @@ class KeyExtractor(ABC):
             pattern_name    str                 the name of the pattern (pdf
                                                 filename without the extension)
         """
-        self.pdf = pdf
-        self.pattern_name = pattern_name
+        super().__init__(pdf, pattern_name)
         self.multipage = False
         self.layout_params = None
 

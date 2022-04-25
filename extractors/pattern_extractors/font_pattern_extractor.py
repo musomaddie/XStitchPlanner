@@ -8,8 +8,8 @@ class FontPatternExtractor(PatternExtractor):
         symbols:    a list of every symbol that appears in the key (if the key
                     is loaded).
     """
-    def __init__(self, pdf):
-        super().__init__(pdf)
+    def __init__(self, pdf, pattern_name):
+        super().__init__(pdf, pattern_name)
         self.symbols = []
 
     def get_rows(self, page_idx, withkey=False, verbose=False):

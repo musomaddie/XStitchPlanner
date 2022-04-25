@@ -96,9 +96,11 @@ def extract_from_pdf(pdf_name,
             raise ValueError("The extractor mode is unknown. It should either "
                              'be "font" or "shape"')
         if extractor_mode == ExtractorMode.FONT:
-            extractor = FontPatternExtractor(pdf)
+            extractor = FontPatternExtractor(
+                pdf, pdf_name.replace(".pdf", ""))
         elif extractor_mode == ExtractorMode.SHAPE:
-            extractor = ShapePatternExtractor(pdf)
+            extractor = ShapePatternExtractor(
+                pdf, pdf_name.replace(".pdf", ""))
         verbose_print("Successfully loaded the extractor", verbose)
 
         if withkey:
