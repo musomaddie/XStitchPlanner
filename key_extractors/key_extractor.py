@@ -22,7 +22,8 @@ class KeyExtractor(ABC):
 
     Parameters:
         pdf             pdfplumber.PDF  the PDF to extract the key from.
-        key_form        KeyForm         how to read they key from the PDF.
+        pattern_name    str             the name of the pattern (filename with
+                                        .pdf removed).
         multipage       bool            whether the key is spread over multiple
                                         pages. [default: False]
         layout_params   KeyLayout       how the columns for the key information
@@ -46,13 +47,16 @@ class KeyExtractor(ABC):
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
 
-    def __init__(self, pdf):
+    def __init__(self, pdf, pattern_name):
         """ Creates a new instance of the key extractor for the given PDF.
 
-        Paramaters:
-            pdf         pdfplumber.PDF      the PDF to read the key from.
+        Parameters:
+            pdf             pdfplumber.PDF      the PDF to read the key from.
+            pattern_name    str                 the name of the pattern (pdf
+                                                filename without the extension)
         """
         self.pdf = pdf
+        self.pattern_name = pattern_name
         self.multipage = False
         self.layout_params = None
 

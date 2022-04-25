@@ -95,9 +95,9 @@ def extract_key_from_pdf(pdf_name,
             raise ValueError("The extractor mode is unknown. It should either "
                              "be 'font' or 'shape'")
         if extractor_mode == ExtractorMode.FONT:
-            extractor = FontKeyExtractor(pdf)
+            extractor = FontKeyExtractor(pdf, pdf_name.replace(".pdf", ""))
         elif extractor_mode == ExtractorMode.SHAPE:
-            extractor = ShapeKeyExtractor(pdf)
+            extractor = ShapeKeyExtractor(pdf, pdf_name.replace(".pdf", ""))
 
         layout_file_name = (
             pdf_name.replace(".pdf", "_key_layout_config.json")
