@@ -1,0 +1,15 @@
+{
+	"key form": "only header lines",
+	"row start first page": 1,
+	"row end first page": 1,
+	"row start other pages": 1,
+	"row end other pages": 1,
+	"number of colours per row": 1,
+	"column headings": [
+		"Symbol",
+		"Strands",
+		"Type",
+		"Number",
+		"Colour"
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"key form": "no lines",
+	"row start first page": 1,
+	"row end first page": 1,
+	"number of colours per row": 2,
+	"column headings": [
+		"Strands",
+		"Number",
+		"Colour"
+	]
+}
