@@ -124,25 +124,21 @@ class PatternExtractor(Extractor):
         cur_x = 0
         cur_y = 0
         expected_page_height = 0
-        pattern = []
 
         for page_idx in range(start_page_idx, end_page_idx+1):
             rows = get_rows_fn(page_idx, withkey=withkey, verbose=verbose)
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
-                pattern,
                 page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,
                 overlap, verbose)
 
         if all_pages:
-            assert len(pattern) == height, (
-                f"{len(pattern)} stitches high but expected {height} "
+            assert len(self.pattern) == height, (
+                f"{len(self.pattern)} stitches high but expected {height} "
                 "after parsing whole pattern")
-            assert len(pattern[0] == width), (
-                f"{len(pattern[0])} stitches but expected {width} after "
+            assert len(self.pattern[0] == width), (
+                f"{len(self.pattern[0])} stitches but expected {width} after "
                 "parsing whole pattern")
-
-        self.pattern = pattern
 
     def save_pattern(self):
         """ Saves the pattern extracted by this class.
@@ -158,7 +154,6 @@ class PatternExtractor(Extractor):
             print(*["".join(row) for row in self.pattern], sep="\n", file=f)
 
     def _extract_from_this_page(self,
-                                pattern,
                                 page_idx,
                                 rows,
                                 cur_x, cur_y,
@@ -204,16 +199,16 @@ class PatternExtractor(Extractor):
             f"Extracting page {pi_p} ({page_width}x{page_height} ), pat size "
             f"{cur_width}x{cur_height}", verbose)
 
-        if cur_x != 0 and pattern:
+        if cur_x != 0 and self.pattern:
             # New columns, so just need to add these to the end of existing
             # rows
             for pat_row, page_row in zip(
-                    pattern[cur_y: cur_y + page_height], rows):
+                    self.pattern[cur_y: cur_y + page_height], rows):
                 pat_row += page_row
         else:
             # New rows, so just need to add them to the end of existing
             # pattern.
-            pattern += rows
+            self.pattern += rows
             verbose_print(f"\t(new rows) {rows}", verbose)
 
         cur_x += len(rows[0])
