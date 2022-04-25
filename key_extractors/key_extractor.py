@@ -2,6 +2,21 @@ from abc import ABC, abstractmethod
 from key_layout import KeyForm, KeyLayout
 from pdf_utils import TextFormat
 
+import json
+
+# Variables for JSON keys (just to make them obvious / consistent.
+JK_KF = "key form"
+JK_RS = "row start"
+JK_RE = "row end"
+JK_OP = "other pages"
+JK_FP = "first page"
+JK_SF = f"{JK_RS} {JK_FP}"
+JK_EF = f"{JK_RE} {JK_FP}"
+JK_SO = f"{JK_RS} {JK_OP}"
+JK_EO = f"{JK_RE} {JK_OP}"
+JK_NC = "number of colours per row"
+JK_H = "column headings"
+
 class KeyExtractor(ABC):
     """ A super class for the different types of key extractor classes.
 
@@ -115,25 +130,20 @@ class KeyExtractor(ABC):
             """
             try:
                 with open(filename) as f:
-                    try:
-                        self.layout_params = KeyLayout(
-                            KeyForm.from_string(f.readline().strip()),
-                            int(f.readline().strip()),  # Rows start
-                            int(f.readline().strip()),  # Rows end
-                            # Pages for the above
-                            int(f.readline().strip()) if self.multipage else 0,
-                            int(f.readline().strip()) if self.multipage else 0,
-                            int(f.readline()),
-                            [row.strip() for row in f.readlines()])
-                    except ValueError as ve:
-                        print(f"{TextFormat.RED}Layout file '{filename}' was "
-                              f"formmatted incorrectly causing{TextFormat.END}"
-                              f"\n{ve}.")
-                        read_from_user_input()
+                    config = json.load(f)
+                    self.layout_params = KeyLayout(
+                        KeyForm.from_string(config[JK_KF]),  # key form
+                        config[JK_SF],  # row start first page
+                        config[JK_EF],  # row end first page
+                        config[JK_SO] if JK_SO in config else 0,  # row start
+                        config[JK_EO] if JK_EO in config else 0,  # row end
+                        config[JK_NC],
+                        config[JK_H])
+                    # TODO: what happens if it's a string??
             except FileNotFoundError:
                 print(f"{TextFormat.RED}The layout file '{filename}' could "
                       f"not be found.{TextFormat.END} \nPrompting for user "
-                      "input instead (or use <CTRL-C> to quit).")
+                      "input instead (or use <CTRL-C> to force quit).")
                 read_from_user_input()
 
         def read_from_user_input():

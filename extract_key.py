@@ -100,7 +100,7 @@ def extract_key_from_pdf(pdf_name,
             extractor = ShapeKeyExtractor(pdf)
 
         layout_file_name = (
-            pdf_name.replace(".pdf", ".key_layout")
+            pdf_name.replace(".pdf", "_key_layout_config.json")
             if has_layout_file else None)
         save_key(
             extractor.extract_key(start_page_idx,
