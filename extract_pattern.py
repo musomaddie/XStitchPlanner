@@ -44,9 +44,9 @@ Notes:
 """
 from docopt import docopt
 from pdf_utils import verbose_print
-from extractor_mode import ExtractorMode
-from pattern_extractors.font_pattern_extractor import FontPatternExtractor
-from pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
+from extractors.extractor_mode import ExtractorMode
+from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
+from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 
 import pdfplumber
 

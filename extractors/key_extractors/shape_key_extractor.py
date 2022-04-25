@@ -1,4 +1,4 @@
-from key_extractors.key_extractor import KeyExtractor
+from extractors.key_extractors.key_extractor import KeyExtractor
 from pdf_utils import PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row
 from pdf_utils import make_thread, verbose_print
 from typing import Counter

@@ -31,9 +31,9 @@ Options:
             no resemblance to the original symbols.
 """
 from docopt import docopt
-from extractor_mode import ExtractorMode
-from key_extractors.font_key_extractor import FontKeyExtractor
-from key_extractors.shape_key_extractor import ShapeKeyExtractor
+from extractors.extractor_mode import ExtractorMode
+from extractors.key_extractors.font_key_extractor import FontKeyExtractor
+from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
 from pdf_utils import verbose_print
 
 import csv

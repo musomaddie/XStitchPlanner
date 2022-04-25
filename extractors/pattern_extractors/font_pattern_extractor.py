@@ -1,4 +1,4 @@
-from pattern_extractors.pattern_extractor import PatternExtractor
+from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from pdf_utils import read_key
 
 class FontPatternExtractor(PatternExtractor):

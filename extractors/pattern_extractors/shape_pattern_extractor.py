@@ -1,4 +1,4 @@
-from pattern_extractors.pattern_extractor import PatternExtractor
+from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from pdf_utils import PLACEHOLDERS, bbox_to_ident, read_key, verbose_print
 
 class ShapePatternExtractor(PatternExtractor):
