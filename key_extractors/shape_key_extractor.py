@@ -86,7 +86,6 @@ class ShapeKeyExtractor(KeyExtractor):
         count = 0
         for row in key_table:
             formatted_row, count = read_row(row, count)
-            print(count)
             result.extend(formatted_row)
 
         return result
