@@ -23,6 +23,10 @@ class PatternExtractor(Extractor):
 
     """
 
+    def __init__(self, pdf, pattern_name):
+        super().__init__(pdf, pattern_name)
+        self.pattern = []
+
     @abstractmethod
     def get_rows(self, page_idx, withkey=False, verbose=False):
         """ Returns the rows extracted from the given page number.
@@ -117,26 +121,41 @@ class PatternExtractor(Extractor):
         verbose_print(f"Pages set up starting from {start_page_idx} to "
                       f"{end_page_idx} ({all_pages})", verbose)
 
-        pattern = []
         cur_x = 0
         cur_y = 0
         expected_page_height = 0
+        pattern = []
 
         for page_idx in range(start_page_idx, end_page_idx+1):
             rows = get_rows_fn(page_idx, withkey=withkey, verbose=verbose)
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
-                pattern, page_idx, rows,
+                pattern,
+                page_idx, rows,
                 cur_x, cur_y, expected_page_height, height, width,
                 overlap, verbose)
 
         if all_pages:
-            assert len(pattern) == height, (f"{len(pattern)} stitches high "
-                                            f"but expected {height} after "
-                                            "parsing whole pattern")
-            assert len(pattern[0] == width), (f"{len(pattern[0])} stitches "
-                                              f"but expected {width} after "
-                                              "parsing whole pattern")
-        return pattern
+            assert len(pattern) == height, (
+                f"{len(pattern)} stitches high but expected {height} "
+                "after parsing whole pattern")
+            assert len(pattern[0] == width), (
+                f"{len(pattern[0])} stitches but expected {width} after "
+                "parsing whole pattern")
+
+        self.pattern = pattern
+
+    def save_pattern(self):
+        """ Saves the pattern extracted by this class.
+
+        Raises:
+            AssertionError if the pattern is blank.
+        """
+        assert len(self.pattern) > 0, (
+            "No pattern has been extracted. Make sure you've run "
+            "extract pattern.")
+
+        with open(self.pattern_filename, "w", encoding="utf-8") as f:
+            print(*["".join(row) for row in self.pattern], sep="\n", file=f)
 
     def _extract_from_this_page(self,
                                 pattern,

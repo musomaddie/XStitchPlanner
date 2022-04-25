@@ -107,15 +107,17 @@ def extract_from_pdf(pdf_name,
             extractor.load_key(pdf_name.replace(".pdf", ".key"))
             verbose_print("Successfully loaded the key", verbose)
 
-        pattern = extractor.extract_pattern(
+        extractor.extract_pattern(
             width, height,
             start_page_idx, end_page_idx, overlap,
             withkey=withkey,
             verbose=verbose)
 
-        verbose_print("Successfully loaded the pattern", verbose)
+        extractor.save_pattern()
 
-        save_pattern(pattern, pdf_name.replace(".pdf", ".pat"))
+        # verbose_print("Successfully loaded the pattern", verbose)
+
+        # save_pattern(pattern, pdf_name.replace(".pdf", ".pat"))
 
 
 def save_pattern(pattern, path):

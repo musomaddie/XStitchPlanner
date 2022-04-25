@@ -32,5 +32,4 @@ class FontPatternExtractor(PatternExtractor):
 
     def extract_pattern(self, *args, **kwargs):
         """ Implementing abstract method. """
-        return self.extract_pattern_given_pages(
-            self.get_rows, *args, **kwargs)
+        self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)

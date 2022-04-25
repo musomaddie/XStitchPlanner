@@ -68,7 +68,7 @@ class ShapePatternExtractor(PatternExtractor):
         if kwargs["withkey"] and not self.ident_map:
             raise ValueError("Cannot extract pattern before generating or "
                              "loading a key.")
-        return self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
+        self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
     def load_key(self, filename):
         """ Implements the abstractmethod """
