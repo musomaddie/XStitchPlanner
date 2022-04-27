@@ -1,5 +1,5 @@
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
-from pdf_utils import read_key
+from utils import read_key
 
 class FontPatternExtractor(PatternExtractor):
 
@@ -21,7 +21,7 @@ class FontPatternExtractor(PatternExtractor):
                 for cell in row:
                     print(cell)
                     assert cell in self.symbols, (
-                        f"Encountered a symbol not found in the key")
+                        "Encountered a symbol not found in the key")
 
         return result
 

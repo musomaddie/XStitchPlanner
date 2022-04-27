@@ -31,7 +31,7 @@ from docopt import docopt
 from extractors.extractor_mode import ExtractorMode
 from extractors.key_extractors.font_key_extractor import FontKeyExtractor
 from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
-from pdf_utils import verbose_print
+from utils import verbose_print
 
 import csv
 import pdfplumber
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         return value - 1 if value else None
     args = docopt(__doc__)
     extract_key_from_pdf(args["PDF"],
-                         ExtractorMode.find_mode_from_string(args["--mode"]),
+                         ExtractorMode.from_string(args["--mode"]),
                          start_page_idx=_subtract_one(
                              _make_int(args["STARTPAGE"])),
                          end_page_idx=_subtract_one(

@@ -9,7 +9,7 @@ class ExtractorMode(Enum):
              reoccuring lines and shapes on the page.
     UNKNOWN: the value received is not recognised.
     """
-    def find_mode_from_string(string):
+    def from_string(string):
         string = string.lower()
         if string == "font":
             return ExtractorMode.FONT

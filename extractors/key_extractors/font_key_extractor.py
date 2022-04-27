@@ -1,6 +1,6 @@
 from extractors.key_extractors.key_extractor import KeyExtractor
-from pdf_utils import TextFormat, determine_pages, divide_row, make_thread
-from pdf_utils import verbose_print
+from utils import TextFormat, determine_pages, divide_row, make_thread
+from utils import verbose_print
 
 class FontKeyExtractor(KeyExtractor):
     """ A class for extracting the key when the PDF can be accessed via the

@@ -43,10 +43,10 @@ Notes:
     probably best to use 'font'.
 """
 from docopt import docopt
-from pdf_utils import verbose_print
 from extractors.extractor_mode import ExtractorMode
 from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
 from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
+from utils import verbose_print
 
 import pdfplumber
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
     args = docopt(__doc__)
     extract_from_pdf(args["PDF"],
-                     ExtractorMode.find_mode_from_string(args["--mode"]),
+                     ExtractorMode.from_string(args["--mode"]),
                      int(args["WIDTH"]),
                      int(args["HEIGHT"]),
                      start_page_idx=subtract_one(make_int(args["STARTPAGE"])),

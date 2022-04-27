@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from extractors.extractor import Extractor
-from pdf_utils import verbose_print
+from utils import verbose_print
 
 class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
