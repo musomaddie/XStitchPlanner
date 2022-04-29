@@ -129,9 +129,7 @@ if __name__ == "__main__":
         try:
             return int(string)
         except ValueError:
-            raise ValueError(
-                f"'{string}' is not a valid page number as it is not a number."
-                "Please provide a valid number.") from None
+            raise ValueError(s.page_number_error(string)) from None
 
     args = docopt(__doc__)
     extract_from_pdf(args["PDF"],
