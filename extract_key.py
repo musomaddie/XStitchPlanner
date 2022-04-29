@@ -31,10 +31,9 @@ from docopt import docopt
 from extractors.extractor_mode import ExtractorMode
 from extractors.key_extractors.font_key_extractor import FontKeyExtractor
 from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
-from utils import verbose_print
 
-import csv
 import pdfplumber
+import resources.strings as s
 
 def extract_key_from_pdf(pdf_name,
                          extractor_mode,
@@ -63,10 +62,9 @@ def extract_key_from_pdf(pdf_name,
         ValueError                          if the extractor_mode is unknown.
         ValueError                          if the key_form is unknown.
     """
+    if extractor_mode == ExtractorMode.UNKNOWN:
+        raise ValueError(s.extractor_error())
     with pdfplumber.open(pdf_name) as pdf:
-        if extractor_mode == ExtractorMode.UNKNOWN:
-            raise ValueError("The extractor mode is unknown. It should either "
-                             "be 'font' or 'shape'")
         if extractor_mode == ExtractorMode.FONT:
             extractor = FontKeyExtractor(pdf, pdf_name.replace(".pdf", ""))
         elif extractor_mode == ExtractorMode.SHAPE:
@@ -82,9 +80,7 @@ if __name__ == "__main__":
             try:
                 return int(string)
             except ValueError:
-                raise ValueError(
-                    f"'{string}' is not a valid page number as it is not a "
-                    "number. Please provide a valid number.") from None
+                raise ValueError(s.page_number_error(string))
         return None
 
     def _subtract_one(value):

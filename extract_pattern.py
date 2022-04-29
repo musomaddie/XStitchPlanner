@@ -48,6 +48,7 @@ from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtr
 from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 from utils import verbose_print
 
+import resources.strings as s
 import pdfplumber
 
 def extract_from_pdf(pdf_name,
@@ -88,24 +89,23 @@ def extract_from_pdf(pdf_name,
         ValueError              if the extractor_mode is unknown.
         ValueError              if no key files exists and no key page provided
     """
+    if extractor_mode == ExtractorMode.UNKNOWN:
+        raise ValueError(s.extractor_error())
     with pdfplumber.open(pdf_name) as pdf:
         if not pdf:
             raise ValueError
 
-        if extractor_mode == ExtractorMode.UNKNOWN:
-            raise ValueError("The extractor mode is unknown. It should either "
-                             'be "font" or "shape"')
         if extractor_mode == ExtractorMode.FONT:
             extractor = FontPatternExtractor(
                 pdf, pdf_name.replace(".pdf", ""))
         elif extractor_mode == ExtractorMode.SHAPE:
             extractor = ShapePatternExtractor(
                 pdf, pdf_name.replace(".pdf", ""))
-        verbose_print("Successfully loaded the extractor", verbose)
+        verbose_print(s.extractor_load_success(), verbose)
 
         if withkey:
             extractor.load_key(pdf_name.replace(".pdf", ".key"))
-            verbose_print("Successfully loaded the key", verbose)
+            verbose_print(s.key_load_success(), verbose)
 
         extractor.extract_pattern(
             width, height,
@@ -114,15 +114,6 @@ def extract_from_pdf(pdf_name,
             verbose=verbose)
 
         extractor.save_pattern()
-
-        # verbose_print("Successfully loaded the pattern", verbose)
-
-        # save_pattern(pattern, pdf_name.replace(".pdf", ".pat"))
-
-
-def save_pattern(pattern, path):
-    with open(path, "w", encoding="utf-8") as f:
-        print(*["".join(row) for row in pattern], sep="\n", file=f)
 
 
 if __name__ == "__main__":
