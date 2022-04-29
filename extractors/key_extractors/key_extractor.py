@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from extractors.extractor import Extractor
-from key_layout import KeyForm, KeyLayout
+from extractors.key_layout import KeyForm, KeyLayout
 
 import csv
 import json
