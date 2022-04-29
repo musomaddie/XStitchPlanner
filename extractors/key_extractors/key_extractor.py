@@ -1,9 +1,10 @@
 from abc import abstractmethod
 from extractors.extractor import Extractor
-from extractors.key_layout import KeyForm, KeyLayout
+from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 
 import csv
 import json
+import resources.strings as s
 
 # Variables for JSON keys (just to make them obvious / consistent.
 JK_KF = "key form"
@@ -58,7 +59,7 @@ class KeyExtractor(Extractor):
                                                 filename without the extension)
         """
         super().__init__(pdf, pattern_name)
-        self.key_config_filename = (f"{pattern_name}_key_layout_config.json")
+        self.key_config_filename = s.filename_key_config(pattern_name)
         self.multipage = False
         self.layout_params = None
         self.key = []
@@ -86,10 +87,9 @@ class KeyExtractor(Extractor):
         pass
 
     def get_key_table(self, page):
-        assert self.layout_params, ("The Layout Params must first be set up "
-                                    "before attempting to extract a table.")
+        assert self.layout_params, s.no_key_layout_params()
         assert self.layout_params.key_form != KeyForm.UNKNOWN, (
-            "Please ensure that the key form is valid.")
+            s.key_form_invalid())
 
         if self.layout_params.key_form == KeyForm.FULL_LINES:
             return page.extract_table()
@@ -148,29 +148,22 @@ class KeyExtractor(Extractor):
             it for now.
             # TODO: also might be worth trying to detect automatically.
             """
-            key_form = input("What form is the key table in? (one of 'full "
-                             "lines', 'only header line', 'no lines'")
-            num_rows_start = int(
-                input("On what row do the key values start? "))
-            num_rows_end = int(input("How many rows from the bottom do the "
-                                     "key values end? "))
+            key_form = input(s.input_key_table_form())
+            num_rows_start = int(input(s.input_key_rows_start()))
+            num_rows_end = int(input(s.input_key_rows_end()))
             num_rows_end_pages = 1
             num_rows_start_pages = 1
             if self.multipage:
-                num_rows_start_pages = int(input("On what row does it start "
-                                                 "on other pages? "))
-                num_rows_end_pages = int(input("How many rows from the bottom "
-                                               "do they end on future pages? "
-                                               ))
-            num_colours_per_row = int(
-                input("How many colours are there per row? "))
-            print("Input the headings of the columns for the key followed by "
-                  "a blank line.")
+                num_rows_start_pages = int(input(
+                    s.input_key_rows_start_pages()))
+                num_rows_end_pages = int(input(s.input_key_rows_end_pages()))
+            num_colours_per_row = int(input(s.input_key_colours_per_row))
+            print(s.input_key_headings_desc())
             headings = []
-            heading = input("Heading? ")
+            heading = input(s.input_key_headings())
             while heading:
                 headings.append(heading)
-                heading = input("Heading? ")
+                heading = input(s.input_key_headings())
 
             # Save JSON file
             # TODO: double check this.
@@ -201,9 +194,7 @@ class KeyExtractor(Extractor):
                             save).
 
         """
-        assert len(self.key) > 0, (
-            "No key to save please ensure the key has first been "
-            "extracted.")
+        assert len(self.key) > 0, s.empty_on_save("key")
 
         with open(self.key_filename, "w") as key_file:
             writer = csv.writer(key_file, delimiter="\t")

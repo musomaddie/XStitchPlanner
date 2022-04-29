@@ -2,6 +2,8 @@ from abc import abstractmethod
 from extractors.extractor import Extractor
 from utils import verbose_print
 
+import resources.strings as s
+
 class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
 
@@ -111,15 +113,14 @@ class PatternExtractor(Extractor):
             AssertionError  if the pattern is not the expected height
             AssertionError  if the pattern is not the expected width
         """
-        verbose_print("Starting to extract pattern from rows.", verbose)
+        verbose_print(s.row_extract("pattern"), verbose)
         all_pages = end_page_idx is None and start_page_idx is None
         if end_page_idx is None and start_page_idx is not None:
             end_page_idx = start_page_idx
         if all_pages:
             start_page_idx = 0
             end_page_idx = len(self.pdf.pages) - 1
-        verbose_print(f"Pages set up starting from {start_page_idx} to "
-                      f"{end_page_idx} ({all_pages})", verbose)
+        verbose_print(s.pages_found(start_page_idx, end_page_idx), verbose)
 
         cur_x = 0
         cur_y = 0
@@ -133,12 +134,10 @@ class PatternExtractor(Extractor):
                 overlap, verbose)
 
         if all_pages:
-            assert len(self.pattern) == height, (
-                f"{len(self.pattern)} stitches high but expected {height} "
-                "after parsing whole pattern")
-            assert len(self.pattern[0] == width), (
-                f"{len(self.pattern[0])} stitches but expected {width} after "
-                "parsing whole pattern")
+            assert len(self.pattern) == height, s.pattern_wrong_size(
+                "high", len(self.pattern), height)
+            assert len(self.pattern[0] == width), s.pattern_wrong_size(
+                "wide", len(self.pattern[0]), width)
 
     def save_pattern(self):
         """ Saves the pattern extracted by this class.
@@ -146,9 +145,7 @@ class PatternExtractor(Extractor):
         Raises:
             AssertionError if the pattern is blank.
         """
-        assert len(self.pattern) > 0, (
-            "No pattern has been extracted. Make sure you've run "
-            "extract pattern.")
+        assert len(self.pattern) > 0, s.empty_on_save("pattern")
 
         with open(self.pattern_filename, "w", encoding="utf-8") as f:
             print(*["".join(row) for row in self.pattern], sep="\n", file=f)
@@ -185,19 +182,18 @@ class PatternExtractor(Extractor):
         pi_p = page_idx + 1
 
         assert all(len(row) == page_width for row in rows), (
-            f"Pattern uneven width on page {pi_p}")
+            s.pattern_uneven_width(pi_p))
         assert (
             page_height == expected_page_height or cur_height == height), (
-                f"Pattern {page_height} tall on page {pi_p} when "
-                f"expected {expected_page_height} or {height - cur_y}")
+                s.page_uneven_height(pi_p, page_height,
+                                     expected_page_height, height - cur_y))
         assert cur_width <= width and cur_height <= height, (
-            f"Page {page_idx + 1} ({page_width}x{page_height} results in "
-            f"exceeded pattern dimensions ({cur_width}x{cur_height}) vs "
-            f"{width}x{height})")
+            s.pattern_size_too_big(page_idx + 1, page_width, page_height,
+                                   cur_width, cur_height, width, height))
 
-        verbose_print(
-            f"Extracting page {pi_p} ({page_width}x{page_height} ), pat size "
-            f"{cur_width}x{cur_height}", verbose)
+        verbose_print(s.pattern_extracting_page(pi_p, page_width, page_height,
+                                                cur_width, cur_height),
+                      verbose)
 
         if cur_x != 0 and self.pattern:
             # New columns, so just need to add these to the end of existing
@@ -209,7 +205,7 @@ class PatternExtractor(Extractor):
             # New rows, so just need to add them to the end of existing
             # pattern.
             self.pattern += rows
-            verbose_print(f"\t(new rows) {rows}", verbose)
+            verbose_print(s.new_row(rows), verbose)
 
         cur_x += len(rows[0])
         if cur_x == width:

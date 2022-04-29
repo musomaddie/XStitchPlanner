@@ -1,6 +1,8 @@
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import PLACEHOLDERS, bbox_to_ident, read_key, verbose_print
 
+import resources.strings as s
+
 class ShapePatternExtractor(PatternExtractor):
 
     """ A class to handle extracting a pattern from the pdf when it is created
@@ -36,7 +38,7 @@ class ShapePatternExtractor(PatternExtractor):
         """ Implementing abstract method.  """
         def find_next_placeholder():
             assert len(self._used_symbols) <= len(PLACEHOLDERS), (
-                "Too many symbols to automatically generate all symbols")
+                s.too_many_symbols())
             for x in PLACEHOLDERS:
                 if x not in self._used_symbols:
                     self._used_symbols.append(x)
@@ -45,14 +47,12 @@ class ShapePatternExtractor(PatternExtractor):
         def get_symbol(page, cell):
             ident = bbox_to_ident(page, cell, verbose)
             if withkey:
-                assert ident in self.ident_map, (
-                    f"Encountered unknown identifier '{ident}' not found in "
-                    "key.")
+                assert ident in self.ident_map, s.ident_unknown(ident)
             else:
                 # If this ident hasn't already been seen we should add it to
                 # the ident map.
                 if ident not in self.ident_map:
-                    verbose_print("The ident does not already exist", verbose)
+                    verbose_print(s.ident_doesnt_already_exist(ident), verbose)
                     self.ident_map[ident] = find_next_placeholder()
 
             return self.ident_map[ident]
@@ -67,8 +67,7 @@ class ShapePatternExtractor(PatternExtractor):
         """ Implementing abstract method.
         """
         if kwargs["withkey"] and not self.ident_map:
-            raise ValueError("Cannot extract pattern before generating or "
-                             "loading a key.")
+            raise ValueError(s.extract_pattern_no_key())
         self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
     def load_key(self, filename):

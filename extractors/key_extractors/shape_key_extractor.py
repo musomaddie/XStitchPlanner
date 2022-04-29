@@ -3,6 +3,8 @@ from utils import PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row
 from utils import make_thread, verbose_print
 from typing import Counter
 
+import resources.strings as s
+
 class ShapeKeyExtractor(KeyExtractor):
     """ A class for extracting the key from a PDF when it can only be acessed
     in shape form.
@@ -28,8 +30,7 @@ class ShapeKeyExtractor(KeyExtractor):
                                                 key_end_page_idx)
         self.get_layout_info()
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(f"Loading key on page {key_page_idx + 1}",
-                          verbose)
+            verbose_print(s.page_load("key", key_page_idx + 1), verbose)
             self.key += self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
@@ -52,10 +53,8 @@ class ShapeKeyExtractor(KeyExtractor):
         idents = [bbox_to_ident(key_page,
                                 (r["x0"], r["top"], r["x1"], r["bottom"]),
                                 verbose) for r in idents]
-        assert len(idents) <= len(PLACEHOLDERS), (
-            "Too many symbols to automatically generate all symbols, "
-            "file a bug to generate more.")
-        verbose_print(f"Found {len(idents)} identifiers.", verbose)
+        assert len(idents) <= len(PLACEHOLDERS), s.too_many_symbols()
+        verbose_print(s.number_of_identifiers(len(idents)), verbose)
         ref = self.layout_params.headings
 
         def read_row(row, count):

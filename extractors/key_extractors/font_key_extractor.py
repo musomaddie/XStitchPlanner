@@ -1,6 +1,7 @@
 from extractors.key_extractors.key_extractor import KeyExtractor
-from utils import TextFormat, determine_pages, divide_row, make_thread
-from utils import verbose_print
+from utils import determine_pages, divide_row, make_thread, verbose_print
+
+import resources.strings as s
 
 class FontKeyExtractor(KeyExtractor):
     """ A class for extracting the key when the PDF can be accessed via the
@@ -21,8 +22,7 @@ class FontKeyExtractor(KeyExtractor):
         self.get_layout_info()
 
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(f"Loading key on page {key_page_idx + 1}",
-                          verbose)
+            verbose_print(s.page_load(key, key_page_idx + 1), verbose)
             self.key.extend(self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
@@ -61,10 +61,7 @@ class FontKeyExtractor(KeyExtractor):
             for c in colours:
                 if c[num_idx] != "":
                     if c[symb_idx] == "":
-                        print(f"{TextFormat.BRIGHT_RED}WARNING: no associated "
-                              f"symbol could be found for '{c[num_idx]}'. You "
-                              "will need to add this manually."
-                              f"{TextFormat.END}")
+                        print(s.warning_no_symbol_found(c[num_idx]))
 
             return [make_thread(
                 c[num_idx],

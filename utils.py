@@ -7,27 +7,13 @@ from floss_thread import Thread
 from string import ascii_letters, punctuation
 
 import csv
+import resources.strings as s
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"
 HEX_KEY = "hex"
 
 PLACEHOLDERS = ascii_letters + punctuation.replace(",", "").replace(" ", "")
-
-
-class TextFormat:
-    # PURPLE = '\033[95m'
-    # CYAN = '\033[96m'
-    # DARKCYAN = '\033[36m'
-    # BLUE = '\033[94m'
-    # GREEN = '\033[92m'
-    # YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BRIGHT_RED = '\033[31;1m'
-
-    # BOLD = '\033[1m'
-    # UNDERLINE = '\033[4m'
-    END = '\033[0m'
 
 def bbox_to_ident(page, bbox, verbose=False):
     """ Given a symbol in the PDF made up of lines and curves and
@@ -50,7 +36,8 @@ def bbox_to_ident(page, bbox, verbose=False):
         for obj in objs:
             string = ""
             for x, y in obj['pts']:
-                string += f"x{int(x - obj['x0'])}y{int(y - obj['y0'])}"
+                string += s.ident_string(
+                    int(x - obj["x0"]), int(y - obj["y0"]))
             string += "f" if obj["fill"] else ""
             coords.append(string)
         return [prefix + "".join(sorted(coords))]
@@ -67,10 +54,9 @@ def bbox_to_ident(page, bbox, verbose=False):
                 check_rects.append(rect)
 
         if len(check_rects) == 0:
-            verbose_print(
-                "This symbol has no curves lines or rects (besides the bbox) "
-                f"found at {bbox}", verbose)
+            verbose_print(s.warning_no_symbol_found(bbox), verbose)
             return ""
+
         return "-".join(sorted(
             objs_ident(check_rects, "r")))
 
@@ -109,8 +95,7 @@ def divide_row(row, n):
     Raises:
         AssertionError      if the list cannot be evenly divided.
     """
-    assert len(row) % n == 0, ("The row does not evenly divide into the "
-                               "number of colours provided.")
+    assert len(row) % n == 0, s.multikey_row_not_divided_evenly()
     sub_size = len(row) // n
     return [row[i * sub_size:(i + 1) * sub_size] for i in range(n)]
 
@@ -159,9 +144,7 @@ def make_thread(dmc_value, ident, symbol, verbose=False):
                     information.
     """
     if dmc_value not in DMC_DATA:
-        print(f"{TextFormat.BRIGHT_RED}WARNING '{dmc_value}' is not found in "
-              "our database. Default (black) description and hex code have "
-              f"been assigned instead.{TextFormat.END}")
+        print(s.warning_dmc_not_found(dmc_value))
         return Thread(dmc_value,
                       ident,
                       symbol,

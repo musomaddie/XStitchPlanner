@@ -1,6 +1,8 @@
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import read_key
 
+import resources.strings as s
+
 class FontPatternExtractor(PatternExtractor):
 
     """ A class for extracting from the pdf when it is in font mode.
@@ -20,8 +22,7 @@ class FontPatternExtractor(PatternExtractor):
             for row in result:
                 for cell in row:
                     print(cell)
-                    assert cell in self.symbols, (
-                        "Encountered a symbol not found in the key")
+                    assert cell in self.symbols, s.symbol_not_in_key(cell)
 
         return result
 
