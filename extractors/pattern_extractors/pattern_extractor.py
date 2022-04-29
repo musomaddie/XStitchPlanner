@@ -59,11 +59,8 @@ class PatternExtractor(Extractor):
         pass
 
     @abstractmethod
-    def load_key(self, filename):
+    def load_key(self):
         """ Loads the key from the given file.
-
-        Parameters:
-            filename    str     the filename containing the key as a tsv.
 
         Returns:
             None    the key is saved as a class variable.

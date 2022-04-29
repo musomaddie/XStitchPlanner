@@ -26,10 +26,9 @@ class FontPatternExtractor(PatternExtractor):
 
         return result
 
-    def load_key(self, filename):
+    def load_key(self):
         """ Implementing abstractmethod. """
-        self.symbols = [t.symbol for t in read_key(filename)]
-        print(self.symbols)
+        self.symbols = [t.symbol for t in read_key(self.key_filename)]
 
     def extract_pattern(self, *args, **kwargs):
         """ Implementing abstract method. """

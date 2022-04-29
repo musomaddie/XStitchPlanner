@@ -70,6 +70,7 @@ class ShapePatternExtractor(PatternExtractor):
             raise ValueError(s.extract_pattern_no_key())
         self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
-    def load_key(self, filename):
+    def load_key(self):
         """ Implements the abstractmethod """
-        self.ident_map = {t.identifier: t.symbol for t in read_key(filename)}
+        self.ident_map = {t.identifier: t.symbol
+                          for t in read_key(self.key_filename)}

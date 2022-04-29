@@ -104,7 +104,7 @@ def extract_from_pdf(pdf_name,
         verbose_print(s.extractor_load_success(), verbose)
 
         if withkey:
-            extractor.load_key(pdf_name.replace(".pdf", ".key"))
+            extractor.load_key()
             verbose_print(s.key_load_success(), verbose)
 
         extractor.extract_pattern(
