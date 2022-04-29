@@ -1,7 +1,6 @@
 from extract_key import extract_key_from_pdf
 from extractors.extractor_mode import ExtractorMode
-from extractors.key_extractors.font_key_extractor import FontKeyExtractor
-from unittest.mock import ANY, patch, MagicMock, call
+from unittest.mock import ANY, call, patch
 
 import pytest
 import resources.strings as s
