@@ -99,7 +99,7 @@ def divide_row(row, n):
     sub_size = len(row) // n
     return [row[i * sub_size:(i + 1) * sub_size] for i in range(n)]
 
-def load_dmc_data(filename="dmc_data.csv"):
+def load_dmc_data(filename="resources/dmc_data.csv"):
     """ Loads the additional data about all dmc colours from the given file.
 
     Parameters:
