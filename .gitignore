@@ -1,3 +1,10 @@
+# CUSTOM !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Ignore PDF files so I don't upload patterns by mistake
+*.pdf
+# Ignore everything in the patterns folder.
+patterns/
+
+# 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,5 +135,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Ignore PDF files so I don't upload patterns by mistake
-*.pdf
