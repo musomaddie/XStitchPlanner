@@ -6,7 +6,7 @@ import csv
 import json
 import resources.strings as s
 
-# Variables for JSON keys (just to make them obvious / consistent.
+# Variables for JSON keys (just to make them obvious / consistent).
 JK_KF = "key form"
 JK_RS = "row start"
 JK_RE = "row end"
@@ -87,6 +87,9 @@ class KeyExtractor(Extractor):
         pass
 
     def get_key_table(self, page):
+        """ Helper for finding where the table is if it needs to be identified
+        by the longest line on the page.
+        """
         assert self.layout_params, s.no_key_layout_params()
         assert self.layout_params.key_form != KeyForm.UNKNOWN, (
             s.key_form_invalid())
@@ -151,8 +154,8 @@ class KeyExtractor(Extractor):
             key_form = input(s.input_key_table_form())
             num_rows_start = int(input(s.input_key_rows_start()))
             num_rows_end = int(input(s.input_key_rows_end()))
-            num_rows_end_pages = 1
-            num_rows_start_pages = 1
+            num_rows_start_pages = 0
+            num_rows_end_pages = 0
             if self.multipage:
                 num_rows_start_pages = int(input(
                     s.input_key_rows_start_pages()))
@@ -166,8 +169,7 @@ class KeyExtractor(Extractor):
                 heading = input(s.input_key_headings())
 
             # Save JSON file
-            # TODO: double check this.
-            with open(self.key_layout_config_filename, "w",
+            with open(self.key_config_filename, "w",
                       encoding="utf-8") as f:
                 json.dump({JK_KF: key_form,
                            JK_SF: num_rows_start,
