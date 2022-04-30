@@ -1,3 +1,4 @@
+from floss_thread import Thread
 from unittest.mock import MagicMock
 
 import pytest
@@ -66,15 +67,17 @@ def page_mock_rect_matching_bbox():
 def row_to_divide():
     return ["1", "2", "3", "4", "5", "6", "7", "8"]
 
-def test_bboxToIdent_LinesAndCurves(page_mock_lines_curves):
+
+""" bbox_to_ident """
+def test_BboxToIdent_LinesAndCurves(page_mock_lines_curves):
     result = utils.bbox_to_ident(page_mock_lines_curves, BOUNDING_BOX)
     assert result == f"{SINGLE_CURVE_STR}-{SINGLE_LINE_STR}"
 
-def test_bboxToIdent_Rects(page_mock_rects):
+def test_BboxToIdent_Rects(page_mock_rects):
     result = utils.bbox_to_ident(page_mock_rects, BOUNDING_BOX)
     assert result == SINGLE_RECT_STR
 
-def test_bboxToIdent_RectMatchesBboxA(page_mock_rect_matching_bbox, capsys):
+def test_BboxToIdent_RectMatchesBbox(page_mock_rect_matching_bbox, capsys):
     result = utils.bbox_to_ident(
         page_mock_rect_matching_bbox, BOUNDING_BOX, verbose=True)
 
@@ -84,6 +87,7 @@ def test_bboxToIdent_RectMatchesBboxA(page_mock_rect_matching_bbox, capsys):
     assert out == s.warning_no_symbol_found(BOUNDING_BOX) + "\n"
 
 
+""" determine_pages """
 def test_DeterminePage_BothNone():
     assert utils.determine_pages(None, None) == (0, 0)
 
@@ -93,6 +97,8 @@ def test_DeterminePage_EndNone():
 def test_DeterminePage_BothValues():
     assert utils.determine_pages(1, 10) == (1, 10)
 
+
+""" divide_row """
 def test_DivideRow_Even(row_to_divide):
 
     assert utils.divide_row(row_to_divide, 2) == [
@@ -105,3 +111,52 @@ def test_DivideRow_DoesntDivide(row_to_divide):
     with pytest.raises(AssertionError) as e:
         utils.divide_row(row_to_divide, 3)
         assert e == s.multikey_row_not_divided_evenly()
+
+
+""" load_dmc_data """
+def test_loadDmcData_Simple():
+    result = utils.load_dmc_data(
+        filename="tests/resources/dmc_data_testing.csv")
+    assert len(result) == 10
+    for num, key in enumerate(result.keys()):
+        assert str(num + 1) == key
+
+
+""" make thread """
+def test_MakeThread():
+    dmc = "310"
+    ident = "#"
+    symbol = "@"
+    created_thread = utils.make_thread(dmc, ident, symbol)
+    assert created_thread == Thread(dmc, ident, symbol, "Black", "0")
+
+def test_MakeThread_NonDatabase(capsys):
+    dmc = "AAAA"
+    ident = "#"
+    symbol = "@"
+    created_thread = utils.make_thread(dmc, ident, symbol)
+    out = capsys.readouterr().out
+
+    assert created_thread == Thread(dmc, ident, symbol, "Black", "0")
+    assert out == s.warning_dmc_not_found(dmc) + "\n"
+
+
+""" read_key """
+def test_ReadKey():
+    result = utils.read_key("tests/resources/existing_key_file.key")
+    ideal_dmcs = ["152", "153", "154", "155", "159"]
+
+    assert len(result) == 5
+    for actual, expected in zip([t.dmc_value for t in result], ideal_dmcs):
+        assert actual == expected
+
+
+# """ verbose print """
+# def test_verbose_true(capsys):
+#     out = capsys.readouterr().out
+#     utils.verbose_print("Should display")
+
+#     assert out == "Should display"
+
+#     # utils.verbose_print("Should display too", verbose=True)
+#     # assert out == "Should display too"
