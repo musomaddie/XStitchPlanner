@@ -140,5 +140,5 @@ def warning_dmc_not_found(value):
 
 def warning_no_symbol_found(number):
     return (f"{TextFormat.BRIGHT_RED}WARNING: no associated symbol could be "
-            f"found for '{number}'. You will need to add this to the key file "
-            f"manually.{TextFormat.END}")
+            f"found for the DMC value associated with {number}. You will need "
+            f"to add this to the key file manually.{TextFormat.END}")
