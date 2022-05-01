@@ -48,7 +48,7 @@ def test_GetLayoutInfo_FromFileMultipage(extractor):
     assert extractor.layout_params.n_rows_start_pages == 3
     assert extractor.layout_params.n_rows_end_pages == 4
     assert extractor.layout_params.headings == [
-        "Symbol", "Strands", "Type", "Number", "Colour"]
+        "Symbol", "Number", "Type", "Strands", "Colour"]
 
 def test_GetLayoutInfo_FromFileSinglePage(extractor):
     extractor.key_config_filename = f"{DIR}test_key_layout_single_config.json"
@@ -59,13 +59,13 @@ def test_GetLayoutInfo_FromFileSinglePage(extractor):
     assert extractor.layout_params.n_rows_start_pages == 0
     assert extractor.layout_params.n_rows_end_pages == 0
     assert extractor.layout_params.headings == [
-        "Symbol", "Strands", "Type", "Number", "Colour"]
+        "Symbol", "Number", "Type", "Strands", "Colour"]
 
 @patch("extractors.key_extractors.key_extractor.input", create=True)
 def test_GetLayoutInfo_NoFileMultiPage(mock_input, extractor, remove_file):
     mock_input.side_effect = ["full lines",
                               "1", "2", "3", "4", "1",
-                              "Symbol", "Strands", "Type", "Number", "Colour",
+                              "Symbol", "Number", "Type", "Strands", "Colour",
                               ""]
     extractor.key_config_filename = FILENAME_NO
     extractor.multipage = True
@@ -78,7 +78,7 @@ def test_GetLayoutInfo_NoFileMultiPage(mock_input, extractor, remove_file):
     assert extractor.layout_params.n_rows_start_pages == 3
     assert extractor.layout_params.n_rows_end_pages == 4
     assert extractor.layout_params.headings == [
-        "Symbol", "Strands", "Type", "Number", "Colour"]
+        "Symbol", "Number", "Type", "Strands", "Colour"]
 
     # Look at the file created!
     with open(FILENAME_NO) as f:
@@ -89,15 +89,15 @@ def test_GetLayoutInfo_NoFileMultiPage(mock_input, extractor, remove_file):
         assert created_config["row start other pages"] == 3
         assert created_config["row end other pages"] == 4
         assert created_config["number of colours per row"] == 1
-        assert created_config["column headings"] == ["Symbol", "Strands",
-                                                     "Type", "Number",
+        assert created_config["column headings"] == ["Symbol", "Number",
+                                                     "Type", "Strands",
                                                      "Colour"]
 
 @patch("extractors.key_extractors.key_extractor.input", create=True)
 def test_GetLayoutInfo_NoFileSinglePage(mock_input, extractor, remove_file):
     mock_input.side_effect = ["full lines",
                               "1", "2", "1",
-                              "Symbol", "Strands", "Type", "Number", "Colour",
+                              "Symbol", "Number", "Type", "Strands", "Colour",
                               ""]
     extractor.key_config_filename = FILENAME_NO
     extractor.multipage = False
@@ -110,7 +110,7 @@ def test_GetLayoutInfo_NoFileSinglePage(mock_input, extractor, remove_file):
     assert extractor.layout_params.n_rows_start_pages == 0
     assert extractor.layout_params.n_rows_end_pages == 0
     assert extractor.layout_params.headings == [
-        "Symbol", "Strands", "Type", "Number", "Colour"]
+        "Symbol", "Number", "Type", "Strands", "Colour"]
 
     # Look at the file created!
     with open(FILENAME_NO) as f:
@@ -119,8 +119,8 @@ def test_GetLayoutInfo_NoFileSinglePage(mock_input, extractor, remove_file):
         assert created_config["row start first page"] == 1
         assert created_config["row end first page"] == 2
         assert created_config["number of colours per row"] == 1
-        assert created_config["column headings"] == ["Symbol", "Strands",
-                                                     "Type", "Number",
+        assert created_config["column headings"] == ["Symbol", "Number",
+                                                     "Type", "Strands",
                                                      "Colour"]
 
 # Deliberately not testing the output printed by input() as this has become

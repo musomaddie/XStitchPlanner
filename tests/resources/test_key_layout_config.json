@@ -7,9 +7,9 @@
 	"number of colours per row": 1,
 	"column headings": [
 		"Symbol",
-		"Strands",
-		"Type",
 		"Number",
+		"Type",
+		"Strands",
 		"Colour"
 	]
 }
