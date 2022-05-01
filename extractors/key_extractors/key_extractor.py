@@ -23,13 +23,21 @@ class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
     Parameters:
-        pdf             pdfplumber.PDF  the PDF to extract the key from.
-        pattern_name    str             the name of the pattern (filename with
-                                        .pdf removed).
-        multipage       bool            whether the key is spread over multiple
-                                        pages. [default: False]
-        layout_params   KeyLayout       how the columns for the key information
-                                        are laid out. [default: None]
+        pdf             pdfplumber.PDF              the PDF to extract the key
+                                                    from
+        pattern_name    str                         the name of the pattern
+                                                    (filename with .pdf
+                                                    removed).
+        multipage       bool                        whether the key is spread
+                                                    over multiple pages.
+                                                    [default: False]
+        layout_params   KeyLayout                   how the columns for the key
+                                                    information are laid out.
+                                                    [default: None]
+        key             list[floss_thread.Thread]   a list containing all the
+                                                    thread details for every
+                                                    thread found in the pattern
+                                                    [default: []]
 
     Methods:
         __init__(pdf)                       creates a new instance of the key
