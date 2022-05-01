@@ -32,13 +32,6 @@ class FontKeyExtractor(KeyExtractor):
         # TODO: assert that the headings contains the correct keys (Number and
         # Symbol).
         ref = self.layout_params.headings  # Variable for readability
-        # TODO: add this index getting to shared method.
-        start_idx = (self.layout_params.n_rows_start - 1
-                     if is_first_page
-                     else self.layout_params.n_rows_start_pages - 1)
-        end_idx = (self.layout_params.n_rows_end - 1
-                   if is_first_page
-                   else self.layout_params.n_rows_end_pages - 1)
 
         def read_row(row):
             """ Turns a given row into a thread """
@@ -74,6 +67,14 @@ class FontKeyExtractor(KeyExtractor):
         rows = self.get_key_table(key_page)
         # TODO: if this returns None print the warning and ask to double
         # check if page num passed.
+
+        # TODO: add this index getting to shared method.
+        start_idx = (self.layout_params.n_rows_start - 1
+                     if is_first_page
+                     else self.layout_params.n_rows_start_pages - 1)
+        end_idx = (self.layout_params.n_rows_end - 1
+                   if is_first_page
+                   else self.layout_params.n_rows_end_pages - 1)
         end_idx = len(rows) - end_idx
 
         result = []

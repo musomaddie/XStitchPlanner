@@ -6,6 +6,7 @@ from utils import divide_row
 import pytest
 
 DIR = "tests/resources/"
+SINGLE_CONFIG_FILE = f"{DIR}test_key_layout_single_config.json"
 
 EXAMPLE_KEY_TABLE_1 = [
     ["1", "310", "Black"],
@@ -57,7 +58,6 @@ def test_ExtractKeyFromPage_FullTable_1Colour(extractor_sp, page_mock_1):
     assert len(result) == len(EXAMPLE_KEY_TABLE_1)
     for actual, expected in zip(result, EXAMPLE_KEY_TABLE_1):
         assert actual.symbol == expected[0]
-        assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
 
 def test_ExtractKeyFromPage_FullTable_2Colour(extractor_sp, page_mock_2):
@@ -76,7 +76,6 @@ def test_ExtractKeyFromPage_FullTable_2Colour(extractor_sp, page_mock_2):
     assert len(result) == len(expected_table)
     for actual, expected in zip(result, expected_table):
         assert actual.symbol == expected[0]
-        assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
 
 def test_ExtractKeyFromPage_ShorterTable(extractor_sp, page_mock_1):
@@ -86,7 +85,6 @@ def test_ExtractKeyFromPage_ShorterTable(extractor_sp, page_mock_1):
     assert len(result) == len(expected_table)
     for actual, expected in zip(result, expected_table):
         assert actual.symbol == expected[0]
-        assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
 
 def test_ExtractKeyFromPage_Multi_1Colour(extractor_mp, page_mock_1):
@@ -96,19 +94,39 @@ def test_ExtractKeyFromPage_Multi_1Colour(extractor_mp, page_mock_1):
     assert len(result) == len(expected_table)
     for actual, expected in zip(result, expected_table):
         assert actual.symbol == expected[0]
-        assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
 
 def test_ExtractKeyFromPage_Multi_2Colour(extractor_mp, page_mock_2):
     expected_table = []
+    extractor_mp.layout_params.n_colours_per_row = 2
+
     for r in [divide_row(row, 2) for row in EXAMPLE_KEY_TABLE_2[1:]]:
         expected_table.append(r[0])
         expected_table.append(r[1])
     expected_table = expected_table[:-1]
-
     result = extractor_mp._extract_key_from_page(page_mock_2, False)
+
     assert len(result) == len(expected_table)
     for actual, expected in zip(result, expected_table):
-        assert actual.symobl == expected[0]
-        assert actual.identifier == expected[0]
+        assert actual.symbol == expected[0]
+        assert actual.dmc_value == expected[1]
+
+def test_ExtractKey_SinglePage(extractor_sp):
+    pdf_mock = MagicMock()
+    page_mock = MagicMock()
+    page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
+    pdf_mock.pages = [page_mock]
+    extractor_sp.key_config_filename = SINGLE_CONFIG_FILE
+    extractor_sp.pdf = pdf_mock
+
+    extractor_sp.extract_key(0)
+
+    expected_table = EXAMPLE_KEY_TABLE_1[:-1]
+
+    print(expected_table)
+    print(extractor_sp.key)
+
+    assert len(extractor_sp.key) == len(expected_table)
+    for actual, expected in zip(extractor_sp.key, expected_table):
+        assert actual.symbol == expected[0]
         assert actual.dmc_value == expected[1]
