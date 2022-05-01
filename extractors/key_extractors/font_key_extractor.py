@@ -37,6 +37,10 @@ class FontKeyExtractor(KeyExtractor):
             """ Turns a given row into a thread """
             # Handling multiple keys per row
             if self.layout_params.n_colours_per_row == 1:
+                # TODO: extract this sanity check and standardise it.
+                if (row[ref.index("Number")] != ""
+                        and row[ref.index("Symbol")] == ""):
+                    print(s.warning_no_symbol_found(row[ref.index("Number")]))
                 # Returning a list for consistency with multiple colours per
                 # row
                 return [make_thread(
