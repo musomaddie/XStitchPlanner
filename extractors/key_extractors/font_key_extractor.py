@@ -22,7 +22,7 @@ class FontKeyExtractor(KeyExtractor):
         self.get_layout_info()
 
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(s.page_load(key, key_page_idx + 1), verbose)
+            verbose_print(s.page_load("key", key_page_idx + 1), verbose)
             self.key.extend(self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
