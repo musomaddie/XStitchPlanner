@@ -29,6 +29,8 @@ class FontKeyExtractor(KeyExtractor):
                 verbose))
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
+        # TODO: assert that the headings contains the correct keys (Number and
+        # Symbol).
         ref = self.layout_params.headings  # Variable for readability
         # TODO: add this index getting to shared method.
         start_idx = (self.layout_params.n_rows_start - 1
@@ -69,7 +71,6 @@ class FontKeyExtractor(KeyExtractor):
                 c[symb_idx],  # extractors.
                 verbose=verbose) for c in colours
                 if c[num_idx] != ""]
-
         rows = self.get_key_table(key_page)
         # TODO: if this returns None print the warning and ask to double
         # check if page num passed.

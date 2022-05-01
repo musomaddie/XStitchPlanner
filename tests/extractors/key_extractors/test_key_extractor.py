@@ -161,7 +161,6 @@ def tets_GetKeyTable_InvalidKeyForm(extractor):
         extractor.get_key_table(MagicMock())
         assert e == s.key_form_invalid()
 
-
 def test_GetKeyTable_FullLines(extractor_w_lp):
     extractor_w_lp.layout_params.key_form = KeyForm.FULL_LINES
     page_mock = MagicMock()

@@ -95,8 +95,8 @@ class KeyExtractor(Extractor):
         pass
 
     def get_key_table(self, page):
-        """ Helper for finding where the table is if it needs to be identified
-        by the longest line on the page.
+        """ Helper for returning the table containing the key on a given page
+        depending on the layout params.
         """
         assert self.layout_params, s.no_key_layout_params()
         assert self.layout_params.key_form != KeyForm.UNKNOWN, (
