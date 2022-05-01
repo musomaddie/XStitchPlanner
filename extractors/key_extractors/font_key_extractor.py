@@ -75,8 +75,6 @@ class FontKeyExtractor(KeyExtractor):
         # check if page num passed.
         end_idx = len(rows) - end_idx
 
-        # Special case for end_idx being 0 because trying to loop to -0
-        # does not loop at all.
         result = []
         for row in rows[start_idx:end_idx]:
             result.extend(read_row(row))
