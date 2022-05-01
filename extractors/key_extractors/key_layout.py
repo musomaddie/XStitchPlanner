@@ -14,12 +14,14 @@ class KeyForm(Enum):
     """
     def from_string(string):
         string = string.lower().translate(
-            str.maketrans('', '', punctuation))
-        if string == "full lines":
+            str.maketrans('', '', punctuation)
+        ).replace(" ", "").replace("\t", "")
+
+        if string == "fulllines":
             return KeyForm.FULL_LINES
-        elif string == "only header lines":
+        elif string == "onlyheaderline":
             return KeyForm.ONLY_HEADER_LINE
-        elif string == "no lines":
+        elif string == "nolines":
             return KeyForm.NO_LINES
         return KeyForm.UNKNOWN
 
