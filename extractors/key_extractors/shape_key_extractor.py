@@ -29,14 +29,20 @@ class ShapeKeyExtractor(KeyExtractor):
         first_page, last_page = determine_pages(key_start_page_idx,
                                                 key_end_page_idx)
         self.get_layout_info()
+        count = 0
         for key_page_idx in range(first_page, last_page + 1):
             verbose_print(s.page_load("key", key_page_idx + 1), verbose)
-            self.key += self._extract_key_from_page(
+            result, count = self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
-                verbose)
+                count, verbose)
+            self.key += result
 
-    def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
+    def _extract_key_from_page(self,
+                               key_page,
+                               is_first_page,
+                               count,
+                               verbose=False):
         def filter_majority_rects(rects):
             """ Return the rects with the majority size to try and guess at
             which rects hold the right key components. """
@@ -47,38 +53,38 @@ class ShapeKeyExtractor(KeyExtractor):
                 r for r in rects
                 if int(r["width"]) == majority_width
                 and int(r["height"]) == majority_height]
-        idents = filter_majority_rects(
-            [r for r in key_page.rects if not r["fill"]])
 
-        idents = [bbox_to_ident(key_page,
-                                (r["x0"], r["top"], r["x1"], r["bottom"]),
-                                verbose) for r in idents]
-        assert len(idents) <= len(PLACEHOLDERS), s.too_many_symbols()
-        verbose_print(s.number_of_identifiers(len(idents)), verbose)
-        ref = self.layout_params.headings
-
-        def read_row(row, count):
+        def read_row(row, count, page_count):
             """ Returns both the made row and the new count value """
             if self.layout_params.n_colours_per_row == 1:
                 return ([make_thread(
                     row[ref.index("Number")],
-                    idents[count],
+                    idents[page_count],
                     PLACEHOLDERS[count],
-                    verbose=verbose)], count + 1)
+                    verbose=verbose)], count + 1, page_count + 1)
             colours = divide_row(row, self.layout_params.n_colours_per_row)
             resulting_list = []
             for c in colours:
                 if c[ref.index("Number")] == "":
                     continue
                 resulting_list.append(make_thread(c[ref.index("Number")],
-                                                  idents[count],
+                                                  idents[page_count],
                                                   PLACEHOLDERS[count],
                                                   verbose=verbose))
                 count += 1
-            return (resulting_list, count)
+                page_count += 1
+            return (resulting_list, count, page_count)
+        idents = filter_majority_rects(
+            [r for r in key_page.rects if not r["fill"]])
+        assert len(idents) <= len(PLACEHOLDERS), s.too_many_symbols()
+
+        idents = [bbox_to_ident(key_page,
+                                (r["x0"], r["top"], r["x1"], r["bottom"]),
+                                verbose) for r in idents]
+        verbose_print(s.number_of_identifiers(len(idents)), verbose)
+        ref = self.layout_params.headings
 
         key_table = self.get_key_table(key_page)
-        # TODO: worry about start / end indices here?? Probably should.
         ref = self.layout_params.headings  # Variable for readability
         start_idx = (self.layout_params.n_rows_start - 1
                      if is_first_page
@@ -89,9 +95,10 @@ class ShapeKeyExtractor(KeyExtractor):
         end_idx = len(key_table) - end_idx
 
         result = []
-        count = 0
+        # TODO: this relies on the ident boxes lining up with the rows
+        # correctly, but in practice I don't think this will be a concern.
+        page_count = 0
         for row in key_table[start_idx:end_idx]:
-            formatted_row, count = read_row(row, count)
+            formatted_row, count, page_count = read_row(row, count, page_count)
             result.extend(formatted_row)
-
-        return result
+        return result, count
