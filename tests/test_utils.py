@@ -69,6 +69,7 @@ def row_to_divide():
 
 
 """ bbox_to_ident """
+# TODO: add a test where there are multiples lines and curves.
 def test_BboxToIdent_LinesAndCurves(page_mock_lines_curves):
     result = utils.bbox_to_ident(page_mock_lines_curves, BOUNDING_BOX)
     assert result == f"{SINGLE_CURVE_STR}-{SINGLE_LINE_STR}"
