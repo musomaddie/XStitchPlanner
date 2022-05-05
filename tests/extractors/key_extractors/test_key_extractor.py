@@ -13,16 +13,13 @@ DIR = "tests/resources/"
 FILENAME_NO = f"{DIR}key_layout_NO.json"
 
 @pytest.fixture
-def extractor():
+def extractor(with_layout_params):
     # The KeyExtractor requires the abstract methods to be initialised so I'm
     # using a font key extractor instead.
-    return FontKeyExtractor(MagicMock(), "test")
-
-@pytest.fixture
-def extractor_w_lp():
     extractor = FontKeyExtractor(MagicMock(), "test")
-    extractor.layout_params = KeyLayout(
-        KeyForm.UNKNOWN, 1, 2, 3, 4, 1, ["Symbol", "Number", "Colour"])
+    if with_layout_params:
+        extractor.layout_params = KeyLayout(KeyForm.UNKNOWN, 1, 2, 3, 4, 1,
+                                            ["Symbol", "Number", "Colour"])
     return extractor
 
 @pytest.fixture
@@ -32,51 +29,59 @@ def remove_file():
     yield
     os.remove(FILENAME_NO)
 
+@pytest.mark.parametrize("with_layout_params", [False])
 def test_Init(extractor):
     assert extractor.key_config_filename == "test_key_layout_config.json"
     assert not extractor.multipage
     assert extractor.layout_params is None
     assert len(extractor.key) == 0
 
-def test_GetLayoutInfo_FromFileMultipage(extractor):
-    extractor.key_config_filename = f"{DIR}test_key_layout_config.json"
+@pytest.mark.parametrize("is_multi_page,with_layout_params",
+                         [[True, False], [False, False]])
+def test_GetLayoutInfo_FromFile(extractor, is_multi_page):
+    extractor.key_config_filename = (
+        f"{DIR}test_key_layout_config.json"
+        if is_multi_page else f"{DIR}test_key_layout_single_config.json")
     extractor.multipage = True
     extractor.get_layout_info()
     assert extractor.layout_params.key_form == KeyForm.FULL_LINES
     assert extractor.layout_params.n_rows_start == 1
     assert extractor.layout_params.n_rows_end == 2
-    assert extractor.layout_params.n_rows_start_pages == 3
-    assert extractor.layout_params.n_rows_end_pages == 4
+    assert extractor.layout_params.n_rows_start_pages == (
+        3 if is_multi_page else 0)
+    assert extractor.layout_params.n_rows_end_pages == (
+        4 if is_multi_page else 0)
     assert extractor.layout_params.headings == [
         "Symbol", "Number", "Type", "Strands", "Colour"]
 
-def test_GetLayoutInfo_FromFileSinglePage(extractor):
-    extractor.key_config_filename = f"{DIR}test_key_layout_single_config.json"
-    extractor.get_layout_info()
-    assert extractor.layout_params.key_form == KeyForm.FULL_LINES
-    assert extractor.layout_params.n_rows_start == 1
-    assert extractor.layout_params.n_rows_end == 2
-    assert extractor.layout_params.n_rows_start_pages == 0
-    assert extractor.layout_params.n_rows_end_pages == 0
-    assert extractor.layout_params.headings == [
-        "Symbol", "Number", "Type", "Strands", "Colour"]
-
+@pytest.mark.parametrize("is_multi_page,with_layout_params",
+                         [[True, False], [False, False]])
 @patch("extractors.key_extractors.key_extractor.input", create=True)
-def test_GetLayoutInfo_NoFileMultiPage(mock_input, extractor, remove_file):
-    mock_input.side_effect = ["full lines",
-                              "1", "2", "3", "4", "1",
-                              "Symbol", "Number", "Type", "Strands", "Colour",
-                              ""]
-    extractor.key_config_filename = FILENAME_NO
-    extractor.multipage = True
+def test_GetLayoutInfo_NoFile(mock_input,
+                              extractor,
+                              remove_file,
+                              is_multi_page):
+    if is_multi_page:
+        extractor.multipage = True
+        mock_input.side_effect = ["full lines",
+                                  "1", "2", "3", "4", "1",
+                                  "Symbol", "Number", "Type",
+                                  "Strands", "Colour", ""]
+    else:
+        mock_input.side_effect = ["full lines",
+                                  "1", "2", "1",
+                                  "Symbol", "Number", "Type",
+                                  "Strands", "Colour", ""]
 
+    extractor.key_config_filename = FILENAME_NO
     extractor.get_layout_info()
 
     assert extractor.layout_params.key_form == KeyForm.FULL_LINES
     assert extractor.layout_params.n_rows_start == 1
     assert extractor.layout_params.n_rows_end == 2
-    assert extractor.layout_params.n_rows_start_pages == 3
-    assert extractor.layout_params.n_rows_end_pages == 4
+    if is_multi_page:
+        assert extractor.layout_params.n_rows_start_pages == 3
+        assert extractor.layout_params.n_rows_end_pages == 4
     assert extractor.layout_params.headings == [
         "Symbol", "Number", "Type", "Strands", "Colour"]
 
@@ -86,47 +91,18 @@ def test_GetLayoutInfo_NoFileMultiPage(mock_input, extractor, remove_file):
         assert created_config["key form"] == "full lines"
         assert created_config["row start first page"] == 1
         assert created_config["row end first page"] == 2
-        assert created_config["row start other pages"] == 3
-        assert created_config["row end other pages"] == 4
+        if is_multi_page:
+            assert created_config["row start other pages"] == 3
+            assert created_config["row end other pages"] == 4
         assert created_config["number of colours per row"] == 1
         assert created_config["column headings"] == ["Symbol", "Number",
                                                      "Type", "Strands",
                                                      "Colour"]
-
-@patch("extractors.key_extractors.key_extractor.input", create=True)
-def test_GetLayoutInfo_NoFileSinglePage(mock_input, extractor, remove_file):
-    mock_input.side_effect = ["full lines",
-                              "1", "2", "1",
-                              "Symbol", "Number", "Type", "Strands", "Colour",
-                              ""]
-    extractor.key_config_filename = FILENAME_NO
-    extractor.multipage = False
-
-    extractor.get_layout_info()
-
-    assert extractor.layout_params.key_form == KeyForm.FULL_LINES
-    assert extractor.layout_params.n_rows_start == 1
-    assert extractor.layout_params.n_rows_end == 2
-    assert extractor.layout_params.n_rows_start_pages == 0
-    assert extractor.layout_params.n_rows_end_pages == 0
-    assert extractor.layout_params.headings == [
-        "Symbol", "Number", "Type", "Strands", "Colour"]
-
-    # Look at the file created!
-    with open(FILENAME_NO) as f:
-        created_config = json.load(f)
-        assert created_config["key form"] == "full lines"
-        assert created_config["row start first page"] == 1
-        assert created_config["row end first page"] == 2
-        assert created_config["number of colours per row"] == 1
-        assert created_config["column headings"] == ["Symbol", "Number",
-                                                     "Type", "Strands",
-                                                     "Colour"]
-
 # Deliberately not testing the output printed by input() as this has become
 # surpsingly annoying to do. (input("x? ") does not send x to stdout in a way
 # that pytest will nicely detect.
 
+@pytest.mark.parametrize("with_layout_params", [False])
 def test_SaveKey(extractor):
     # Manually create a key to save myself
     key_filename = "tests/resources/test.key"
@@ -144,14 +120,16 @@ def test_SaveKey(extractor):
         for actual, expected in zip(f.readlines(), resulting_lines):
             assert actual == expected
 
+@pytest.mark.parametrize("with_layout_params", [False])
 def test_SaveKey_EmptyKey(extractor):
     with pytest.raises(AssertionError) as e:
         extractor.save_key()
         assert e == s.empty_on_save("key")
 
-def test_GetKeyTable_NoLayoutParams(extractor_w_lp):
+@pytest.mark.parametrize("with_layout_params", [True])
+def test_GetKeyTable_NoLayoutParams(extractor):
     with pytest.raises(AssertionError) as e:
-        extractor_w_lp.get_key_table(MagicMock())
+        extractor.get_key_table(MagicMock())
         assert e == s.no_key_layout_params()
 
 def tets_GetKeyTable_InvalidKeyForm(extractor):
@@ -161,27 +139,26 @@ def tets_GetKeyTable_InvalidKeyForm(extractor):
         extractor.get_key_table(MagicMock())
         assert e == s.key_form_invalid()
 
-def test_GetKeyTable_FullLines(extractor_w_lp):
-    extractor_w_lp.layout_params.key_form = KeyForm.FULL_LINES
+@pytest.mark.parametrize(
+    "with_layout_params,key_form",
+    [[True, KeyForm.FULL_LINES],
+     [True, KeyForm.NO_LINES]]
+)
+def test_GetKeyTable_KeyForms(extractor, key_form):
+    extractor.layout_params.key_form = key_form
     page_mock = MagicMock()
 
-    extractor_w_lp.get_key_table(page_mock)
-
+    extractor.get_key_table(page_mock)
     assert len(page_mock.mock_calls) == 1
-    assert page_mock.mock_calls[0] == call.extract_table()
+    if key_form == KeyForm.FULL_LINES:
+        assert page_mock.mock_calls[0] == call.extract_table()
+    elif key_form == KeyForm.NO_LINES:
+        assert page_mock.mock_calls[0] == call.extract_table(
+            KeyExtractor.COLOUR_TABLE_SETTINGS)
 
-def test_GetKeyTable_NoLines(extractor_w_lp):
-    extractor_w_lp.layout_params.key_form = KeyForm.NO_LINES
-    page_mock = MagicMock()
-
-    extractor_w_lp.get_key_table(page_mock)
-
-    assert len(page_mock.mock_calls) == 1
-    assert page_mock.mock_calls[0] == call.extract_table(
-        KeyExtractor.COLOUR_TABLE_SETTINGS)
-
-def test_GetKeyTable_HeaderLine(extractor_w_lp):
-    extractor_w_lp.layout_params.key_form = KeyForm.ONLY_HEADER_LINE
+@pytest.mark.parametrize("with_layout_params", [True])
+def test_GetKeyTable_HeaderLine(extractor):
+    extractor.layout_params.key_form = KeyForm.ONLY_HEADER_LINE
     page_mock = MagicMock()
     page_mock.width = 100
     page_mock.height = 100
@@ -193,7 +170,7 @@ def test_GetKeyTable_HeaderLine(extractor_w_lp):
         {"width": 20, "x0": 2, "y0": 0, "top": 30},
     ]
 
-    extractor_w_lp.get_key_table(page_mock)
+    extractor.get_key_table(page_mock)
 
     assert len(page_mock.mock_calls) == 2
     assert page_mock.mock_calls[0] == call.crop([2, 30, 100, 100])

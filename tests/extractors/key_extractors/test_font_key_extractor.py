@@ -6,10 +6,6 @@ from utils import divide_row
 import pytest
 import resources.strings as s
 
-DIR = "tests/resources/"
-SINGLE_CONFIG_FILE = f"{DIR}test_key_layout_single_config.json"
-MULTI_CONFIG_FILE = f"{DIR}test_key_layout_config.json"
-
 EXAMPLE_KEY_TABLE_1 = [
     ["1", "310", "Black"],
     ["2", "550", "Violet Very Dark"],
@@ -24,168 +20,156 @@ EXAMPLE_KEY_TABLE_2 = [
     ["4", "904", "Parrot Green Very Dark", "", "", ""]
 ]
 
+EXPECTED_TABLE_2 = [
+    ["1", "310", "Black"],
+    ["5", "776", "Pink Medium"],
+    ["2", "550", "Violet Very Dark"],
+    ["6", "3747", "Blue Violet Very Light"],
+    ["3", "666", "Bright Red"],
+    ["7", "743", "Yellow Medium"],
+    ["4", "904", "Parrot Green Very Dark"]
+]
+
+MISSING_SYMBOL_T1 = [["", "310", "Black"]]
+MISSING_SYMBOL_T2 = [["1", "310", "Black", "", "550", "Purple"]]
+
+ARGUMENTS = [
+    "is_multi_page", "num_colours", "extracted_table",   # fixtures
+    "using_first_page", "expected_table"  # results
+]
+
 @pytest.fixture
-def extractor_sp():
+def extractor(is_multi_page, num_colours):
     extractor = FontKeyExtractor(MagicMock(), "test")
-    # Manually providing layout params as get_key_table called in
-    # extract_key_from_page expects them to be created.
     extractor.layout_params = KeyLayout(
-        KeyForm.FULL_LINES, 1, 2, 0, 0, 1,
-        ["Symbol", "Number", "Colour"])
-    extractor.key_config_filename = SINGLE_CONFIG_FILE
+        KeyForm.FULL_LINES, 1, 2,
+        2 if is_multi_page else 0,
+        1 if is_multi_page else 0,
+        num_colours, ["Symbol", "Number", "Colour"])
+    extractor.multipage = is_multi_page
+    prefix = "tests/resources/test_key_layout_"
+    extractor.key_config_filename = (
+        f"{prefix}config.json" if is_multi_page
+        else f"{prefix}single_config.json")
     return extractor
 
 @pytest.fixture
-def extractor_mp():
-    extractor = FontKeyExtractor(MagicMock(), "test")
-    extractor.layout_params = KeyLayout(
-        KeyForm.FULL_LINES, 1, 2, 2, 1, 1, ["Symbol", "Number", "Colour"])
-    extractor.key_config_filename = MULTI_CONFIG_FILE
-    return extractor
-
-@pytest.fixture
-def page_mock_1():
+def page_mock(num_colours, extracted_table):
     page_mock = MagicMock()
-    page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
+    page_mock.extract_table.return_value = extracted_table
     return page_mock
 
 @pytest.fixture
-def page_mock_2():
-    page_mock = MagicMock()
-    page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_2
-    return page_mock
-
-def test_ExtractKeyFromPage_FullTable_1Colour(extractor_sp, page_mock_1):
-    extractor_sp.layout_params.n_rows_end = 1
-    result = extractor_sp._extract_key_from_page(page_mock_1, True)
-
-    assert len(result) == len(EXAMPLE_KEY_TABLE_1)
-    for actual, expected in zip(result, EXAMPLE_KEY_TABLE_1):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-def test_ExtractKeyFromPage_FullTable_2Colour(extractor_sp, page_mock_2):
-    extractor_sp.layout_params.n_rows_end = 1
-    extractor_sp.layout_params.n_colours_per_row = 2
-
-    # I know divide row already works (thanks to test_util) so I can use it
-    expected_table = []
-    for r in [divide_row(row, 2) for row in EXAMPLE_KEY_TABLE_2]:
-        expected_table.append(r[0])
-        expected_table.append(r[1])
-    expected_table = expected_table[:-1]
-
-    result = extractor_sp._extract_key_from_page(page_mock_2, True)
-
-    assert len(result) == len(expected_table)
-    for actual, expected in zip(result, expected_table):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-def test_ExtractKeyFromPage_ShorterTable(extractor_sp, page_mock_1):
-    result = extractor_sp._extract_key_from_page(page_mock_1, True)
-    expected_table = EXAMPLE_KEY_TABLE_1[:-1]
-
-    assert len(result) == len(expected_table)
-    for actual, expected in zip(result, expected_table):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-def test_ExtractKeyFromPage_Multi_1Colour(extractor_mp, page_mock_1):
-    result = extractor_mp._extract_key_from_page(page_mock_1, False)
-    expected_table = EXAMPLE_KEY_TABLE_1[1:]
-
-    assert len(result) == len(expected_table)
-    for actual, expected in zip(result, expected_table):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-def test_ExtractKeyFromPage_Multi_2Colour(extractor_mp, page_mock_2):
-    expected_table = []
-    extractor_mp.layout_params.n_colours_per_row = 2
-
-    for r in [divide_row(row, 2) for row in EXAMPLE_KEY_TABLE_2[1:]]:
-        expected_table.append(r[0])
-        expected_table.append(r[1])
-    expected_table = expected_table[:-1]
-    result = extractor_mp._extract_key_from_page(page_mock_2, False)
-
-    assert len(result) == len(expected_table)
-    for actual, expected in zip(result, expected_table):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-def test_ExtractKeyFromPage_1Colour_MissingSymbol(extractor_sp, capsys):
-    expected_table = [["", "310", "Black"]]
-    page_mock = MagicMock()
-    page_mock.extract_table.return_value = expected_table
-    extractor_sp.layout_params.n_rows_end = 1
-
-    result = extractor_sp._extract_key_from_page(page_mock, True)
-
-    assert len(result) == len(expected_table)
-    assert result[0].symbol == expected_table[0][0]
-    assert result[0].dmc_value == expected_table[0][1]
-
-    assert capsys.readouterr().out == s.warning_no_symbol_found("310") + "\n"
-
-def test_ExtractKeyFromPage_2Colour_MissingSymbol(extractor_sp, capsys):
-    expected_table = [["1", "310", "Black"], ["", "550", "Purple"]]
-    page_mock = MagicMock()
-    page_mock.extract_table.return_value = [["1", "310", "Black",
-                                             "", "550", "Purple"]]
-    extractor_sp.layout_params.n_rows_end = 1
-    extractor_sp.layout_params.n_colours_per_row = 2
-
-    result = extractor_sp._extract_key_from_page(page_mock, True)
-
-    assert len(result) == len(expected_table)
-    for actual, expected in zip(result, expected_table):
-        assert actual.symbol == expected[0]
-        assert actual.dmc_value == expected[1]
-
-    assert capsys.readouterr().out == s.warning_no_symbol_found("550") + "\n"
-
-def test_ExtractKey_SinglePage(extractor_sp):
-    page_mock = MagicMock()
-    page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
-
+def pdf_mock(is_multi_page):
     pdf_mock = MagicMock()
+    page_mock = MagicMock()
+    page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
     pdf_mock.pages = [page_mock]
 
-    extractor_sp.pdf = pdf_mock
-    extractor_sp.extract_key(0)
+    if is_multi_page:
+        page_mock_2 = MagicMock()
+        # Doubling the table returned for the second page as the layout params
+        # from the config file will have the start / end overlap with the
+        # smaller table.
+        page_mock_2.extract_table.return_value = (
+            EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
+        pdf_mock.pages.append(page_mock_2)
 
-    expected_table = EXAMPLE_KEY_TABLE_1[:-1]
+    return pdf_mock
 
-    assert len(extractor_sp.key) == len(expected_table)
-    for actual, expected in zip(extractor_sp.key, expected_table):
+
+@pytest.mark.parametrize(
+    ",".join(ARGUMENTS),
+    [(False, 1, EXAMPLE_KEY_TABLE_1, True, EXAMPLE_KEY_TABLE_1),
+     (False, 2, EXAMPLE_KEY_TABLE_2, True, EXPECTED_TABLE_2),
+     (True, 1, EXAMPLE_KEY_TABLE_1, False, EXAMPLE_KEY_TABLE_1[1:]),
+     (True, 2, EXAMPLE_KEY_TABLE_2, False, EXPECTED_TABLE_2[2:])]
+)
+def test_ExtractKeyFromPage_FullTable(extractor,
+                                      page_mock,
+                                      using_first_page,
+                                      expected_table):
+    extractor.layout_params.n_rows_end = 1
+    result = extractor._extract_key_from_page(page_mock, using_first_page)
+
+    assert len(result) == len(expected_table)
+    for actual, expected in zip(result, expected_table):
         assert actual.symbol == expected[0]
         assert actual.dmc_value == expected[1]
 
-def test_ExtractKey_MultiPage(extractor_mp):
-    page_mock_1 = MagicMock()
-    page_mock_2 = MagicMock()
-    page_mock_1.extract_table.return_value = EXAMPLE_KEY_TABLE_1
-    # Doubling the pages as the values returned for the second page will not
-    # work with the smaller table.
-    page_mock_2.extract_table.return_value = (
-        EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
+# def test_ExtractKeyFromPage_ShorterTable(extractor, page_mock_1):
+    # result = extractor_sp._extract_key_from_page(page_mock_1, True)
+    # expected_table = EXAMPLE_KEY_TABLE_1[:-1]
 
-    pdf_mock = MagicMock()
-    pdf_mock.pages = [page_mock_1, page_mock_2]
+    # assert len(result) == len(expected_table)
+    # for actual, expected in zip(result, expected_table):
+        # assert actual.symbol == expected[0]
+        # assert actual.dmc_value == expected[1]
 
-    extractor_mp.pdf = pdf_mock
-    extractor_mp.extract_key(0, 1)
+@pytest.mark.parametrize(
+    ",".join(ARGUMENTS + ["missing_symbol"]),
+    [(False, 1, MISSING_SYMBOL_T1, True, MISSING_SYMBOL_T1, "310"),
+     (False, 2, MISSING_SYMBOL_T2, True,
+      [MISSING_SYMBOL_T2[0][:3], MISSING_SYMBOL_T2[0][3:]], "550"),
+     (True, 1,  [["2", "550", "Purple"], MISSING_SYMBOL_T1[0]], False,
+      MISSING_SYMBOL_T1, "310"),
+     (True, 2,
+      [["2", "666", "Red", "3", "904", "Green"], MISSING_SYMBOL_T2[0]],
+      False, [MISSING_SYMBOL_T2[0][:3], MISSING_SYMBOL_T2[0][3:]], "550")]
+)
+def test_ExtractKeyFromPage_MissingSymbol(extractor,
+                                          page_mock,
+                                          capsys,
+                                          using_first_page,
+                                          expected_table,
+                                          missing_symbol):
+     extractor.layout_params.n_rows_end = 1
 
-    expected_table = [EXAMPLE_KEY_TABLE_1[0],
-                      EXAMPLE_KEY_TABLE_1[1],
-                      EXAMPLE_KEY_TABLE_1[2],
-                      EXAMPLE_KEY_TABLE_1[2],
-                      EXAMPLE_KEY_TABLE_1[3],
-                      EXAMPLE_KEY_TABLE_1[0]]
+     result = extractor._extract_key_from_page(page_mock, using_first_page)
 
-    assert len(extractor_mp.key) == len(expected_table)
-    for actual, expected in zip(extractor_mp.key, expected_table):
+     assert len(result) == len(expected_table)
+     for actual, expected in zip(result, expected_table):
+         assert actual.symbol == expected[0]
+         assert actual.dmc_value == expected[1]
+     assert capsys.readouterr().out == s.warning_no_symbol_found(
+         missing_symbol) + "\n"
+
+
+# def test_ExtractKeyFromPage_2Colour_MissingSymbol(extractor_sp, capsys):
+    # expected_table = [["1", "310", "Black"], ["", "550", "Purple"]]
+    # page_mock = MagicMock()
+    # page_mock.extract_table.return_value = [["1", "310", "Black",
+                                             # "", "550", "Purple"]]
+    # extractor_sp.layout_params.n_rows_end = 1
+    # extractor_sp.layout_params.n_colours_per_row = 2
+
+    # result = extractor_sp._extract_key_from_page(page_mock, True)
+
+    # assert len(result) == len(expected_table)
+    # for actual, expected in zip(result, expected_table):
+        # assert actual.symbol == expected[0]
+        # assert actual.dmc_value == expected[1]
+
+    # assert capsys.readouterr().out == s.warning_no_symbol_found("550") + "\n"
+
+@pytest.mark.parametrize(
+    ",".join(["is_multi_page", "num_colours",
+              "expected_table", "ek_arguments"]),
+    [(False, 1, EXAMPLE_KEY_TABLE_1[:-1], (0,)),
+     (True, 1, [EXAMPLE_KEY_TABLE_1[0], EXAMPLE_KEY_TABLE_1[1],
+                EXAMPLE_KEY_TABLE_1[2], EXAMPLE_KEY_TABLE_1[2],
+                EXAMPLE_KEY_TABLE_1[3], EXAMPLE_KEY_TABLE_1[0]], (0, 1))]
+)
+def test_ExtractKey_Valid(extractor, pdf_mock,
+                          expected_table, ek_arguments):
+    extractor.pdf = pdf_mock
+    if len(ek_arguments) == 1:
+        extractor.extract_key(ek_arguments[0])
+    else:
+        extractor.extract_key(ek_arguments[0], ek_arguments[1])
+
+
+    assert len(extractor.key) == len(expected_table)
+    for actual, expected in zip(extractor.key, expected_table):
         assert actual.symbol == expected[0]
         assert actual.dmc_value == expected[1]
