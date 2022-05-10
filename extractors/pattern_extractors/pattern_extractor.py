@@ -42,8 +42,8 @@ class PatternExtractor(Extractor):
                                 translated from the pdf pattern maintaining the
 
         Raises:
-            AssertionError      if withkey is true and a symbol is identified
-                                thats not found in the key.
+            KeyError      if withkey is true and a symbol is identified thats
+                          not found in the key.
         """
         pass
 
@@ -136,17 +136,6 @@ class PatternExtractor(Extractor):
             assert len(self.pattern[0] == width), s.pattern_wrong_size(
                 "wide", len(self.pattern[0]), width)
 
-    def save_pattern(self):
-        """ Saves the pattern extracted by this class.
-
-        Raises:
-            AssertionError if the pattern is blank.
-        """
-        assert len(self.pattern) > 0, s.empty_on_save("pattern")
-
-        with open(self.pattern_filename, "w", encoding="utf-8") as f:
-            print(*["".join(row) for row in self.pattern], sep="\n", file=f)
-
     def _extract_from_this_page(self,
                                 page_idx,
                                 rows,
@@ -180,17 +169,19 @@ class PatternExtractor(Extractor):
 
         assert all(len(row) == page_width for row in rows), (
             s.pattern_uneven_width(pi_p))
+        print(page_height == expected_page_height)
+        print(cur_height == height)
+        print(page_height, expected_page_height, cur_height, height)
         assert (
             page_height == expected_page_height or cur_height == height), (
-                s.page_uneven_height(pi_p, page_height,
-                                     expected_page_height, height - cur_y))
+                s.pattern_uneven_height(pi_p, page_height,
+                                        expected_page_height, height - cur_y))
         assert cur_width <= width and cur_height <= height, (
             s.pattern_size_too_big(page_idx + 1, page_width, page_height,
                                    cur_width, cur_height, width, height))
 
-        verbose_print(s.pattern_extracting_page(pi_p, page_width, page_height,
-                                                cur_width, cur_height),
-                      verbose)
+        verbose_print(s.pattern_extracting_page(
+            pi_p, page_width, page_height, cur_width, cur_height), verbose)
 
         if cur_x != 0 and self.pattern:
             # New columns, so just need to add these to the end of existing
@@ -210,3 +201,14 @@ class PatternExtractor(Extractor):
             cur_y += page_height
 
         return (cur_x, cur_y, expected_page_height)
+
+    def save_pattern(self):
+        """ Saves the pattern extracted by this class.
+
+        Raises:
+            AssertionError if the pattern is blank.
+        """
+        assert len(self.pattern) > 0, s.empty_on_save("pattern")
+
+        with open(self.pattern_filename, "w", encoding="utf-8") as f:
+            print(*["".join(row) for row in self.pattern], sep="\n", file=f)

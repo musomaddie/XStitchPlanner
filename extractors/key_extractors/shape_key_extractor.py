@@ -76,7 +76,8 @@ class ShapeKeyExtractor(KeyExtractor):
             return (resulting_list, count, page_count)
         idents = filter_majority_rects(
             [r for r in key_page.rects if not r["fill"]])
-        assert len(idents) <= len(PLACEHOLDERS), s.too_many_symbols()
+        if len(idents) > len(PLACEHOLDERS):
+            raise NotImplementedError(s.too_many_symbols())
 
         idents = [bbox_to_ident(key_page,
                                 (r["x0"], r["top"], r["x1"], r["bottom"]),

@@ -93,9 +93,10 @@ def divide_row(row, n):
         list[list[str]]     a list of lists containing the split lists.
 
     Raises:
-        AssertionError      if the list cannot be evenly divided.
+        ValueError      if the list cannot be evenly divided.
     """
-    assert len(row) % n == 0, s.multikey_row_not_divided_evenly()
+    if len(row) % n != 0:
+        raise ValueError(s.multikey_row_not_divided_evenly())
     sub_size = len(row) // n
     return [row[i * sub_size:(i + 1) * sub_size] for i in range(n)]
 

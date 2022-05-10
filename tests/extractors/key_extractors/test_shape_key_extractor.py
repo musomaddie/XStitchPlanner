@@ -209,9 +209,9 @@ def test_ExtractKeyFromPage_TooManyIdents():
     page_mock = MagicMock()
     page_mock.rects = [make_bbox(0, 10, 10, 20) for _ in range(100)]
 
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(NotImplementedError) as e:
         extractor._extract_key_from_page(page_mock, True, 0)
-        assert e == s.too_many_symbols()
+    assert str(e.value) == s.too_many_symbols()
 
 
 @pytest.mark.parametrize("single_page", ([True, False]))

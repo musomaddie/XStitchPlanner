@@ -95,9 +95,9 @@ def test_DivideRow_Even():
 
 def test_DivideRow_DoesntDivide():
     row_to_divide = ["1", "2", "3", "4", "5", "6", "7", "8"]
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(ValueError) as e:
         utils.divide_row(row_to_divide, 3)
-        assert e == s.multikey_row_not_divided_evenly()
+    assert str(e.value) == s.multikey_row_not_divided_evenly()
 
 
 """ load_dmc_data """

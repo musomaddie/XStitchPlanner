@@ -21,3 +21,6 @@ class Extractor(ABC):
         self.pattern_name = pattern_name
         self.key_filename = f"{pattern_name}.key"
         self.pattern_filename = f"{pattern_name}.pat"
+
+class PatternFormatError(Exception):
+    pass

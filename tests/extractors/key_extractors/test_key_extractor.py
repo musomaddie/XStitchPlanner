@@ -122,22 +122,22 @@ def test_SaveKey(extractor):
 
 @pytest.mark.parametrize("with_layout_params", [False])
 def test_SaveKey_EmptyKey(extractor):
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(ValueError) as e:
         extractor.save_key()
-        assert e == s.empty_on_save("key")
+    assert str(e.value) == s.empty_on_save("key")
 
-@pytest.mark.parametrize("with_layout_params", [True])
+@pytest.mark.parametrize("with_layout_params", [False])
 def test_GetKeyTable_NoLayoutParams(extractor):
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(ValueError) as e:
         extractor.get_key_table(MagicMock())
-        assert e == s.no_key_layout_params()
+    assert str(e.value) == s.no_key_layout_params()
 
 def tets_GetKeyTable_InvalidKeyForm(extractor):
     extractor.layout_params = KeyLayout(
         "NOTHING", 0, 0, 0, 0, 0, ["Hello"])
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(ValueError) as e:
         extractor.get_key_table(MagicMock())
-        assert e == s.key_form_invalid()
+    assert str(e.value) == s.key_form_invalid()
 
 @pytest.mark.parametrize(
     "with_layout_params,key_form",

@@ -98,9 +98,10 @@ class KeyExtractor(Extractor):
         """ Helper for returning the table containing the key on a given page
         depending on the layout params.
         """
-        assert self.layout_params, s.no_key_layout_params()
-        assert self.layout_params.key_form != KeyForm.UNKNOWN, (
-            s.key_form_invalid())
+        if not self.layout_params:
+            raise ValueError(s.no_key_layout_params())
+        if self.layout_params.key_form == KeyForm.UNKNOWN:
+            raise ValueError(s.key_form_invalid())
 
         if self.layout_params.key_form == KeyForm.FULL_LINES:
             return page.extract_table()
@@ -200,11 +201,11 @@ class KeyExtractor(Extractor):
         """ Saves the key extracted by this extractor.
 
         Raises:
-            AssertionError  if the key is empty (i.e. there is nothing to
-                            save).
+            ValueError  if the key is empty (i.e. there is nothing to save).
 
         """
-        assert len(self.key) > 0, s.empty_on_save("key")
+        if len(self.key) <= 0:
+            raise ValueError(s.empty_on_save("key"))
 
         with open(self.key_filename, "w") as key_file:
             writer = csv.writer(key_file, delimiter="\t")

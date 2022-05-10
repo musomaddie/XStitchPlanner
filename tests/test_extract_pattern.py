@@ -15,7 +15,7 @@ def test_ExtractFromPdf_InvalidKey():
     with pytest.raises(ValueError) as e:
         extract_from_pdf(TESTING_PATTERN_NAME, ExtractorMode.UNKNOWN,
                          WIDTH, HEIGHT)
-        assert e == s.extractor_error()
+    assert str(e.value) == s.extractor_error()
 
 @pytest.mark.parametrize("extractor_mode",
                          [ExtractorMode.FONT, ExtractorMode.SHAPE])
