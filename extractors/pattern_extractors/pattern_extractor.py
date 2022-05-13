@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from extractors.extractor import Extractor
+from extractors.extractor import Extractor, PatternFormatError
 from utils import verbose_print
 
 import resources.strings as s
@@ -42,8 +42,8 @@ class PatternExtractor(Extractor):
                                 translated from the pdf pattern maintaining the
 
         Raises:
-            KeyError      if withkey is true and a symbol is identified thats
-                          not found in the key.
+           PatternFormatError       if withkey is true and a symbol is
+                                    identified thats not found in the key.
         """
         pass
 
@@ -103,12 +103,14 @@ class PatternExtractor(Extractor):
                                 translated from the pdf pattern maintaining the
                                 rows and columns.
         Raises:
-            AssertionError  if the pattern has an uneven width on any page.
-            AssertionError  if the pattern has an unexpected height on any
-                            page.
-            AssertionError  if a pattern page exceeds the expected size.
-            AssertionError  if the pattern is not the expected height
-            AssertionError  if the pattern is not the expected width
+            PatternFormatError      if the pattern has an uneven width on any
+                                    page.
+            PatternFormatError      if the pattern has an unexpected height on
+                                    any page.
+            PatternFormatError      if a pattern page exceeds the expected
+                                    size.
+            PatternFormatError      if the pattern is not the expected height
+            PatternFormatError      if the pattern is not the expected width
         """
         verbose_print(s.row_extract("pattern"), verbose)
         all_pages = end_page_idx is None and start_page_idx is None
@@ -130,11 +132,12 @@ class PatternExtractor(Extractor):
                 cur_x, cur_y, expected_page_height, height, width,
                 overlap, verbose)
 
-        if all_pages:
-            assert len(self.pattern) == height, s.pattern_wrong_size(
-                "high", len(self.pattern), height)
-            assert len(self.pattern[0] == width), s.pattern_wrong_size(
-                "wide", len(self.pattern[0]), width)
+        if len(self.pattern) != height:
+            raise PatternFormatError(
+                s.pattern_wrong_size("high", len(self.pattern), height))
+        if len(self.pattern[0]) != width:
+            raise PatternFormatError(
+                s.pattern_wrong_size("wide", len(self.pattern[0]), width))
 
     def _extract_from_this_page(self,
                                 page_idx,
@@ -159,26 +162,30 @@ class PatternExtractor(Extractor):
         page_width = len(rows[0])
         page_height = len(rows)
 
+        print("hello")
+        print(page_width)
+        print(page_height)
+
         if cur_x == 0:
             expected_page_height = page_height
 
         cur_width = cur_x + page_width
         cur_height = cur_y + page_height
 
+        height_check_1 = page_height == expected_page_height
+        height_check_2 = cur_height == height
+
         pi_p = page_idx + 1
 
-        assert all(len(row) == page_width for row in rows), (
-            s.pattern_uneven_width(pi_p))
-        print(page_height == expected_page_height)
-        print(cur_height == height)
-        print(page_height, expected_page_height, cur_height, height)
-        assert (
-            page_height == expected_page_height or cur_height == height), (
-                s.pattern_uneven_height(pi_p, page_height,
-                                        expected_page_height, height - cur_y))
-        assert cur_width <= width and cur_height <= height, (
-            s.pattern_size_too_big(page_idx + 1, page_width, page_height,
-                                   cur_width, cur_height, width, height))
+        if False in [len(row) == page_width for row in rows]:
+            raise PatternFormatError(s.pattern_uneven_width(pi_p))
+        if not (height_check_1 or height_check_2):
+            raise PatternFormatError(s.pattern_uneven_height(
+                pi_p, page_height, expected_page_height, height - cur_y))
+        if cur_width > width or cur_height > height:
+            raise PatternFormatError(
+                s.pattern_size_too_big(pi_p, page_width, page_height,
+                                       cur_width, cur_height, width, height))
 
         verbose_print(s.pattern_extracting_page(
             pi_p, page_width, page_height, cur_width, cur_height), verbose)
@@ -206,9 +213,10 @@ class PatternExtractor(Extractor):
         """ Saves the pattern extracted by this class.
 
         Raises:
-            AssertionError if the pattern is blank.
+            PatternFormatError if the pattern is blank.
         """
-        assert len(self.pattern) > 0, s.empty_on_save("pattern")
+        if len(self.pattern) == 0:
+            raise ValueError(s.empty_on_save("pattern"))
 
         with open(self.pattern_filename, "w", encoding="utf-8") as f:
             print(*["".join(row) for row in self.pattern], sep="\n", file=f)
