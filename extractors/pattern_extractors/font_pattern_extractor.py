@@ -21,7 +21,8 @@ class FontPatternExtractor(PatternExtractor):
         if withkey:
             for row in result:
                 for cell in row:
-                    assert cell in self.symbols, s.symbol_not_in_key(cell)
+                    if cell not in self.symbols:
+                        raise ValueError(s.symbol_not_in_key(cell))
 
         return result
 
