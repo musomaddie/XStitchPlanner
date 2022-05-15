@@ -132,9 +132,10 @@ def test_GetKeyTable_NoLayoutParams(extractor):
         extractor.get_key_table(MagicMock())
     assert str(e.value) == s.no_key_layout_params()
 
-def tets_GetKeyTable_InvalidKeyForm(extractor):
+@pytest.mark.parametrize("with_layout_params", [True])
+def test_GetKeyTable_InvalidKeyForm(extractor):
     extractor.layout_params = KeyLayout(
-        "NOTHING", 0, 0, 0, 0, 0, ["Hello"])
+        KeyForm.UNKNOWN, 0, 0, 0, 0, 0, ["Hello"])
     with pytest.raises(ValueError) as e:
         extractor.get_key_table(MagicMock())
     assert str(e.value) == s.key_form_invalid()
