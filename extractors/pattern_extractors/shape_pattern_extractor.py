@@ -34,33 +34,35 @@ class ShapePatternExtractor(PatternExtractor):
         self.ident_map = {}
         self._used_symbols = []
 
-    def get_rows(self, page_idx, withkey=False, verbose=False):
-        """ Implementing abstract method.  """
-        def find_next_placeholder():
-            assert len(self._used_symbols) <= len(PLACEHOLDERS), (
-                s.too_many_symbols())
-            for x in PLACEHOLDERS:
-                if x not in self._used_symbols:
-                    self._used_symbols.append(x)
-                    return x
+    def _find_next_placeholder(self):
+        if len(self._used_symbols) == len(PLACEHOLDERS):
+            raise NotImplementedError(s.too_many_symbols())
+        for x in PLACEHOLDERS:
+            if x not in self._used_symbols:
+                self._used_symbols.append(x)
+                return x
 
-        def get_symbol(page, cell):
-            ident = bbox_to_ident(page, cell, verbose)
-            if withkey:
-                assert ident in self.ident_map, s.ident_unknown(ident)
-            else:
-                # If this ident hasn't already been seen we should add it to
-                # the ident map.
-                if ident not in self.ident_map:
-                    verbose_print(s.ident_doesnt_already_exist(ident), verbose)
-                    self.ident_map[ident] = find_next_placeholder()
-
+    def _get_symbol(self, page, cell, withkey=False, verbose=False):
+        ident = bbox_to_ident(page, cell, verbose)
+        if withkey:
+            if ident not in self.ident_map:
+                raise ValueError(s.ident_unknown(ident))
             return self.ident_map[ident]
 
+        # If this ident hasn't already been seen we should add it to
+        # the ident map.
+        if ident not in self.ident_map:
+            verbose_print(s.ident_doesnt_already_exist(ident), verbose)
+            self.ident_map[ident] = self._find_next_placeholder()
+
+        return self.ident_map[ident]
+
+    def get_rows(self, page_idx, withkey=False, verbose=False):
+        """ Implementing abstract method.  """
         page = self.pdf.pages[page_idx]
-        # page.to_image().save("????.png")
         table = page.find_tables(self.PATTERN_TABLE_SETTINGS)[0]
-        return [[get_symbol(page, cell) for cell in row.cells]
+        print(table)
+        return [[self._get_symbol(page, cell) for cell in row.cells]
                 for row in table.rows]
 
     def extract_pattern(self, *args, **kwargs):

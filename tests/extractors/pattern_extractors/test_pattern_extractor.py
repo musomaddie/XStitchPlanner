@@ -75,6 +75,8 @@ def test_ExtractPatternFromThisPage_Invalid(
 )
 def test_ExtractPatternGivenPages_Valid(
         extractor, width, height, start_page, end_page, expected_pattern):
+    # TODO: I need to make sure that I test that patterns spread over multiple
+    # pages are combined in the expected way.
     extractor.extract_pattern_given_pages(
         fake_rows_fn, width, height, start_page, end_page)
     assert extractor.pattern == expected_pattern
