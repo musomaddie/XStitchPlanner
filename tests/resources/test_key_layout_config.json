@@ -1,0 +1,15 @@
+{
+	"key form": "full lines",
+	"row start first page": 1,
+	"row end first page": 2,
+	"row start other pages": 3,
+	"row end other pages": 4,
+	"number of colours per row": 1,
+	"column headings": [
+		"Symbol",
+		"Number",
+		"Type",
+		"Strands",
+		"Colour"
+	]
+}

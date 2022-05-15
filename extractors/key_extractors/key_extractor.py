@@ -6,7 +6,7 @@ import csv
 import json
 import resources.strings as s
 
-# Variables for JSON keys (just to make them obvious / consistent.
+# Variables for JSON keys (just to make them obvious / consistent).
 JK_KF = "key form"
 JK_RS = "row start"
 JK_RE = "row end"
@@ -23,13 +23,21 @@ class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
     Parameters:
-        pdf             pdfplumber.PDF  the PDF to extract the key from.
-        pattern_name    str             the name of the pattern (filename with
-                                        .pdf removed).
-        multipage       bool            whether the key is spread over multiple
-                                        pages. [default: False]
-        layout_params   KeyLayout       how the columns for the key information
-                                        are laid out. [default: None]
+        pdf             pdfplumber.PDF              the PDF to extract the key
+                                                    from
+        pattern_name    str                         the name of the pattern
+                                                    (filename with .pdf
+                                                    removed).
+        multipage       bool                        whether the key is spread
+                                                    over multiple pages.
+                                                    [default: False]
+        layout_params   KeyLayout                   how the columns for the key
+                                                    information are laid out.
+                                                    [default: None]
+        key             list[floss_thread.Thread]   a list containing all the
+                                                    thread details for every
+                                                    thread found in the pattern
+                                                    [default: []]
 
     Methods:
         __init__(pdf)                       creates a new instance of the key
@@ -87,9 +95,13 @@ class KeyExtractor(Extractor):
         pass
 
     def get_key_table(self, page):
-        assert self.layout_params, s.no_key_layout_params()
-        assert self.layout_params.key_form != KeyForm.UNKNOWN, (
-            s.key_form_invalid())
+        """ Helper for returning the table containing the key on a given page
+        depending on the layout params.
+        """
+        if not self.layout_params:
+            raise ValueError(s.no_key_layout_params())
+        if self.layout_params.key_form == KeyForm.UNKNOWN:
+            raise ValueError(s.key_form_invalid())
 
         if self.layout_params.key_form == KeyForm.FULL_LINES:
             return page.extract_table()
@@ -151,8 +163,8 @@ class KeyExtractor(Extractor):
             key_form = input(s.input_key_table_form())
             num_rows_start = int(input(s.input_key_rows_start()))
             num_rows_end = int(input(s.input_key_rows_end()))
-            num_rows_end_pages = 1
-            num_rows_start_pages = 1
+            num_rows_start_pages = 0
+            num_rows_end_pages = 0
             if self.multipage:
                 num_rows_start_pages = int(input(
                     s.input_key_rows_start_pages()))
@@ -166,8 +178,7 @@ class KeyExtractor(Extractor):
                 heading = input(s.input_key_headings())
 
             # Save JSON file
-            # TODO: double check this.
-            with open(self.key_layout_config_filename, "w",
+            with open(self.key_config_filename, "w",
                       encoding="utf-8") as f:
                 json.dump({JK_KF: key_form,
                            JK_SF: num_rows_start,
@@ -190,11 +201,11 @@ class KeyExtractor(Extractor):
         """ Saves the key extracted by this extractor.
 
         Raises:
-            AssertionError  if the key is empty (i.e. there is nothing to
-                            save).
+            ValueError  if the key is empty (i.e. there is nothing to save).
 
         """
-        assert len(self.key) > 0, s.empty_on_save("key")
+        if len(self.key) <= 0:
+            raise ValueError(s.empty_on_save("key"))
 
         with open(self.key_filename, "w") as key_file:
             writer = csv.writer(key_file, delimiter="\t")

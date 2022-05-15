@@ -22,26 +22,25 @@ class FontKeyExtractor(KeyExtractor):
         self.get_layout_info()
 
         for key_page_idx in range(first_page, last_page + 1):
-            verbose_print(s.page_load(key, key_page_idx + 1), verbose)
+            verbose_print(s.page_load("key", key_page_idx + 1), verbose)
             self.key.extend(self._extract_key_from_page(
                 self.pdf.pages[key_page_idx],
                 key_page_idx == first_page,
                 verbose))
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
+        # TODO: assert that the headings contains the correct keys (Number and
+        # Symbol).
         ref = self.layout_params.headings  # Variable for readability
-        # TODO: add this index getting to shared method.
-        start_idx = (self.layout_params.n_rows_start - 1
-                     if is_first_page
-                     else self.layout_params.n_rows_start_pages - 1)
-        end_idx = (self.layout_params.n_rows_end - 1
-                   if is_first_page
-                   else self.layout_params.n_rows_end_pages - 1)
 
         def read_row(row):
             """ Turns a given row into a thread """
             # Handling multiple keys per row
             if self.layout_params.n_colours_per_row == 1:
+                # TODO: extract this sanity check and standardise it.
+                if (row[ref.index("Number")] != ""
+                        and row[ref.index("Symbol")] == ""):
+                    print(s.warning_no_symbol_found(row[ref.index("Number")]))
                 # Returning a list for consistency with multiple colours per
                 # row
                 return [make_thread(
@@ -69,14 +68,19 @@ class FontKeyExtractor(KeyExtractor):
                 c[symb_idx],  # extractors.
                 verbose=verbose) for c in colours
                 if c[num_idx] != ""]
-
         rows = self.get_key_table(key_page)
         # TODO: if this returns None print the warning and ask to double
         # check if page num passed.
+
+        # TODO: add this index getting to shared method.
+        start_idx = (self.layout_params.n_rows_start - 1
+                     if is_first_page
+                     else self.layout_params.n_rows_start_pages - 1)
+        end_idx = (self.layout_params.n_rows_end - 1
+                   if is_first_page
+                   else self.layout_params.n_rows_end_pages - 1)
         end_idx = len(rows) - end_idx
 
-        # Special case for end_idx being 0 because trying to loop to -0
-        # does not loop at all.
         result = []
         for row in rows[start_idx:end_idx]:
             result.extend(read_row(row))
