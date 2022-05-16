@@ -29,15 +29,15 @@ class FontKeyExtractor(KeyExtractor):
                 verbose))
 
     def _extract_key_from_page(self, key_page, is_first_page, verbose=False):
-        # TODO: assert that the headings contains the correct keys (Number and
-        # Symbol).
+        # TODO (issues/17): ensure headings contain required values (both here
+        # and when created)
         ref = self.layout_params.headings  # Variable for readability
 
         def read_row(row):
             """ Turns a given row into a thread """
             # Handling multiple keys per row
             if self.layout_params.n_colours_per_row == 1:
-                # TODO: extract this sanity check and standardise it.
+                # TODO (issues/18): improve the structure of this check.
                 if (row[ref.index("Number")] != ""
                         and row[ref.index("Symbol")] == ""):
                     print(s.warning_no_symbol_found(row[ref.index("Number")]))
@@ -69,10 +69,9 @@ class FontKeyExtractor(KeyExtractor):
                 verbose=verbose) for c in colours
                 if c[num_idx] != ""]
         rows = self.get_key_table(key_page)
-        # TODO: if this returns None print the warning and ask to double
-        # check if page num passed.
+        # TODO (issues/19): print helpful warning.
 
-        # TODO: add this index getting to shared method.
+        # TODO (issues/20): make common method.
         start_idx = (self.layout_params.n_rows_start - 1
                      if is_first_page
                      else self.layout_params.n_rows_start_pages - 1)

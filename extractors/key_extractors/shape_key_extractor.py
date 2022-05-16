@@ -96,8 +96,7 @@ class ShapeKeyExtractor(KeyExtractor):
         end_idx = len(key_table) - end_idx
 
         result = []
-        # TODO: this relies on the ident boxes lining up with the rows
-        # correctly, but in practice I don't think this will be a concern.
+        # TODO (issues/22): the ident boxes and numbers must line up.
         page_count = 0
         for row in key_table[start_idx:end_idx]:
             formatted_row, count, page_count = read_row(row, count, page_count)

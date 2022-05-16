@@ -63,7 +63,6 @@ def test_find_next_placeholder_raises_error(extractor):
 # Use patch the ident box method since it's already been tested.
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
 def test_get_symbol_withoutkey(bbox_mock, extractor):
-    # TODO: figure out how to set up the bbox_mock in a neater way!
     # Set up bbox mock
     setup_bbox_mock(bbox_mock)
 

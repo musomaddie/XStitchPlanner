@@ -164,11 +164,7 @@ def page_mock(num_colours):
     page_mock.within_bbox.side_effect = mock_within_bbox
     return page_mock
 
-# TODO: I think there were some more cases around the behaviour of filter
-# majority rects I wanted to test but that's a later thing.
-# TODO: add a test (both here and font) when there are multiple colours per row
-# and it is not the full table. I'm expected it to fail as the start / end
-# indicies are not calculated correctly in this case.
+# TODO (issues/23): improve the test cases for extractKeyFromPage.
 @pytest.mark.parametrize(
     "num_pages,num_colours,is_full_table,expected_key_table,is_first_page",
     [(1, 1, True, EXAMPLE_KEY_TABLE_1, True),
@@ -227,7 +223,6 @@ def test_extractKey_Passes(single_page):
         pdf_mock.pages = [page_mock]
     else:
         page_mock_2 = MagicMock()
-        # TODO: these rects are cursed!
         page_mock_2.rects = [
             make_bbox(90, 10, 100, 20), make_bbox(80, 20, 90, 30),
             make_bbox(70, 30, 80, 40), make_bbox(60, 30, 80, 50)]

@@ -68,6 +68,7 @@ def test_ExtractPatternFromThisPage_Invalid(
             0, rows, cur_x, cur_y, expected_ph, height, width, 0, False)
     assert str(e.value) == expected_error_message
 
+# TODO (issues/24): test patterns spread over multiple pages.
 @pytest.mark.parametrize(
     "width,height,start_page,end_page,expected_pattern",
     [(10, 5, 0, 0, EXAMPLE_ROWS_BASIC),
@@ -75,8 +76,6 @@ def test_ExtractPatternFromThisPage_Invalid(
 )
 def test_ExtractPatternGivenPages_Valid(
         extractor, width, height, start_page, end_page, expected_pattern):
-    # TODO: I need to make sure that I test that patterns spread over multiple
-    # pages are combined in the expected way.
     extractor.extract_pattern_given_pages(
         fake_rows_fn, width, height, start_page, end_page)
     assert extractor.pattern == expected_pattern

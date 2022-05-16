@@ -108,7 +108,7 @@ class KeyExtractor(Extractor):
         if self.layout_params.key_form == KeyForm.NO_LINES:
             return page.extract_table(self.COLOUR_TABLE_SETTINGS)
         if self.layout_params.key_form == KeyForm.ONLY_HEADER_LINE:
-            # TODO: need an alternative way if the rect isn't a longer one.
+            # TODO (issues/21): need an alternative approach if this breaks.
             bbox = [0, 0, page.width, page.height]
             starting_line = page.rects[0]
             for rect in page.rects:
@@ -150,15 +150,11 @@ class KeyExtractor(Extractor):
                         config[JK_EO] if JK_EO in config else 0,  # row end
                         config[JK_NC],
                         config[JK_H])
-                    # TODO: what happens if it's a string??
             except FileNotFoundError:
                 read_from_user_input()
 
         def read_from_user_input():
             """ Reads from the user input.
-            # TODO: I'm not sure if this is valuable or not. Might just leave
-            it for now.
-            # TODO: also might be worth trying to detect automatically.
             """
             key_form = input(s.input_key_table_form())
             num_rows_start = int(input(s.input_key_rows_start()))

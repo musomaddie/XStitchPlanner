@@ -128,8 +128,8 @@ def load_dmc_data(filename="resources/dmc_data.csv"):
     return resulting_dict
 
 def make_thread(dmc_value, ident, symbol, verbose=False):
-    """ Returns a Thread constructed by the given parameters with additional
-    detail from the dmc data passed. TODO: improve description its BAD
+    """ Returns a Thread object with the given dmc_value, ident and symbol.
+        The hexcode colour and colour description found from the dmc_data file.
 
     Parameters:
         dmc_value   str                 the dmc_value of this thread
