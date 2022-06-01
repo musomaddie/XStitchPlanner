@@ -25,11 +25,14 @@ class KeyForm(Enum):
             return KeyForm.ONLY_HEADER_LINE
         elif string == "nolines":
             return KeyForm.NO_LINES
+        elif string == "bigrectangle":
+            return KeyForm.BIG_RECTANGLE
         return KeyForm.UNKNOWN
 
     FULL_LINES = auto()
     ONLY_HEADER_LINE = auto()
     NO_LINES = auto()
+    BIG_RECTANGLE = auto()
     UNKNOWN = auto()
 
 

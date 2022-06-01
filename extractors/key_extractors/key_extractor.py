@@ -124,6 +124,8 @@ class KeyExtractor(Extractor):
             bbox[1] = starting_line["top"]
             return page.crop(bbox).extract_table(
                 self.COLOUR_TABLE_SETTINGS)
+        if self.layout_params.key_form == KeyForm.BIG_RECTANGLE:
+            return page.extract_table(self.COLOUR_TABLE_SETTINGS)
 
     def get_layout_info(self):
         """ Gets information on the layout of the key from the user. First

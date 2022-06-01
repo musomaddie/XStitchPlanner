@@ -2,6 +2,7 @@ from typing import Counter
 
 import resources.strings as s
 from extractors.key_extractors.key_extractor import KeyExtractor
+from extractors.key_extractors.key_layout import KeyForm
 from utils import (PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row,
                    make_thread, verbose_print)
 
@@ -68,12 +69,25 @@ class ShapeKeyExtractor(KeyExtractor):
             for c in colours:
                 if c[ref.index("Number")] == "":
                     continue
-                resulting_list.append(make_thread(c[ref.index("Number")],
-                                                  idents[page_count],
-                                                  PLACEHOLDERS[count]))
+                try:
+                    resulting_list.append(make_thread(c[ref.index("Number")],
+                                                      idents[page_count],
+                                                      PLACEHOLDERS[count]))
+                except IndexError:
+                    print(c)
+                    continue
                 count += 1
                 page_count += 1
             return resulting_list, count, page_count
+
+        self.get_layout_info()
+
+        # Change the key page if it needs to be limited to help detect the
+        # rectangles
+        if self.layout_params.key_form == KeyForm.BIG_RECTANGLE:
+            # Special case for this pattern because I give up.
+            bbox = (75, 223, 522, 520)
+            key_page = key_page.within_bbox(bbox)
 
         idents = filter_majority_rects(
             [r for r in key_page.rects
