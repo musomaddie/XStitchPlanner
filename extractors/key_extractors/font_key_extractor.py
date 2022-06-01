@@ -46,8 +46,7 @@ class FontKeyExtractor(KeyExtractor):
                 return [make_thread(
                     row[ref.index("Number")],
                     row[ref.index("Symbol")],  # symbol and ident are the same
-                    row[ref.index("Symbol")],  # in font extractor.
-                    verbose=verbose)]
+                    row[ref.index("Symbol")])]  # in font extractor.
 
             # Break up the row into n distinct sections: it should evenly
             # divide -- if it doesn't COMPLAIN!
@@ -64,9 +63,9 @@ class FontKeyExtractor(KeyExtractor):
 
             return [make_thread(
                 c[num_idx],
-                c[symb_idx],  # Symbol and ident are the same for for font
-                c[symb_idx],  # extractors.
-                verbose=verbose) for c in colours
+                c[symb_idx],  # Symbol and ident are the same for font
+                c[symb_idx])  # extractors.
+                for c in colours
                 if c[num_idx] != ""]
 
         rows = self.get_key_table(key_page)

@@ -7,7 +7,7 @@ from utils import (PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row,
 
 
 class ShapeKeyExtractor(KeyExtractor):
-    """ A class for extracting the key from a PDF when it can only be acessed
+    """ A class for extracting the key from a PDF when it can only be accessed
     in shape form.
 
     Extends KeyExtractor.
@@ -61,8 +61,8 @@ class ShapeKeyExtractor(KeyExtractor):
                 return ([make_thread(
                     row[ref.index("Number")],
                     idents[page_count],
-                    PLACEHOLDERS[count],
-                    verbose=verbose)], count + 1, page_count + 1)
+                    PLACEHOLDERS[count])],
+                        count + 1, page_count + 1)
             colours = divide_row(row, self.layout_params.n_colours_per_row)
             resulting_list = []
             for c in colours:
@@ -70,8 +70,7 @@ class ShapeKeyExtractor(KeyExtractor):
                     continue
                 resulting_list.append(make_thread(c[ref.index("Number")],
                                                   idents[page_count],
-                                                  PLACEHOLDERS[count],
-                                                  verbose=verbose))
+                                                  PLACEHOLDERS[count]))
                 count += 1
                 page_count += 1
             return resulting_list, count, page_count
