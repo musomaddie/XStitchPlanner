@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QVBoxLayout, QLabel
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel, QVBoxLayout
+
 
 class PatternSelectorLayout(QVBoxLayout):
 

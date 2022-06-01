@@ -27,13 +27,14 @@ Options:
             with arbitrary symbols for displaying. These identifiers may bear
             no resemblance to the original symbols.
 """
+import pdfplumber
 from docopt import docopt
+
+import resources.strings as s
 from extractors.extractor_mode import ExtractorMode
 from extractors.key_extractors.font_key_extractor import FontKeyExtractor
 from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
 
-import pdfplumber
-import resources.strings as s
 
 def extract_key_from_pdf(pdf_name,
                          extractor_mode,
@@ -83,8 +84,11 @@ if __name__ == "__main__":
                 raise ValueError(s.page_number_error(string))
         return None
 
+
     def _subtract_one(value):
         return value - 1 if value else None
+
+
     args = docopt(__doc__)
     extract_key_from_pdf(args["PDF"],
                          ExtractorMode.from_string(args["--mode"]),

@@ -1,13 +1,16 @@
-from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
-from floss_thread import Thread
 from unittest.mock import MagicMock, call, patch
-from utils import PLACEHOLDERS
 
 import pytest
+
 import resources.strings as s
+from extractors.pattern_extractors.shape_pattern_extractor import \
+    ShapePatternExtractor
+from floss_thread import Thread
+from utils import PLACEHOLDERS
 
 IDENT_1 = "c-lx1y1x8y7"
 IDENT_2 = "cx0y0x1y1-l"
+
 
 @pytest.fixture
 def extractor():
@@ -27,6 +30,7 @@ def extractor():
 
     extractor.pdf = pdf_mock
     return extractor
+
 
 def setup_bbox_mock(bbox_mock):
     def fake_bbox_to_ident(page, bbox, verbose):
@@ -54,15 +58,17 @@ def test_find_next_placeholder(extractor,
     assert len(extractor._used_symbols) == orig_len + 1
     assert extractor._used_symbols[-1] == expected_placeholder
 
+
 def test_find_next_placeholder_raises_error(extractor):
     extractor._used_symbols = [s for s in PLACEHOLDERS]
     with pytest.raises(NotImplementedError) as e:
         extractor._find_next_placeholder()
     assert str(e.value) == s.too_many_symbols()
 
+
 # Use patch the ident box method since it's already been tested.
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
-def test_get_symbol_withoutkey(bbox_mock, extractor):
+def test_get_symbol_without_key(bbox_mock, extractor):
     # Set up bbox mock
     setup_bbox_mock(bbox_mock)
 
@@ -90,8 +96,9 @@ def test_get_symbol_withoutkey(bbox_mock, extractor):
     assert len(extractor.ident_map) == 2
     assert IDENT_2 in extractor.ident_map
 
+
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
-def test_get_symbol_withkey(bbox_mock, extractor):
+def test_get_symbol_with_key(bbox_mock, extractor):
     setup_bbox_mock(bbox_mock)
 
     extractor.ident_map[IDENT_1] = "1"
@@ -103,13 +110,15 @@ def test_get_symbol_withkey(bbox_mock, extractor):
     symb = extractor._get_symbol(MagicMock(), 2, True)
     assert symb == "2"
 
+
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
-def test_get_symbol_withkey_raiseserror(bbox_mock, extractor):
+def test_get_symbol_with_key_raises_error(bbox_mock, extractor):
     setup_bbox_mock(bbox_mock)
     expected_ident = "c-lx1y1x8y7"
     with pytest.raises(ValueError) as e:
         extractor._get_symbol(MagicMock(), 1, True)
     assert str(e.value) == s.ident_unknown(expected_ident)
+
 
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
 def test_get_rows(bbox_mock, extractor):
@@ -118,6 +127,7 @@ def test_get_rows(bbox_mock, extractor):
     assert len(rows) == 2
     for actual, expected in zip(rows, [["a", "b", "a"], ["b", "a", "a"]]):
         assert actual == expected
+
 
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
 def test_extract_pattern(bbox_mock, extractor):
@@ -131,7 +141,8 @@ def test_extract_pattern(bbox_mock, extractor):
                                  ["a", "b", "a"], ["b", "a", "a"]]):
         assert actual == expected
 
-def test_extract_pattern_withkey_raises_error(extractor):
+
+def test_extract_pattern_with_key_raises_error(extractor):
     with pytest.raises(ValueError) as e:
         extractor.extract_pattern(withkey=True)
     assert str(e.value) == s.extract_pattern_no_key()

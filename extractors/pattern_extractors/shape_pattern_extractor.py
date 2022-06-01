@@ -1,10 +1,9 @@
+import resources.strings as s
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import PLACEHOLDERS, bbox_to_ident, read_key, verbose_print
 
-import resources.strings as s
 
 class ShapePatternExtractor(PatternExtractor):
-
     """ A class to handle extracting a pattern from the pdf when it is created
     using shapes.
 

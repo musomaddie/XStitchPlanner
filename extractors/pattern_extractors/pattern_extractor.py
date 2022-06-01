@@ -1,8 +1,9 @@
 from abc import abstractmethod
+
+import resources.strings as s
 from extractors.extractor import Extractor, PatternFormatError
 from utils import verbose_print
 
-import resources.strings as s
 
 class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
@@ -125,7 +126,7 @@ class PatternExtractor(Extractor):
         cur_y = 0
         expected_page_height = 0
 
-        for page_idx in range(start_page_idx, end_page_idx+1):
+        for page_idx in range(start_page_idx, end_page_idx + 1):
             rows = get_rows_fn(page_idx, withkey=withkey, verbose=verbose)
             cur_x, cur_y, expected_page_height = self._extract_from_this_page(
                 page_idx, rows,

@@ -1,16 +1,18 @@
+import json
+import os
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+
+import resources.strings as s
 from extractors.key_extractors.font_key_extractor import FontKeyExtractor
 from extractors.key_extractors.key_extractor import KeyExtractor
 from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 from floss_thread import Thread
-from unittest.mock import MagicMock, call, patch
-
-import json
-import os
-import pytest
-import resources.strings as s
 
 DIR = "tests/resources/"
 FILENAME_NO = f"{DIR}key_layout_NO.json"
+
 
 @pytest.fixture
 def extractor(with_layout_params):
@@ -22,6 +24,7 @@ def extractor(with_layout_params):
                                             ["Symbol", "Number", "Colour"])
     return extractor
 
+
 @pytest.fixture
 def remove_file():
     # This is a fixture so that I can ensure the created JSON file is removed
@@ -29,16 +32,18 @@ def remove_file():
     yield
     os.remove(FILENAME_NO)
 
+
 @pytest.mark.parametrize("with_layout_params", [False])
-def test_Init(extractor):
+def test_init(extractor):
     assert extractor.key_config_filename == "test_key_layout_config.json"
     assert not extractor.multipage
     assert extractor.layout_params is None
     assert len(extractor.key) == 0
 
+
 @pytest.mark.parametrize("is_multi_page,with_layout_params",
                          [[True, False], [False, False]])
-def test_GetLayoutInfo_FromFile(extractor, is_multi_page):
+def test_get_layout_info_from_file(extractor, is_multi_page):
     extractor.key_config_filename = (
         f"{DIR}test_key_layout_config.json"
         if is_multi_page else f"{DIR}test_key_layout_single_config.json")
@@ -54,10 +59,11 @@ def test_GetLayoutInfo_FromFile(extractor, is_multi_page):
     assert extractor.layout_params.headings == [
         "Symbol", "Number", "Type", "Strands", "Colour"]
 
+
 @pytest.mark.parametrize("is_multi_page,with_layout_params",
                          [[True, False], [False, False]])
 @patch("extractors.key_extractors.key_extractor.input", create=True)
-def test_GetLayoutInfo_NoFile(mock_input,
+def test_get_layout_info_no_file(mock_input,
                               extractor,
                               remove_file,
                               is_multi_page):
@@ -98,12 +104,14 @@ def test_GetLayoutInfo_NoFile(mock_input,
         assert created_config["column headings"] == ["Symbol", "Number",
                                                      "Type", "Strands",
                                                      "Colour"]
+
+
 # Deliberately not testing the output printed by input() as this has become
-# surpsingly annoying to do. (input("x? ") does not send x to stdout in a way
+# surprisingly annoying to do. (input("x? ") does not send x to stdout in a way
 # that pytest will nicely detect.
 
 @pytest.mark.parametrize("with_layout_params", [False])
-def test_SaveKey(extractor):
+def test_save_key(extractor):
     # Manually create a key to save myself
     key_filename = "tests/resources/test.key"
     extractor.key = [Thread("310", "a", "a", "Black", "0"),
@@ -120,32 +128,36 @@ def test_SaveKey(extractor):
         for actual, expected in zip(f.readlines(), resulting_lines):
             assert actual == expected
 
+
 @pytest.mark.parametrize("with_layout_params", [False])
-def test_SaveKey_EmptyKey(extractor):
+def test_save_key_empty_key(extractor):
     with pytest.raises(ValueError) as e:
         extractor.save_key()
     assert str(e.value) == s.empty_on_save("key")
 
+
 @pytest.mark.parametrize("with_layout_params", [False])
-def test_GetKeyTable_NoLayoutParams(extractor):
+def test_get_key_table_no_layout_params(extractor):
     with pytest.raises(ValueError) as e:
         extractor.get_key_table(MagicMock())
     assert str(e.value) == s.no_key_layout_params()
 
+
 @pytest.mark.parametrize("with_layout_params", [True])
-def test_GetKeyTable_InvalidKeyForm(extractor):
+def test_get_key_table_invalid_key_from(extractor):
     extractor.layout_params = KeyLayout(
         KeyForm.UNKNOWN, 0, 0, 0, 0, 0, ["Hello"])
     with pytest.raises(ValueError) as e:
         extractor.get_key_table(MagicMock())
     assert str(e.value) == s.key_form_invalid()
 
+
 @pytest.mark.parametrize(
     "with_layout_params,key_form",
     [[True, KeyForm.FULL_LINES],
      [True, KeyForm.NO_LINES]]
 )
-def test_GetKeyTable_KeyForms(extractor, key_form):
+def test_get_key_table_key_forms(extractor, key_form):
     extractor.layout_params.key_form = key_form
     page_mock = MagicMock()
 
@@ -157,8 +169,9 @@ def test_GetKeyTable_KeyForms(extractor, key_form):
         assert page_mock.mock_calls[0] == call.extract_table(
             KeyExtractor.COLOUR_TABLE_SETTINGS)
 
+
 @pytest.mark.parametrize("with_layout_params", [True])
-def test_GetKeyTable_HeaderLine(extractor):
+def test_get_key_table_header_line(extractor):
     extractor.layout_params.key_form = KeyForm.ONLY_HEADER_LINE
     page_mock = MagicMock()
     page_mock.width = 100

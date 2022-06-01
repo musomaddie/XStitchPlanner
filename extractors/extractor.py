@@ -1,5 +1,6 @@
 from abc import ABC
 
+
 class Extractor(ABC):
     """ A super class for all the extractors. Currently primarily being used to
     store generic pattern information. (Consider making data class)
@@ -21,6 +22,7 @@ class Extractor(ABC):
         self.pattern_name = pattern_name
         self.key_filename = f"{pattern_name}.key"
         self.pattern_filename = f"{pattern_name}.pat"
+
 
 class PatternFormatError(Exception):
     pass

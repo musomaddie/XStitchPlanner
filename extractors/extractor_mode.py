@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class ExtractorMode(Enum):
     """ Determines how the pattern is to be read from the pdf.
 
@@ -9,6 +10,7 @@ class ExtractorMode(Enum):
              reoccuring lines and shapes on the page.
     UNKNOWN: the value received is not recognised.
     """
+
     def from_string(string):
         string = string.lower()
         if string == "font":

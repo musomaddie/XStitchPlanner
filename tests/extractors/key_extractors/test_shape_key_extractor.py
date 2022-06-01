@@ -1,10 +1,11 @@
-from extractors.key_extractors.key_layout import KeyForm, KeyLayout
-from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
 from unittest.mock import MagicMock
-from utils import divide_row
 
 import pytest
+
 import resources.strings as s
+from extractors.key_extractors.key_layout import KeyForm, KeyLayout
+from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
+from utils import divide_row
 
 DIR = "tests/resources/"
 SINGLE_CONFIG_FILE = f"{DIR}test_key_layout_single_config.json"
@@ -83,12 +84,14 @@ for r in [divide_row(row, 2) for row in EXAMPLE_KEY_TABLE_2]:
     colour_2_table.append(r[1])
 colour_2_table = colour_2_table[:-1]
 
+
 def _make_mock_bbox_page(lines, curves, rects):
     page = MagicMock()
     page.lines = lines
     page.curves = curves
     page.rects = rects
     return page
+
 
 def mock_within_bbox(*args, **kwargs):
     bbox = args[0]
@@ -110,9 +113,11 @@ def mock_within_bbox(*args, **kwargs):
         return _make_mock_bbox_page([SINGLE_LINE_2], [SINGLE_CURVE_2], [])
     return _make_mock_bbox_page([], [], [])
 
+
 def make_bbox(x0, top, x1, bottom):
     return {"fill": False, "width": 100, "height": 100,
-            "x0": x0, "top": top, "x1": x1, "bottom": bottom}
+            "x0"  : x0, "top": top, "x1": x1, "bottom": bottom}
+
 
 @pytest.fixture
 def extractor(num_pages, num_colours, is_full_table):
@@ -139,9 +144,9 @@ def extractor(num_pages, num_colours, is_full_table):
 
     return extractor
 
+
 @pytest.fixture
 def page_mock(num_colours):
-
     page_mock = MagicMock()
 
     if num_colours == 1:
@@ -164,6 +169,7 @@ def page_mock(num_colours):
     page_mock.within_bbox.side_effect = mock_within_bbox
     return page_mock
 
+
 # TODO (issues/23): improve the test cases for extractKeyFromPage.
 @pytest.mark.parametrize(
     "num_pages,num_colours,is_full_table,expected_key_table,is_first_page",
@@ -178,10 +184,10 @@ def page_mock(num_colours):
      (1, 2, True, colour_2_table, True),
      (2, 2, True, colour_2_table, True),
      ])
-def test_ExtractKeyFromPage_Passes(extractor,
-                                   page_mock,
-                                   expected_key_table,
-                                   is_first_page):
+def test_extract_key_from_page_passes(extractor,
+                                      page_mock,
+                                      expected_key_table,
+                                      is_first_page):
     result, count = extractor._extract_key_from_page(
         page_mock, is_first_page, 0)
 
@@ -194,7 +200,8 @@ def test_ExtractKeyFromPage_Passes(extractor,
         assert actual.dmc_value == expected[1]
         assert actual.symbol == symbol
 
-def test_ExtractKeyFromPage_TooManyIdents():
+
+def test_extract_key_from_page_too_many_idents():
     # Mock extractor
     extractor = ShapeKeyExtractor(MagicMock(), "test")
     extractor.key_config_filename = SINGLE_CONFIG_FILE
@@ -211,7 +218,7 @@ def test_ExtractKeyFromPage_TooManyIdents():
 
 
 @pytest.mark.parametrize("single_page", ([True, False]))
-def test_extractKey_Passes(single_page):
+def test_extract_key_passes(single_page):
     # Set up page mock
     page_mock = MagicMock()
     page_mock.rects = [make_bbox(10, 10, 20, 20), make_bbox(20, 20, 30, 30),
@@ -227,7 +234,7 @@ def test_extractKey_Passes(single_page):
             make_bbox(90, 10, 100, 20), make_bbox(80, 20, 90, 30),
             make_bbox(70, 30, 80, 40), make_bbox(60, 30, 80, 50)]
         page_mock_2.extract_table.return_value = (
-            EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
+                EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
         page_mock_2.within_bbox.side_effect = mock_within_bbox
         pdf_mock.pages = [page_mock, page_mock_2]
 
@@ -235,13 +242,13 @@ def test_extractKey_Passes(single_page):
     expected_table = (EXAMPLE_KEY_TABLE_1[:-1]
                       if single_page
                       else [
-                          [SINGLE_LINE_STR, "310", "Black"],
-                          [SINGLE_CURVE_STR, "550", "Violet Very Dark"],
-                          [SINGLE_RECT_STR, "666", "Bright Red"],
-                          [SINGLE_LINE_STR_2, "666", "Bright Red"],
-                          [SINGLE_CURVE_STR_2, "904",
-                           "Parrot Green Very Dark"],
-                          [SINGLE_RECT_STR_2, "310", "Black"]]
+        [SINGLE_LINE_STR, "310", "Black"],
+        [SINGLE_CURVE_STR, "550", "Violet Very Dark"],
+        [SINGLE_RECT_STR, "666", "Bright Red"],
+        [SINGLE_LINE_STR_2, "666", "Bright Red"],
+        [SINGLE_CURVE_STR_2, "904",
+         "Parrot Green Very Dark"],
+        [SINGLE_RECT_STR_2, "310", "Black"]]
                       )
 
     symbols = ["a", "b", "c", "d", "e", "f", "g", "h"][:len(expected_table)]
@@ -265,11 +272,12 @@ def test_extractKey_Passes(single_page):
         assert actual.dmc_value == expected[1]
         assert actual.symbol == symbol
 
+
 @pytest.mark.parametrize(
     "num_colours,expected_table",
     [(2, colour_2_table)]
 )
-def test_ExtractKey_TwoColours(page_mock, expected_table):
+def test_extract_key_two_colours(page_mock, expected_table):
     pdf_mock = MagicMock()
     pdf_mock.pages = [page_mock]
 

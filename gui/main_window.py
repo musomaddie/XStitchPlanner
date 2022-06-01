@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QWidget
+
 from gui.layout.pattern_selector import PatternSelectorLayout
+
 
 class MainWindow(QWidget):
     def __init__(self):

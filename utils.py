@@ -3,17 +3,18 @@ multiple PDF extractors regardless of mode and type.
 
 Functions are found in alphabetical order.
 """
-from floss_thread import Thread
+import csv
 from string import ascii_letters, punctuation
 
-import csv
 import resources.strings as s
+from floss_thread import Thread
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"
 HEX_KEY = "hex"
 
 PLACEHOLDERS = ascii_letters + punctuation.replace(",", "").replace(" ", "")
+
 
 def bbox_to_ident(page, bbox, verbose=False):
     """ Given a symbol in the PDF made up of lines and curves and
@@ -29,9 +30,10 @@ def bbox_to_ident(page, bbox, verbose=False):
         ident:  string      the string identifier generated from the list
                             of lines and curves.
     """
+
     def objs_ident(objs, prefix):
-        # Saving the fill as well as x and y as may need to differinate between
-        # a blank circle and a full circle.
+        # Saving the fill as well as x and y as may need to differentiate
+        # between a blank circle and a full circle.
         coords = []
         for obj in objs:
             string = ""
@@ -41,6 +43,7 @@ def bbox_to_ident(page, bbox, verbose=False):
             string += "f" if obj["fill"] else ""
             coords.append(string)
         return [prefix + "".join(sorted(coords))]
+
     page_sect = page.within_bbox(bbox)
 
     # If there are no lines and curves we can try using rects instead.
@@ -64,6 +67,7 @@ def bbox_to_ident(page, bbox, verbose=False):
         objs_ident(page_sect.curves, "c") + objs_ident(
             page_sect.lines, "l")))
 
+
 def determine_pages(page_start_idx, page_end_idx):
     """ Determines which page numbers are we are interested in exporting. Both
     values can be None but page_start_idx must have a value if page_end_idx
@@ -77,15 +81,16 @@ def determine_pages(page_start_idx, page_end_idx):
         tuple[int, int]         the determined pages to export from (inclusive)
     """
     if page_start_idx is None and page_end_idx is None:
-        return (0, 0)
+        return 0, 0
     if not page_end_idx:
-        return (page_start_idx, page_start_idx)
-    return (page_start_idx, page_end_idx)
+        return page_start_idx, page_start_idx
+    return page_start_idx, page_end_idx
+
 
 def divide_row(row, n):
     """ Divides the given row into n rows and returns them as a list of lists.
 
-    Paramaters:
+    Parameters:
         row     list[str]   the row to divide
         n       int         the number to divide the row by.
 
@@ -99,6 +104,7 @@ def divide_row(row, n):
         raise ValueError(s.multikey_row_not_divided_evenly())
     sub_size = len(row) // n
     return [row[i * sub_size:(i + 1) * sub_size] for i in range(n)]
+
 
 def load_dmc_data(filename="resources/dmc_data.csv"):
     """ Loads the additional data about all dmc colours from the given file.
@@ -127,9 +133,10 @@ def load_dmc_data(filename="resources/dmc_data.csv"):
                                              HEX_KEY: row["Hex"]}
     return resulting_dict
 
-def make_thread(dmc_value, ident, symbol, verbose=False):
+
+def make_thread(dmc_value, ident, symbol):
     """ Returns a Thread object with the given dmc_value, ident and symbol.
-        The hexcode colour and colour description found from the dmc_data file.
+        The hex-code colour and colour description found from the dmc_data file.
 
     Parameters:
         dmc_value   str                 the dmc_value of this thread
@@ -137,8 +144,6 @@ def make_thread(dmc_value, ident, symbol, verbose=False):
         symbol      str                 the unique symbol of this thread
         desc        str                 the description of this thread colour
                                         [default: None]
-        verbose     bool                whether to print additional information
-                                        [default: False]
 
     Returns:
         Thread      the newly constructed thread type containing the given
@@ -158,12 +163,12 @@ def make_thread(dmc_value, ident, symbol, verbose=False):
                   DMC_DATA[dmc_value][DESC_KEY],
                   DMC_DATA[dmc_value][HEX_KEY])
 
-def read_key(filename, verbose=False):
+
+def read_key(filename):
     """ Reads the key from the given filename.
 
     Parameters:
         filename    str     the filename where the key can be found.
-        verbose     bool    whether to print detailed debug messages.
 
     Returns:
         list[thread]    a list of threads that are found in this pattern.
@@ -173,10 +178,11 @@ def read_key(filename, verbose=False):
     """
     with open(filename) as key_file:
         reader = csv.reader(key_file, delimiter="\t")
-        # For whatever reason unpacking the arguments using *row isn't working
+        # For whatever reason unpacking the arguments using *row isn't working,
         # so I'm doing it the more manual way.
         return [Thread(row[0], row[1], row[2], row[3], row[4])
                 for row in reader]
+
 
 def verbose_print(message, verbose=True):
     """ Prints the given message if verbose is set to true. """

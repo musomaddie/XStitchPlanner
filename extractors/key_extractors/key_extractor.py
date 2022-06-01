@@ -1,10 +1,10 @@
-from abc import abstractmethod
-from extractors.extractor import Extractor
-from extractors.key_extractors.key_layout import KeyForm, KeyLayout
-
 import csv
 import json
+from abc import abstractmethod
+
 import resources.strings as s
+from extractors.extractor import Extractor
+from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 
 # Variables for JSON keys (just to make them obvious / consistent).
 JK_KF = "key form"

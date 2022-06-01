@@ -1,9 +1,10 @@
-from extractors.key_extractors.key_extractor import KeyExtractor
-from utils import PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row
-from utils import make_thread, verbose_print
 from typing import Counter
 
 import resources.strings as s
+from extractors.key_extractors.key_extractor import KeyExtractor
+from utils import (PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row,
+                   make_thread, verbose_print)
+
 
 class ShapeKeyExtractor(KeyExtractor):
     """ A class for extracting the key from a PDF when it can only be acessed
@@ -52,7 +53,7 @@ class ShapeKeyExtractor(KeyExtractor):
             return [
                 r for r in rects
                 if int(r["width"]) == majority_width
-                and int(r["height"]) == majority_height]
+                   and int(r["height"]) == majority_height]
 
         def read_row(row, count, page_count):
             """ Returns both the made row and the new count value """
@@ -73,7 +74,8 @@ class ShapeKeyExtractor(KeyExtractor):
                                                   verbose=verbose))
                 count += 1
                 page_count += 1
-            return (resulting_list, count, page_count)
+            return resulting_list, count, page_count
+
         idents = filter_majority_rects(
             [r for r in key_page.rects if not r["fill"]])
         if len(idents) > len(PLACEHOLDERS):

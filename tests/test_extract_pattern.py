@@ -1,9 +1,10 @@
-from extract_pattern import extract_from_pdf
-from extractors.extractor_mode import ExtractorMode
 from unittest.mock import ANY, call, patch
 
 import pytest
+
 import resources.strings as s
+from extract_pattern import extract_from_pdf
+from extractors.extractor_mode import ExtractorMode
 
 HEIGHT = 300
 TESTING_PDF = "Testing.pdf"
@@ -17,22 +18,23 @@ def test_ExtractFromPdf_InvalidKey():
                          WIDTH, HEIGHT)
     assert str(e.value) == s.extractor_error()
 
+
 @pytest.mark.parametrize("extractor_mode",
                          [ExtractorMode.FONT, ExtractorMode.SHAPE])
 @patch("extract_pattern.FontPatternExtractor")
 @patch("extract_pattern.ShapePatternExtractor")
 @patch("extract_pattern.pdfplumber.open")
-def test_ExtractPatternFromPdf_Valid(pdfplumber_mock,
-                                     shape_pattern_extractor_mock,
-                                     font_pattern_extractor_mock,
-                                     extractor_mode):
+def test_extract_pattern_from_pdf_valid(pdfplumber_mock,
+                                        shape_pattern_extractor_mock,
+                                        font_pattern_extractor_mock,
+                                        extractor_mode):
     pdfplumber_expected_calls = [call(TESTING_PDF),
                                  call().__enter__(),
                                  call().__enter__().__bool__(),
                                  call().__exit__(None, None, None)]
     extractor_expected_calls = [
         # Not checking anything PDF specific as it should be covered by
-        # PDFplumber internal tests.
+        # PDFPlumber internal tests.
         call(ANY, TESTING_PATTERN_NAME),
         call().extract_pattern(WIDTH, HEIGHT,
                                None,  # start_page_idx
@@ -51,10 +53,11 @@ def test_ExtractPatternFromPdf_Valid(pdfplumber_mock,
         assert shape_pattern_extractor_mock.mock_calls == (
             extractor_expected_calls)
 
+
 @patch("extract_pattern.FontPatternExtractor")
 @patch("extract_pattern.pdfplumber.open")
-def test_ExtractFromPdf_CorrectArguments(pdfplumber_mock,
-                                         font_pattern_extractor_mock):
+def test_extract_from_pdf_correct_arguments(
+        pdfplumber_mock, font_pattern_extractor_mock):
     start_page_idx = 1
     end_page_idx = 100
     overlap = 3

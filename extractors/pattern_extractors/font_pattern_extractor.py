@@ -1,15 +1,15 @@
+import resources.strings as s
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import read_key
 
-import resources.strings as s
 
 class FontPatternExtractor(PatternExtractor):
-
     """ A class for extracting from the pdf when it is in font mode.
     Parameters:
         symbols:    a list of every symbol that appears in the key (if the key
                     is loaded).
     """
+
     def __init__(self, pdf, pattern_name):
         super().__init__(pdf, pattern_name)
         self.symbols = []

@@ -1,9 +1,11 @@
-from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
-from extractors.extractor import PatternFormatError
 from unittest.mock import MagicMock
 
 import pytest
+
 import resources.strings as s
+from extractors.extractor import PatternFormatError
+from extractors.pattern_extractors.font_pattern_extractor import \
+    FontPatternExtractor
 
 EXAMPLE_ROWS_BASIC = [
     ["10", "11", "12", "13", "14", "15", "16", "17", "18", "19"],
@@ -13,14 +15,17 @@ EXAMPLE_ROWS_BASIC = [
     ["50", "51", "52", "53", "54", "55", "56", "57", "58", "59"],
 ]
 
+
 def fake_rows_fn(page_idx, withkey=False, verbose=False):
     return EXAMPLE_ROWS_BASIC
+
 
 @pytest.fixture
 def extractor():
     # Using a FontPatternExtractor as the PatternExtractor is an abstract class
     extractor = FontPatternExtractor(MagicMock(), "test")
     return extractor
+
 
 def test_init(extractor):
     assert len(extractor.pattern) == 0
@@ -39,7 +44,7 @@ def test_init(extractor):
      (10, 0, 5, 5, 18, 2,
       [row[2:] for row in EXAMPLE_ROWS_BASIC], 0, 5, 5)]
 )
-def test_ExtractPatternFromThisPage(
+def test_extract_pattern_from_this_page(
         extractor, cur_x, cur_y, expected_page_height, height, width, overlap,
         result_pattern, result_x, result_y, result_page_height):
     actual_rx, actual_ry, actual_rph = extractor._extract_from_this_page(
@@ -51,6 +56,7 @@ def test_ExtractPatternFromThisPage(
     assert actual_ry == result_y
     assert actual_rph == result_page_height
 
+
 @pytest.mark.parametrize(
     "cur_x,cur_y,expected_ph,height,width,rows,expected_error_message",
     [(0, 0, 5, 5, 10, EXAMPLE_ROWS_BASIC + ["1", "2", "3"],
@@ -59,14 +65,14 @@ def test_ExtractPatternFromThisPage(
      (2, 2, 5, 7, 10, EXAMPLE_ROWS_BASIC,
       s.pattern_size_too_big(1, 10, 5, 12, 7, 10, 7))]
 )
-def test_ExtractPatternFromThisPage_Invalid(
+def test_extract_pattern_from_this_page_invalid(
         extractor, cur_x, cur_y, expected_ph, height, width, rows,
         expected_error_message):
-
     with pytest.raises(PatternFormatError) as e:
         extractor._extract_from_this_page(
             0, rows, cur_x, cur_y, expected_ph, height, width, 0, False)
     assert str(e.value) == expected_error_message
+
 
 # TODO (issues/24): test patterns spread over multiple pages.
 @pytest.mark.parametrize(
@@ -74,18 +80,19 @@ def test_ExtractPatternFromThisPage_Invalid(
     [(10, 5, 0, 0, EXAMPLE_ROWS_BASIC),
      (10, 10, 0, 1, EXAMPLE_ROWS_BASIC + EXAMPLE_ROWS_BASIC)]
 )
-def test_ExtractPatternGivenPages_Valid(
+def test_extract_pattern_given_pages_valid(
         extractor, width, height, start_page, end_page, expected_pattern):
     extractor.extract_pattern_given_pages(
         fake_rows_fn, width, height, start_page, end_page)
     assert extractor.pattern == expected_pattern
+
 
 @pytest.mark.parametrize(
     "width,height,expected_error_message",
     [(12, 5, s.pattern_wrong_size("wide", 10, 12)),
      (10, 7, s.pattern_wrong_size("high", 5, 7))]
 )
-def test_ExtractPatternGivenPages_Invalid(
+def test_extract_pattern_give_pages_invalid(
         extractor, width, height, expected_error_message):
     extractor.pdf.pages = ["example"]
     with pytest.raises(PatternFormatError) as e:
@@ -93,7 +100,8 @@ def test_ExtractPatternGivenPages_Invalid(
             fake_rows_fn, width, height)
     assert str(e.value) == expected_error_message
 
-def test_SavePattern(extractor):
+
+def test_save_pattern(extractor):
     pattern_filename = "tests/resources/test.pat"
     extractor.pattern = [["@", "!", "@"],
                          ["!", "@", "@"],
@@ -106,7 +114,8 @@ def test_SavePattern(extractor):
         for actual, expected in zip(f.readlines(), resulting_lines):
             assert actual == expected
 
-def test_SavePattern_EmptyKey(extractor):
+
+def test_save_pattern_empty_key(extractor):
     with pytest.raises(ValueError) as e:
         extractor.save_pattern()
     assert str(e.value) == s.empty_on_save("pattern")

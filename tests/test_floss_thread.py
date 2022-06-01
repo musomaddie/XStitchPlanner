@@ -1,5 +1,6 @@
 from floss_thread import Thread
 
+
 # This is a pretty boring test but its probably still worth having.
 
 def test_FlossThread_init():

@@ -1,6 +1,8 @@
-from PyQt6.QtWidgets import QComboBox
 from os import listdir
 from os.path import isfile, join
+
+from PyQt6.QtWidgets import QComboBox
+
 
 class PatternSelectorChoice(QComboBox):
     """ Responsible for the drop down box containing a choice of patterns.
@@ -23,9 +25,9 @@ class PatternSelectorChoice(QComboBox):
         """
         super().__init__()
         self.patternNames = []
-        self.findViablePatterns()
+        self.find_viable_patterns()
 
-    def findViablePatterns(self, directory="patterns/"):
+    def find_viable_patterns(self, directory="patterns/"):
         """ Finds all viable patterns in the given directory and assigns it to
         patternNames.
 
@@ -33,9 +35,9 @@ class PatternSelectorChoice(QComboBox):
             directory   str     the directory of where to look for patterns.
                                 [default: 'patterns/']
         """
-        fileList = [f for f in listdir(directory)
-                    if isfile(join(directory, f))]
-        print(fileList)
+        file_list = [f for f in listdir(directory)
+                     if isfile(join(directory, f))]
+        print(file_list)
         return []
         # file_list = [f for f in listdir("patterns/") if isfile(join(
 # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))

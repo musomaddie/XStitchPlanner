@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from string import punctuation
 from enum import Enum, auto
+from string import punctuation
+
 
 class KeyForm(Enum):
     """ A enum to represent the (currently) three different ways that the key
@@ -12,6 +13,7 @@ class KeyForm(Enum):
     NO_LINES            finds a table that has no lines at all
     UNKNOWN             the value received is not recognised
     """
+
     def from_string(string):
         string = string.lower().translate(
             str.maketrans('', '', punctuation)
@@ -29,6 +31,7 @@ class KeyForm(Enum):
     ONLY_HEADER_LINE = auto()
     NO_LINES = auto()
     UNKNOWN = auto()
+
 
 @dataclass
 class KeyLayout:

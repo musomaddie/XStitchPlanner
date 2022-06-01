@@ -1,5 +1,7 @@
-from extractors.extractor import Extractor
 from unittest.mock import MagicMock
+
+from extractors.extractor import Extractor
+
 
 def test_Init():
     pattern_name = "Testing"

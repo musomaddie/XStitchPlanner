@@ -1,7 +1,7 @@
+import resources.strings as s
 from extractors.key_extractors.key_extractor import KeyExtractor
 from utils import determine_pages, divide_row, make_thread, verbose_print
 
-import resources.strings as s
 
 class FontKeyExtractor(KeyExtractor):
     """ A class for extracting the key when the PDF can be accessed via the
@@ -68,6 +68,7 @@ class FontKeyExtractor(KeyExtractor):
                 c[symb_idx],  # extractors.
                 verbose=verbose) for c in colours
                 if c[num_idx] != ""]
+
         rows = self.get_key_table(key_page)
         # TODO (issues/19): print helpful warning.
 

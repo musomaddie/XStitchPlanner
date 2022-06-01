@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Thread:
     """ A class for storing and interacting with all the threads used in the

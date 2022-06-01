@@ -42,14 +42,17 @@ Notes:
     PDF browser. If you can select the pattern symbols and copy them it is
     probably best to use 'font'.
 """
+import pdfplumber
 from docopt import docopt
-from extractors.extractor_mode import ExtractorMode
-from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
-from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
-from utils import verbose_print
 
 import resources.strings as s
-import pdfplumber
+from extractors.extractor_mode import ExtractorMode
+from extractors.pattern_extractors.font_pattern_extractor import \
+    FontPatternExtractor
+from extractors.pattern_extractors.shape_pattern_extractor import \
+    ShapePatternExtractor
+from utils import verbose_print
+
 
 def extract_from_pdf(pdf_name,
                      extractor_mode,
@@ -120,8 +123,10 @@ if __name__ == "__main__":
     def make_zero(value):
         return value if value else 0
 
+
     def subtract_one(value):
         return value - 1 if value else None
+
 
     def make_int(string):
         if not string:
@@ -130,6 +135,7 @@ if __name__ == "__main__":
             return int(string)
         except ValueError:
             raise ValueError(s.page_number_error(string)) from None
+
 
     args = docopt(__doc__)
     extract_from_pdf(args["PDF"],
