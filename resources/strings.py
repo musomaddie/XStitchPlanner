@@ -65,6 +65,10 @@ def input_key_headings():
     return "Heading? "
 
 
+def input_key_table_filled_rects():
+    return "Are the boxes filled? "
+
+
 def input_key_rows_end():
     return "How many rows from the bottom do the key values end? "
 

@@ -8,6 +8,7 @@ from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 
 # Variables for JSON keys (just to make them obvious / consistent).
 JK_KF = "key form"
+JK_FR = "filled rects"
 JK_RS = "row start"
 JK_RE = "row end"
 JK_OP = "other pages"
@@ -146,6 +147,7 @@ class KeyExtractor(Extractor):
                     config = json.load(f)
                     self.layout_params = KeyLayout(
                         KeyForm.from_string(config[JK_KF]),  # key form
+                        config[JK_FR] == "True" if JK_FR in config else False,
                         config[JK_SF],  # row start first page
                         config[JK_EF],  # row end first page
                         config[JK_SO] if JK_SO in config else 0,  # row start
@@ -159,6 +161,7 @@ class KeyExtractor(Extractor):
             """ Reads from the user input.
             """
             key_form = input(s.input_key_table_form())
+            filled_rects = input(s.input_key_table_filled_rects())
             num_rows_start = int(input(s.input_key_rows_start()))
             num_rows_end = int(input(s.input_key_rows_end()))
             num_rows_start_pages = 0
@@ -167,7 +170,7 @@ class KeyExtractor(Extractor):
                 num_rows_start_pages = int(input(
                     s.input_key_rows_start_pages()))
                 num_rows_end_pages = int(input(s.input_key_rows_end_pages()))
-            num_colours_per_row = int(input(s.input_key_colours_per_row))
+            num_colours_per_row = int(input(s.input_key_colours_per_row()))
             print(s.input_key_headings_desc())
             headings = []
             heading = input(s.input_key_headings())
@@ -179,6 +182,7 @@ class KeyExtractor(Extractor):
             with open(self.key_config_filename, "w",
                       encoding="utf-8") as f:
                 json.dump({JK_KF: key_form,
+                           JK_FR: filled_rects,
                            JK_SF: num_rows_start,
                            JK_EF: num_rows_end,
                            JK_SO: num_rows_start_pages,

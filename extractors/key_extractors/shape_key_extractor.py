@@ -14,7 +14,7 @@ class ShapeKeyExtractor(KeyExtractor):
 
     Static Parameters:
         COLOUR_TABLE_SETTINGS   dict    the dictionary specifying the params to
-                                        lookup the key in the PDF. If having
+                                        look up the key in the PDF. If having
                                         trouble with reading the key on a new
                                         file, trying tweaking these.
     """
@@ -76,7 +76,9 @@ class ShapeKeyExtractor(KeyExtractor):
             return resulting_list, count, page_count
 
         idents = filter_majority_rects(
-            [r for r in key_page.rects if not r["fill"]])
+            [r for r in key_page.rects
+             if self.layout_params.filled_rects or not r["fill"]])
+
         if len(idents) > len(PLACEHOLDERS):
             raise NotImplementedError(s.too_many_symbols())
 
@@ -84,7 +86,6 @@ class ShapeKeyExtractor(KeyExtractor):
                                 (r["x0"], r["top"], r["x1"], r["bottom"]),
                                 verbose) for r in idents]
         verbose_print(s.number_of_identifiers(len(idents)), verbose)
-        ref = self.layout_params.headings
 
         key_table = self.get_key_table(key_page)
         ref = self.layout_params.headings  # Variable for readability

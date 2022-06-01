@@ -36,11 +36,15 @@ class KeyForm(Enum):
 @dataclass
 class KeyLayout:
     """ A data class for storing information about the layout of the key.
+    key_form            KeyForm     the form that the key takes on the page
+    filled_rects         bool    whether the rectangles that contain the images
+                                are filled with color or not [default: False]
     n_rows_start        int     the row where the key starts on the first page
     n_rows_end          int     the row where the key stops on the first page
     n_rows_start_pages  int     the number of the row where the key starts for
                                 the pages that aren't the first page. 0 if this
                                 is not a multi-page key.
+
     n_rows_end_pages    int     the row where the key ends for pages that
                                 aren't the first page. 0 if this is not a
                                 multi-page key.
@@ -48,6 +52,7 @@ class KeyLayout:
                                     column.
     """
     key_form: KeyForm
+    filled_rects: bool
     n_rows_start: int
     n_rows_end: int
     n_rows_start_pages: int
