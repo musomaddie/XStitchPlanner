@@ -19,6 +19,7 @@ JK_EO = f"{JK_RE} {JK_OP}"
 JK_NC = "number of colours per row"
 JK_H = "column headings"
 
+
 class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
@@ -128,6 +129,7 @@ class KeyExtractor(Extractor):
         attempts to read the layout params from the config file and if it
         doesn't exist get it from user input and save it.
         """
+
         def read_from_layout_file():
             """ Reads from a layout file, if there are any issues reverts to
             prompting for user input.
