@@ -1,10 +1,15 @@
-from PyQt6.QtWidgets import QLabel, QWidget
+from unittest.mock import patch
+
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 import resources.gui_strings as s
 from gui.patterns_ui.pattern_selector import PatternSelectorLayout
+from gui.patterns_ui.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
-def test_pattern_selector_layout_init(qtbot):
+@patch("gui.patterns_ui.pattern_selector.PatternSelectorChoiceLayout")
+def test_pattern_selector_layout_init(pscl_mock, qtbot):
+    pscl_mock.return_value = QHBoxLayout()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorLayout())
     qtbot.addWidget(test_widget)
@@ -16,4 +21,5 @@ def test_pattern_selector_layout_init(qtbot):
     assert type(actual_label) == QLabel
     assert actual_label.text() == s.pattern_selector_title()
 
-    # TODO: tests for the remaining part?
+    inner_value = test_widget.layout().itemAt(1)
+    assert pscl_mock.call_count == 1
