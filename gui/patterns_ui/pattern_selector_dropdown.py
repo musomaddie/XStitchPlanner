@@ -25,19 +25,18 @@ class PatternSelectorChoice(QComboBox):
         """
         super().__init__()
         self.patternNames = []
-        self.find_viable_patterns()
 
-    def find_viable_patterns(self, directory="patterns/"):
-        """ Finds all viable patterns in the given directory and assigns it to
-        patternNames.
 
-        Parameters:
-            directory   str     the directory of where to look for patterns.
-                                [default: 'patterns/']
-        """
-        file_list = [f for f in listdir(directory)
-                     if isfile(join(directory, f))]
-        print(file_list)
-        return []
-        # file_list = [f for f in listdir("patterns/") if isfile(join(
-# onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))
+def find_all_patterns():
+    """ Finds all the patterns that have both a .key file and a .pat file and
+    returns the pattern name
+    """
+    all_pattern_related_files = [
+        f for f in listdir("patterns/") if isfile(join("patterns/", f))]
+
+    key_files = [
+        f.split(".")[0] for f in all_pattern_related_files if ".key" in f]
+    pat_files = [
+        f.split(".")[0] for f in all_pattern_related_files if ".pat" in f]
+
+    return [file_name for file_name in key_files if file_name in pat_files]
