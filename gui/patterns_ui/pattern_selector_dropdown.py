@@ -4,7 +4,7 @@ from os.path import isfile, join
 from PyQt6.QtWidgets import QComboBox
 
 
-class PatternSelectorChoice(QComboBox):
+class PatternSelectorChoiceLayout(QComboBox):
     """ Responsible for the drop down box containing a choice of patterns.
 
     Methods:

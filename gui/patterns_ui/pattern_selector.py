@@ -1,7 +1,9 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout
 
-from gui.patterns_ui.pattern_selector_dropdown import  PatternSelectorChoice
+import resources.gui_strings as s
+from gui.patterns_ui.pattern_selector_dropdown import (
+    PatternSelectorChoiceLayout)
 
 
 class PatternSelectorLayout(QVBoxLayout):
@@ -10,9 +12,9 @@ class PatternSelectorLayout(QVBoxLayout):
         super().__init__()
 
         # Heading label
-        label = QLabel("Hello World this is vbox")
+        label = QLabel(s.pattern_selector_title())
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(label)
 
         # Populate a combo box
-        self.addWidget(PatternSelectorChoice())
+        self.addWidget(PatternSelectorChoiceLayout())
