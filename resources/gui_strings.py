@@ -3,3 +3,7 @@
 
 def pattern_selector_title():
     return "Select the pattern to view"
+
+
+def pattern_selector_select():
+    return "Select this pattern"
