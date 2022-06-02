@@ -7,29 +7,25 @@ from PyQt6.QtWidgets import QComboBox
 class PatternSelectorChoice(QComboBox):
     """ Responsible for the drop down box containing a choice of patterns.
 
-    Parameters:
-        patternNames    list[str]       the name of all possible pattern
-                                        options, ordered alphabetically
-
     Methods:
         __init__(self):                         initialises a new drop down box
                                                 and populates it
-        findViablePatterns(self, directory)     updates the patternNames to
-                                                match all viable patterns
-                                                within the given directory
     """
 
     def __init__(self):
-        """ Initialises a new pattern selector choice instance and finds all
-        viable patterns in the `patterns/` directory.
+        """ Initialises a new pattern selector dropdown instance containing all
+        the viable file names.
         """
         super().__init__()
-        self.patternNames = []
+        self.addItems(find_all_patterns())
 
 
 def find_all_patterns():
     """ Finds all the patterns that have both a .key file and a .pat file and
     returns the pattern name
+
+    Returns
+        list [str]      a list where each item is a different pattern name.
     """
     all_pattern_related_files = [
         f for f in listdir("patterns/") if isfile(join("patterns/", f))]

@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout
 
-from gui.patterns_ui.pattern_selector_dropdown import find_all_patterns
+from gui.patterns_ui.pattern_selector_dropdown import  PatternSelectorChoice
 
 
 class PatternSelectorLayout(QVBoxLayout):
@@ -15,5 +15,4 @@ class PatternSelectorLayout(QVBoxLayout):
         self.addWidget(label)
 
         # Populate a combo box
-
-
+        self.addWidget(PatternSelectorChoice())
