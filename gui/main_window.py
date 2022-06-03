@@ -12,4 +12,9 @@ class MainWindow(QWidget):
         self.showMaximized()
         self.setWindowTitle("Stitch Please!")
 
-        self.setLayout(PatternSelectorLayout())
+        self.setLayout(PatternSelectorLayout(self))
+
+    def pattern_chosen(self, pattern_name):
+        """ Loads the default display window for this pattern.
+        """
+        pass

@@ -16,7 +16,7 @@ def test_pattern_selector_layout_init(pscl_mock, qtbot):
     assert test_widget.layout().count() == 2
 
     # Testing the label
-    actual_label = test_widget.layout().itemAt(0).widget()
+    actual_label = test_widget.layout().title
     assert type(actual_label) == QLabel
     assert actual_label.text() == s.pattern_selector_title()
 
