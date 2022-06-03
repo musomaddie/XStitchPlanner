@@ -3,10 +3,10 @@ from unittest.mock import patch
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_ui.pattern_selector import PatternSelectorLayout
+from gui.patterns_layout.pattern_selector import PatternSelectorLayout
 
 
-@patch("gui.patterns_ui.pattern_selector.PatternSelectorChoiceLayout")
+@patch("gui.patterns_layout.pattern_selector.PatternSelectorChoiceLayout")
 def test_pattern_selector_layout_init(pscl_mock, qtbot):
     pscl_mock.return_value = QHBoxLayout()
     test_widget = QWidget()

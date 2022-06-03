@@ -2,11 +2,13 @@ from unittest.mock import patch
 
 from PyQt6.QtWidgets import QPushButton, QWidget
 
-from gui.patterns_ui.pattern_selector_choice import PatternSelectorChoiceLayout
 import resources.gui_strings as s
+from gui.patterns_layout.pattern_selector_choice import \
+    PatternSelectorChoiceLayout
 
 
-@patch("gui.patterns_ui.pattern_selector_choice.PatternSelectorDropDownLayout")
+@patch(
+    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownLayout")
 def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
     psdl_mock.return_value = QWidget()
     test_widget = QWidget()

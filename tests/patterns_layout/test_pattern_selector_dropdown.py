@@ -1,8 +1,8 @@
-import pytest
-
 from unittest.mock import patch
 
-from gui.patterns_ui.pattern_selector_dropdown import find_all_patterns
+import pytest
+
+from gui.patterns_layout.pattern_selector_dropdown import find_all_patterns
 
 
 @pytest.mark.parametrize(
@@ -13,11 +13,12 @@ from gui.patterns_ui.pattern_selector_dropdown import find_all_patterns
      (["first_file.pat", "second_file.pat"],
       ["first_file.key"], ["first_file"]),
      (
-     ["first_file.pat"], ["first_file.key", "second_file.key"], ["first_file"]),
+             ["first_file.pat"], ["first_file.key", "second_file.key"],
+             ["first_file"]),
      (["first_file.pat"], ["second_file.key"], [])
      ))
-@patch("gui.patterns_ui.pattern_selector_dropdown.listdir")
-@patch("gui.patterns_ui.pattern_selector_dropdown.isfile")
+@patch("gui.patterns_layout.pattern_selector_dropdown.listdir")
+@patch("gui.patterns_layout.pattern_selector_dropdown.isfile")
 def test_find_all_patterns(isfile_mock, listdir_mock,
                            pat_files, key_files, expected_pattern_names):
     isfile_mock.return_value = True
@@ -29,8 +30,8 @@ def test_find_all_patterns(isfile_mock, listdir_mock,
         assert expected in result
 
 
-@patch("gui.patterns_ui.pattern_selector_dropdown.listdir")
-@patch("gui.patterns_ui.pattern_selector_dropdown.isfile")
+@patch("gui.patterns_layout.pattern_selector_dropdown.listdir")
+@patch("gui.patterns_layout.pattern_selector_dropdown.isfile")
 def test_find_all_patterns_sorted(isfile_mock, listdir_mock):
     isfile_mock.return_value = True
     listdir_mock.return_value = [

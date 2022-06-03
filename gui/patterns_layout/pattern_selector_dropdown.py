@@ -5,11 +5,16 @@ from PyQt6.QtWidgets import QComboBox
 
 
 class PatternSelectorDropDownLayout(QComboBox):
-    """ Responsible for the drop down box containing a choice of patterns.
+    """ Responsible for the dropdown box containing a choice of patterns.
+
+    Parameters:
+        pattern_names    list[str]   a list containing all the possible pattern
+                                     names
 
     Methods:
-        __init__(self):                         initialises a new drop down box
-                                                and populates it
+        __init__():             initialises a new dropdown box and populates it
+        activated(int):         updates the currently selected whenever the box
+                                is updated
     """
 
     def __init__(self):
@@ -17,7 +22,14 @@ class PatternSelectorDropDownLayout(QComboBox):
         the viable file names.
         """
         super().__init__()
-        self.addItems(find_all_patterns())
+        self.pattern_names = find_all_patterns()
+        self.addItems(self.pattern_names)
+        self.selected_pattern = self.pattern_names[0]  # default to first name
+
+    def activated(self, index):
+        """ Updates the currently selected pattern based on box interactions.
+        """
+        self.selected_pattern = self.pattern_names[index]
 
 
 def find_all_patterns():
@@ -35,4 +47,5 @@ def find_all_patterns():
     pat_files = [
         f.split(".")[0] for f in all_pattern_related_files if ".pat" in f]
 
-    return sorted([file_name for file_name in key_files if file_name in pat_files])
+    return sorted(
+        [file_name for file_name in key_files if file_name in pat_files])
