@@ -14,13 +14,32 @@ class PatternSelectorChoiceLayout(QHBoxLayout):
     |         DROP DOWN BOX                      |      CHOOSE       |
     |                                            |                   |
     +----------------------------------------------------------------+
+
+    Parameters:
+        combo_box   PatternSelectorDropDownWidget   controls choosing the pattern
+        submit_button    QPushButton                a button to press to move to
+                                                    the next step.
+
+    Methods:
+        __init__()              PatternSelectorChoiceLayout
+        on_pattern_choice()     Moves to the next layout with the chosen pattern
+                                extracted from the combo_box
     """
 
     def __init__(self):
         super().__init__()
 
         # Combo box
-        self.addWidget(PatternSelectorDropDownWidget())
+        self.combo_box = PatternSelectorDropDownWidget()
+        self.addWidget(self.combo_box)
 
         # Submit button
-        self.addWidget(QPushButton(s.pattern_selector_select()))
+        # Not required to be a class variable but makes testing so much easier
+        self.submit_button = QPushButton(s.pattern_selector_select())
+        self.addWidget(self.submit_button)
+        self.submit_button.pressed.connect(self.choose_pattern)
+
+    def choose_pattern(self):
+        # Should actually make and call a new layout (no return value)
+        selected_pattern = self.combo_box.selected_pattern
+        return selected_pattern

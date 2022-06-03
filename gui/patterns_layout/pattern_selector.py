@@ -28,5 +28,5 @@ class PatternSelectorLayout(QVBoxLayout):
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(label)
 
-        # Populate a combo box
+        # Populate a combo box and button.
         self.addLayout(PatternSelectorChoiceLayout())
