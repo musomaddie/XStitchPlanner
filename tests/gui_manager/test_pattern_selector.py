@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 import resources.gui_strings as s
 from gui.patterns_ui.pattern_selector import PatternSelectorLayout
-from gui.patterns_ui.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
 @patch("gui.patterns_ui.pattern_selector.PatternSelectorChoiceLayout")
@@ -21,5 +20,4 @@ def test_pattern_selector_layout_init(pscl_mock, qtbot):
     assert type(actual_label) == QLabel
     assert actual_label.text() == s.pattern_selector_title()
 
-    inner_value = test_widget.layout().itemAt(1)
     assert pscl_mock.call_count == 1

@@ -3,8 +3,6 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout
 
 import resources.gui_strings as s
 from gui.patterns_ui.pattern_selector_choice import PatternSelectorChoiceLayout
-from gui.patterns_ui.pattern_selector_dropdown import (
-    PatternSelectorDropDownLayout)
 
 
 class PatternSelectorLayout(QVBoxLayout):

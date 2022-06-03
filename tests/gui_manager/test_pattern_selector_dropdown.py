@@ -35,7 +35,7 @@ def test_find_all_patterns_sorted(isfile_mock, listdir_mock):
     isfile_mock.return_value = True
     listdir_mock.return_value = [
         "b.pat", "c.pat", "d.pat", "e.pat", "a.pat",
-        "b.pat", "c.pat", "d.pat", "e.pat", "a.pat"]
+        "b.key", "c.key", "d.key", "e.key", "a.key"]
     expected_names = ["a", "b", "c", "d", "e"]
     result = find_all_patterns()
 
