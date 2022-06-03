@@ -8,7 +8,7 @@ from gui.patterns_layout.pattern_selector_choice import \
 
 
 @patch(
-    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownLayout")
+    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownWidget")
 def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
     psdl_mock.return_value = QWidget()
     test_widget = QWidget()

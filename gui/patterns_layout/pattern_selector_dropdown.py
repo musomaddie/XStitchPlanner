@@ -4,7 +4,7 @@ from os.path import isfile, join
 from PyQt6.QtWidgets import QComboBox
 
 
-class PatternSelectorDropDownLayout(QComboBox):
+class PatternSelectorDropDownWidget(QComboBox):
     """ Responsible for the dropdown box containing a choice of patterns.
 
     Parameters:
@@ -25,11 +25,10 @@ class PatternSelectorDropDownLayout(QComboBox):
         self.pattern_names = find_all_patterns()
         self.addItems(self.pattern_names)
         self.selected_pattern = self.pattern_names[0]  # default to first name
+        self.activated.connect(self.update_currently_selected)
 
-    def activated(self, index):
-        """ Updates the currently selected pattern based on box interactions.
-        """
-        self.selected_pattern = self.pattern_names[index]
+    def update_currently_selected(self):
+        self.selected_pattern = self.pattern_names[self.currentIndex()]
 
 
 def find_all_patterns():

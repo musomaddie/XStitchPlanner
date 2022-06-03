@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QPushButton
 
 import resources.gui_strings as s
 from gui.patterns_layout.pattern_selector_dropdown import \
-    PatternSelectorDropDownLayout
+    PatternSelectorDropDownWidget
 
 
 class PatternSelectorChoiceLayout(QHBoxLayout):
@@ -20,7 +20,7 @@ class PatternSelectorChoiceLayout(QHBoxLayout):
         super().__init__()
 
         # Combo box
-        self.addWidget(PatternSelectorDropDownLayout())
+        self.addWidget(PatternSelectorDropDownWidget())
 
         # Submit button
         self.addWidget(QPushButton(s.pattern_selector_select()))
