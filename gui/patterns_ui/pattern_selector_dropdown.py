@@ -35,4 +35,4 @@ def find_all_patterns():
     pat_files = [
         f.split(".")[0] for f in all_pattern_related_files if ".pat" in f]
 
-    return [file_name for file_name in key_files if file_name in pat_files]
+    return sorted([file_name for file_name in key_files if file_name in pat_files])
