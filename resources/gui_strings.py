@@ -7,3 +7,7 @@ def pattern_selector_title():
 
 def pattern_selector_select():
     return "Select this pattern"
+
+
+def program_title():
+    return "Stitch Please!"
