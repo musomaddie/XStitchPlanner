@@ -16,7 +16,8 @@ class PatternSelectorChoiceLayout(QHBoxLayout):
     +----------------------------------------------------------------+
 
     Parameters:
-        parent      PatternSelectorLayout           the parent layout
+        parent      PatternSelectorLayout           the parent layout [default
+                                                        None]
         combo_box   PatternSelectorDropDownWidget   controls pattern choice
         submit_button    QPushButton                a button to press to move to
                                                     the next step.

@@ -6,9 +6,17 @@ import resources.gui_strings as s
 from gui.patterns_layout.pattern_selector import PatternSelectorLayout
 
 
+class ParentMock:
+    def __init__(self):
+        self.called = False
+
+    def pattern_chosen(self, pattern_name):
+        self.called = True
+
+
 @patch("gui.patterns_layout.pattern_selector.PatternSelectorChoiceLayout")
-def test_pattern_selector_layout_init(pscl_mock, qtbot):
-    pscl_mock.return_value = QHBoxLayout()
+def test_init(child_mock, qtbot):
+    child_mock.return_value = QHBoxLayout()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorLayout())
     qtbot.addWidget(test_widget)
@@ -20,4 +28,18 @@ def test_pattern_selector_layout_init(pscl_mock, qtbot):
     assert type(actual_label) == QLabel
     assert actual_label.text() == s.pattern_selector_title()
 
-    assert pscl_mock.call_count == 1
+    assert child_mock.call_count == 1
+
+
+@patch("gui.patterns_layout.pattern_selector.PatternSelectorChoiceLayout")
+def test_pattern_chosen(child_mock, qtbot):
+    child_mock.return_value = QHBoxLayout()
+    parent_mock = ParentMock()
+    test_widget = QWidget()
+    test_widget.setLayout(PatternSelectorLayout(parent_mock))
+    qtbot.addWidget(test_widget)
+
+    assert not parent_mock.called
+
+    test_widget.layout().pattern_chosen(None)
+    assert parent_mock.called

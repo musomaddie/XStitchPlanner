@@ -22,6 +22,8 @@ class PatternSelectorLayout(QVBoxLayout):
     Parameters:
         title       QLabel                          the title of the page
         selector    PatternSelectorChoiceLayout     handles choosing the pattern
+        parent      MainWindow                      the parent layout [default
+                                                        None].
 
     Methods:
         __init__()          PatternSelectorLayout
