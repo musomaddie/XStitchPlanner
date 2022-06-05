@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QAbstractTableModel, Qt
-from PyQt6.QtWidgets import QTableView
+from PyQt6.QtWidgets import QTableView, QHeaderView
 
 
 class PatternDisplayGridModel(QAbstractTableModel):
@@ -23,6 +23,7 @@ class PatternDisplayGridModel(QAbstractTableModel):
         self.data = data
 
     def data(self, index, role):
+        # TODO: does it get stuck here???
         if role == Qt.ItemDataRole.DisplayRole:
             return self.data[index.row()][index.column()]
 
@@ -50,7 +51,7 @@ class PatternDisplayGridModel(QAbstractTableModel):
                                     selected from the pattern selector
         """
 
-        with open(f"resources/{pattern_name}.pat") as f:
+        with open(f"patterns/{pattern_name}.pat") as f:
             return PatternDisplayGridModel(
                 [[letter for letter in row.rstrip()]
                  for row in f.readlines()]
@@ -58,4 +59,30 @@ class PatternDisplayGridModel(QAbstractTableModel):
 
 
 class PatternDisplayGridView(QTableView):
-    pass
+    """ Responsible for actually displaying the pattern in a table form.
+
+    Parameters:
+        parent  PatternDisplayOverlay
+        model   PatternDisplayGridModel     the model managing this table
+
+    Methods:
+        __init__(pattern_name)  PatternDisplayGridView
+    """
+
+    def __init__(self, pattern_name, parent=None):
+        super().__init__()
+
+        self.parent = parent
+        self.model = PatternDisplayGridModel.load_from_pattern_file(
+            pattern_name)
+
+        self.setModel(self.model)
+
+        # Using ResizeMode.Fixed to control the size of the cells as using a
+        # more dynamic resize caused the program to take a long time loading
+        self.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.Fixed)
+        self.verticalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.Fixed)
+        self.horizontalHeader().setDefaultSectionSize(10)
+        self.verticalHeader().setDefaultSectionSize(10)

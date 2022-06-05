@@ -13,6 +13,6 @@ def test_init(child_mock, qtbot):
     test_widget.setLayout(PatternViewOverviewLayout("Testing"))
     qtbot.addWidget(test_widget)
 
-    child_mock.assert_called_once_with(test_widget.layout())
+    child_mock.assert_called_once_with("Testing", test_widget.layout())
     assert test_widget.layout().count() == 2
     assert test_widget.layout().pattern_title.text() == "Testing"

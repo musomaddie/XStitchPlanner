@@ -38,4 +38,4 @@ class PatternViewOverviewLayout(QVBoxLayout):
         self.parent = parent
 
         self.addWidget(self.pattern_title)
-        self.addLayout(PatternDisplayOverlay(self))
+        self.addLayout(PatternDisplayOverlay(pattern_title, self))

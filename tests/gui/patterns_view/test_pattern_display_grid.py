@@ -2,7 +2,8 @@ from unittest import mock
 
 import pytest
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridModel
+from gui.patterns_view.pattern_display_grid import PatternDisplayGridModel, \
+    PatternDisplayGridView
 
 TESTING_DATA_3_2 = [['a', 'a', 'b'], ['b', 'b', 'a']]
 TESTING_DATA_3_3 = [['a', 'a', 'b'], ['b', 'b', 'c'], ['c', 'c', 'a']]
@@ -42,3 +43,14 @@ def test_rowCount(model):
 
 def test_columnCount(model):
     assert model.columnCount(None) == 3
+
+
+# View tests
+@mock.patch("gui.patterns_view.pattern_display_grid.PatternDisplayGridModel"
+            ".load_from_pattern_file")
+def test_init_view(model_mock, qtbot):
+    model_mock.return_value = PatternDisplayGridModel(TESTING_DATA_3_2)
+    test_widget = PatternDisplayGridView("TESTING")
+    qtbot.addWidget(test_widget)
+
+    assert model_mock.called == 1
