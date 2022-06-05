@@ -12,7 +12,7 @@ class PatternDisplayGridModel(QAbstractTableModel):
         __init__(data)  PatternDisplayGridModel
 
     Static Methods:
-        load_pattern_from_file(pattern_name)    PatternDisplayGridModel
+        load_from_pattern_file(pattern_name)    PatternDisplayGridModel
                 loads a pattern display grid model from the .pat file with the
                 given pattern name
 
@@ -31,6 +31,30 @@ class PatternDisplayGridModel(QAbstractTableModel):
 
     def columnCount(self, index):
         return len(self.data[0])
+
+    @staticmethod
+    def load_from_pattern_file(pattern_name):
+        """ Returns a PatternDisplayGridModel containing a data loaded from the
+        .pat file of the given pattern.
+
+        Args:
+            pattern_name    str     the name of the pattern to load
+
+        Returns:
+            PatternDisplayGridModel     with the given pattern loaded as data
+
+        Raises:
+            FileNotFoundError   if the given pattern does not have a
+                                    corresponding file name. This should never
+                                    be reached as it MUST have a .pat file to be
+                                    selected from the pattern selector
+        """
+
+        with open(f"resources/{pattern_name}.pat") as f:
+            return PatternDisplayGridModel(
+                [[letter for letter in row.rstrip()]
+                 for row in f.readlines()]
+            )
 
 
 class PatternDisplayGridView(QTableView):
