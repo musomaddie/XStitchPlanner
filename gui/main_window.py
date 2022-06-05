@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
-from gui.patterns_selector.pattern_view_overview import \
+from gui.patterns_view.pattern_view_overview import \
     PatternViewOverviewLayout
 
 

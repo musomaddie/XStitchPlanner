@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 
-from gui.patterns_selector.pattern_view_overview import \
+from gui.patterns_view.pattern_view_overview import \
     PatternViewOverviewLayout
 
 
