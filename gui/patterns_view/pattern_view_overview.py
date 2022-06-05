@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QLabel
 
+from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
+
 
 class PatternViewOverviewLayout(QVBoxLayout):
     """ Contains everything for the pattern view
@@ -15,8 +17,8 @@ class PatternViewOverviewLayout(QVBoxLayout):
     Parameters:
         parent              MainWindow              parent layout [default None]
         pattern_title       QLabel                  title of pattern
-        pattern_display     PatternDisplayLayout    contains the detailed
-                                                    pattern display
+        pattern_display     PatternDisplayOverlay   contains the detailed
+                                                        pattern display
 
     Methods:
         __init__(pattern_title, parent)         PatternViewOverlayLayout
@@ -36,5 +38,4 @@ class PatternViewOverviewLayout(QVBoxLayout):
         self.parent = parent
 
         self.addWidget(self.pattern_title)
-
-        # TODO: actually populate this layout
+        self.addLayout(PatternDisplayOverlay(self))
