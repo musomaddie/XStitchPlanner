@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QWidget
 
-from gui.patterns_layout.pattern_view_overview import PatternViewOverviewLayout
+from gui.patterns_selector.pattern_view_overview import \
+    PatternViewOverviewLayout
 
 
 def test_init(qtbot):

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton
 
 import resources.gui_strings as s
-from gui.patterns_layout.pattern_selector_dropdown import \
+from gui.patterns_selector.pattern_selector_dropdown import \
     PatternSelectorDropDownWidget
 
 

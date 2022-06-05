@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QPushButton, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_layout.pattern_selector_choice import \
+from gui.patterns_selector.pattern_selector_choice import \
     PatternSelectorChoiceLayout
 
 
@@ -24,7 +24,7 @@ class ParentMock(QWidget):
 
 
 @patch(
-    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownWidget")
+    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
 def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     test_widget = QWidget()
@@ -42,7 +42,7 @@ def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
 
 
 @patch(
-    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownWidget")
+    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
 def test_choose_pattern(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     parent_mock = ParentMock()
@@ -58,7 +58,7 @@ def test_choose_pattern(psdl_mock, qtbot):
 
 
 @patch(
-    "gui.patterns_layout.pattern_selector_choice.PatternSelectorDropDownWidget")
+    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
 def test_choose_pattern_called_on_button_pressed(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     parent_mock = ParentMock()

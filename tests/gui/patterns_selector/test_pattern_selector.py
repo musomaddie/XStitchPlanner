@@ -3,7 +3,7 @@ from unittest.mock import patch
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_layout.pattern_selector import PatternSelectorLayout
+from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 
 
 class ParentMock:
@@ -14,7 +14,7 @@ class ParentMock:
         self.called = True
 
 
-@patch("gui.patterns_layout.pattern_selector.PatternSelectorChoiceLayout")
+@patch("gui.patterns_selector.pattern_selector.PatternSelectorChoiceLayout")
 def test_init(child_mock, qtbot):
     child_mock.return_value = QHBoxLayout()
     test_widget = QWidget()
@@ -31,7 +31,7 @@ def test_init(child_mock, qtbot):
     assert child_mock.call_count == 1
 
 
-@patch("gui.patterns_layout.pattern_selector.PatternSelectorChoiceLayout")
+@patch("gui.patterns_selector.pattern_selector.PatternSelectorChoiceLayout")
 def test_pattern_chosen(child_mock, qtbot):
     child_mock.return_value = QHBoxLayout()
     parent_mock = ParentMock()

@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_layout.pattern_selector import PatternSelectorLayout
-from gui.patterns_layout.pattern_view_overview import PatternViewOverviewLayout
+from gui.patterns_selector.pattern_selector import PatternSelectorLayout
+from gui.patterns_selector.pattern_view_overview import \
+    PatternViewOverviewLayout
 
 
 class MainWindow(QStackedWidget):
