@@ -12,7 +12,7 @@ TESTING_PATTERN_NAME = "Testing"
 WIDTH = 300
 
 
-def test_ExtractFromPdf_InvalidKey():
+def test_extract_from_pdf_invalid_key():
     with pytest.raises(ValueError) as e:
         extract_from_pdf(TESTING_PATTERN_NAME, ExtractorMode.UNKNOWN,
                          WIDTH, HEIGHT)
