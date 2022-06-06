@@ -1,5 +1,9 @@
 from PyQt6.QtCore import QAbstractTableModel, Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QTableView, QHeaderView
+
+from pattern_cell import PatternCell
+from utils import read_key
 
 
 class PatternDisplayGridModel(QAbstractTableModel):
@@ -20,18 +24,20 @@ class PatternDisplayGridModel(QAbstractTableModel):
 
     def __init__(self, data):
         super().__init__()
-        self.data = data
+        self._data = data
 
     def data(self, index, role):
-        # TODO: does it get stuck here???
+        if role == Qt.ItemDataRole.BackgroundRole:
+            return QColor(
+                f"#{self._data[index.row()][index.column()].hex_colour}")
         if role == Qt.ItemDataRole.DisplayRole:
-            return self.data[index.row()][index.column()]
+            return self._data[index.row()][index.column()].display_symbol
 
     def rowCount(self, index):
-        return len(self.data)
+        return len(self._data)
 
     def columnCount(self, index):
-        return len(self.data[0])
+        return len(self._data[0])
 
     @staticmethod
     def load_from_pattern_file(pattern_name):
@@ -51,11 +57,19 @@ class PatternDisplayGridModel(QAbstractTableModel):
                                     selected from the pattern selector
         """
 
+        key = {k.symbol: k for k in read_key(f"patterns/{pattern_name}.key")}
+
+        all_rows = []
         with open(f"patterns/{pattern_name}.pat") as f:
-            return PatternDisplayGridModel(
-                [[letter for letter in row.rstrip()]
-                 for row in f.readlines()]
-            )
+            for row_count, row in enumerate(f.readlines()):
+                this_row = []
+                for col_count, letter in enumerate(row.rstrip()):
+                    this_row.append(PatternCell(letter,
+                                                key[letter].dmc_value,
+                                                (row_count, col_count),
+                                                key[letter].hex_colour))
+                all_rows.append(this_row)
+            return PatternDisplayGridModel(all_rows)
 
 
 class PatternDisplayGridView(QTableView):
