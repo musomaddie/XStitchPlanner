@@ -84,11 +84,8 @@ def test_data(r, col, model):
 
 
 # View tests
-@mock.patch("gui.patterns_view.pattern_display_grid.PatternDisplayGridModel"
-            ".load_from_pattern_file")
-def test_init_view(model_mock, qtbot):
-    model_mock.return_value = PatternDisplayGridModel(TESTING_DATA_3_2)
-    test_widget = PatternDisplayGridView("TESTING")
+def test_init_view(model, qtbot):
+    test_widget = PatternDisplayGridView("TESTING", model)
     qtbot.addWidget(test_widget)
 
-    assert model_mock.called == 1
+    assert test_widget.model == model

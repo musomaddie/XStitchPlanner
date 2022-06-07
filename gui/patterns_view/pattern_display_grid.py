@@ -83,12 +83,11 @@ class PatternDisplayGridView(QTableView):
         __init__(pattern_name)  PatternDisplayGridView
     """
 
-    def __init__(self, pattern_name, parent=None):
+    def __init__(self, pattern_name, model, parent=None):
         super().__init__()
 
         self.parent = parent
-        self.model = PatternDisplayGridModel.load_from_pattern_file(
-            pattern_name)
+        self.model = model
 
         self.setModel(self.model)
 
