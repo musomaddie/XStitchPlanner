@@ -7,6 +7,7 @@ from utils import read_key
 
 
 class PatternDisplayGridModel(QAbstractTableModel):
+    # TODO: consider renaming this to be missing the grid!
     """ Handles the pattern data for display
 
     Parameters:
