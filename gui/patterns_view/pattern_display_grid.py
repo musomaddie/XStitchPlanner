@@ -10,10 +10,16 @@ class PatternDisplayGridModel(QAbstractTableModel):
     """ Handles the pattern data for display
 
     Parameters:
-        data    list[list[str]]     the pattern data
+        data            list[list[str]]     the pattern data
+        show_colours    bool                whether to display the pattern
+                                                colours
 
     Methods:
-        __init__(data)  PatternDisplayGridModel
+        __init__(data)      PatternDisplayGridModel
+        data(index, role)       manages the display
+        rowCount(index)         number of rows
+        columnCount(index)      number of columns
+        set_colour_mode(bool)   updates the show_colours method
 
     Static Methods:
         load_from_pattern_file(pattern_name)    PatternDisplayGridModel
@@ -25,9 +31,10 @@ class PatternDisplayGridModel(QAbstractTableModel):
     def __init__(self, data):
         super().__init__()
         self._data = data
+        self.show_colours = False
 
     def data(self, index, role):
-        if role == Qt.ItemDataRole.BackgroundRole:
+        if role == Qt.ItemDataRole.BackgroundRole and self.show_colours:
             return QColor(
                 f"#{self._data[index.row()][index.column()].hex_colour}")
         if role == Qt.ItemDataRole.DisplayRole:
@@ -38,6 +45,9 @@ class PatternDisplayGridModel(QAbstractTableModel):
 
     def columnCount(self, index):
         return len(self._data[0])
+
+    def set_colour_mode(self, mode):
+        self.show_colours = mode
 
     @staticmethod
     def load_from_pattern_file(pattern_name):

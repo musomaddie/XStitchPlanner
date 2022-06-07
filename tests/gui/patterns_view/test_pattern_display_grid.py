@@ -23,6 +23,18 @@ TESTING_DATA_3_THREAD_DICT = [Thread("310", "a", "a", "Black", "000000"),
                               Thread("666", "c", "c", "Red", "ff0000")]
 
 
+class Idx:
+    def __init__(self, row_i, col_i):
+        self._row = row_i
+        self._col = col_i
+
+    def row(self):
+        return self._row
+
+    def column(self):
+        return self._col
+
+
 @pytest.fixture()
 def model():
     return PatternDisplayGridModel(TESTING_DATA_3_2)
@@ -62,25 +74,28 @@ def test_columnCount(model):
     assert model.columnCount(None) == 3
 
 
+def test_set_colour_mode(model):
+    assert not model.show_colours
+    model.set_colour_mode(True)
+    assert model.show_colours
+    model.set_colour_mode(False)
+    assert not model.show_colours
+
+
 @pytest.mark.parametrize(("r", "col"), [(0, 0), (1, 0)])
 def test_data(r, col, model):
-    class Idx:
-        def __init__(self, row_i, col_i):
-            self._row = row_i
-            self._col = col_i
-
-        def row(self):
-            return self._row
-
-        def column(self):
-            return self._col
-
+    model.show_colours = True
     color_result = model.data(Idx(r, col), Qt.ItemDataRole.BackgroundRole)
     assert color_result.rgb() == QColor(
         f"#{TESTING_DATA_3_2[r][col].hex_colour}").rgb()
 
     string_result = model.data(Idx(r, col), Qt.ItemDataRole.DisplayRole)
     assert string_result == TESTING_DATA_3_2[r][col].display_symbol
+
+
+def test_data_no_colour(model):
+    color_result = model.data(Idx(0, 0), Qt.ItemDataRole.BackgroundRole)
+    assert color_result is None
 
 
 # View tests
