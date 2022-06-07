@@ -1,22 +1,22 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
-import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 from gui.patterns_view.pattern_view_overview import \
     PatternViewOverviewLayout
 
 
-class MainWindow(QStackedWidget):
+class ViewHierarchy(QStackedWidget):
     """ Manages the main window for the GUI. This is where all layouts
     eventually stem from.
 
     """
 
-    def __init__(self, istest=False):
+    def __init__(self, parent=None):
         """ Initialises the main window. This is the GUI contain that contains
         all the elements of the program.
 
         Parameters:
+            parent              MainWindow
             selector_widget     QWidget     a basic widget containing the
                                                 layout for the parent selector
             view_widget         QWidget     a default widget containing the
@@ -24,10 +24,8 @@ class MainWindow(QStackedWidget):
         """
         super().__init__()
 
-        # Only show the window if this is not a test.
-        if not istest:
-            self.showMaximized()
-        self.setWindowTitle(s.program_title())
+        self.parent = parent
+
         self.selector_widget = QWidget()
         self.selector_widget.setLayout(PatternSelectorLayout(self))
         self.view_widget = QWidget()
