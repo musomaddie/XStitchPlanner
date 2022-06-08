@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector_choice import \
@@ -22,7 +22,7 @@ class PatternSelectorLayout(QVBoxLayout):
     Parameters:
         title       QLabel                          the title of the page
         selector    PatternSelectorChoiceLayout     handles choosing the pattern
-        parent      MainWindow                      the parent layout [default
+        parent      ViewHierarchy                      the parent layout [default
                                                         None].
 
     Methods:
@@ -40,8 +40,10 @@ class PatternSelectorLayout(QVBoxLayout):
         self.addWidget(self.title)
 
         # Populate a combo box and button.
+        layout_holder = QWidget()
         self.selector = PatternSelectorChoiceLayout(self)
-        self.addLayout(self.selector)
+        layout_holder.setLayout(self.selector)
+        self.addWidget(layout_holder)
 
     def pattern_chosen(self, pattern_name):
         return self.parent.pattern_chosen(pattern_name)

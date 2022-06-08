@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QGridLayout
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridView
+from gui.patterns_view.pattern_display_grid import PatternDisplayGridView, \
+    PatternDisplayGridModel
 
 
 class PatternDisplayOverlay(QGridLayout):
@@ -16,20 +17,25 @@ class PatternDisplayOverlay(QGridLayout):
 
    Parameters:
        parent           PatternViewOverviewLayout
+       pattern_model    PatternDisplayGridModel
        toolbar          PatternToolbarOverlay
-       pattern_grid     PatternGrid
+       pattern_grid     PatternDisplayGridView
        so_menu          StitchingOptMenuOverlay
 
     Methods:
         __init__(pattern_name)  PatternDisplayOverlay
    """
 
-    def __init__(self, pattern_name, parent=None):
+    def __init__(self, pattern_name: object, parent: object = None) -> object:
         super().__init__()
+
+        self.pattern_model = PatternDisplayGridModel.load_from_pattern_file(
+            pattern_name)
         self.parent = parent
 
         self.toolbar = None
-        self.pattern_grid = PatternDisplayGridView(pattern_name, self)
+        self.pattern_grid = PatternDisplayGridView(pattern_name,
+                                                   self.pattern_model, self)
         self.so_menu = None
 
         self.addWidget(self.pattern_grid)
