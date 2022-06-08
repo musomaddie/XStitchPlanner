@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QGridLayout
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridView, \
-    PatternDisplayGridModel
+from gui.patterns_view.pattern_display_grid import PatternDisplayGridView
 
 
 class PatternDisplayOverlay(QGridLayout):
@@ -26,11 +25,10 @@ class PatternDisplayOverlay(QGridLayout):
         __init__(pattern_name)  PatternDisplayOverlay
    """
 
-    def __init__(self, pattern_name: object, parent: object = None) -> object:
+    def __init__(self, pattern_name, pattern_model, parent=None):
         super().__init__()
 
-        self.pattern_model = PatternDisplayGridModel.load_from_pattern_file(
-            pattern_name)
+        self.pattern_model = pattern_model
         self.parent = parent
 
         self.toolbar = None

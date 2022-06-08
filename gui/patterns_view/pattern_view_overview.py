@@ -24,7 +24,7 @@ class PatternViewOverviewLayout(QVBoxLayout):
         __init__(pattern_title, parent)         PatternViewOverlayLayout
     """
 
-    def __init__(self, pattern_title, parent=None):
+    def __init__(self, pattern_title, pattern_model, parent=None):
         """ Creates a new PatternViewOverviewLayout
 
         Parameters:
@@ -36,10 +36,11 @@ class PatternViewOverviewLayout(QVBoxLayout):
         super().__init__()
 
         self.parent = parent
+        self.pattern_model = pattern_model
         self.pattern_title = QLabel(pattern_title)
         self.addWidget(self.pattern_title)
 
-        self.overlay = PatternDisplayOverlay(pattern_title, self)
+        self.overlay = PatternDisplayOverlay(pattern_title, pattern_model, self)
         layout_widget = QWidget()
         layout_widget.setLayout(self.overlay)
         self.addWidget(layout_widget)

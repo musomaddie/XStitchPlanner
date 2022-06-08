@@ -21,8 +21,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.view_hierarchy = ViewHierarchy(self)
         self.toolbar = PatternViewToolBar(self)
+        self.view_hierarchy = ViewHierarchy(self.toolbar, self)
         self.setCentralWidget(self.view_hierarchy)
         self.addToolBar(self.toolbar)
         self.setWindowTitle(s.program_title())

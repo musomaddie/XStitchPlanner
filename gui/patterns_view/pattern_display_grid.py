@@ -48,6 +48,7 @@ class PatternDisplayGridModel(QAbstractTableModel):
         return len(self._data[0])
 
     def set_colour_mode(self, mode):
+        print("Changing the colour mode")
         self.show_colours = mode
 
     @staticmethod

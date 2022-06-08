@@ -15,7 +15,7 @@ class PatternViewToolBar(QToolBar):
 
     Parameters:
         parent      ViewHierarchy           the parent that this attaches to
-        data_model  PatternDisplayGridModel the model managing the visible
+        pattern_model  PatternDisplayGridModel the model managing the visible
                                                 pattern
         colour_on   CellColourSwitcher      an action that adds a colour
                                                 background
@@ -26,7 +26,7 @@ class PatternViewToolBar(QToolBar):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-        self.data_model = None
+        self.pattern_model = None
         self.setIconSize(QSize(16, 16))
 
         # TODO: if I also have a menu bar it's going to be hard to access
@@ -39,3 +39,10 @@ class PatternViewToolBar(QToolBar):
             "Disable Colour Background", parent)
         self.addAction(self.colour_on)
         self.addAction(self.colour_off)
+
+    def pattern_chosen(self, pattern_model):
+        self.pattern_model = pattern_model
+        self.colour_on.triggered.connect(
+            lambda: pattern_model.set_colour_mode(True))
+        self.colour_off.triggered.connect(
+            lambda: pattern_model.set_colour_mode(False))
