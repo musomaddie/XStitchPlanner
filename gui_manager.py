@@ -8,12 +8,13 @@ from gui.view_hierarchy import ViewHierarchy
 
 
 class MainWindow(QMainWindow):
-    """ Responsible for managing the main window of this application.
-    Contains the overall view hierarchy and the toolbar.
+    """
+    Responsible for managing the main window of this application. Contains the
+    overall view hierarchy and the toolbar.
 
     Parameters:
-        view_hierarchy  ViewHierarchy       the view hierarchy which is shown
-        toolbar         PatternViewToolBar  the toolbar for the pattern view
+        view_hierarchy:     the view hierarchy which is shown
+        toolbar:            the toolbar for the pattern view
 
     Methods:
         __init__    MainWindow
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.toolbar = PatternViewToolBar(self)
         self.view_hierarchy = ViewHierarchy(self.toolbar, self)
+
         self.setCentralWidget(self.view_hierarchy)
         self.addToolBar(self.toolbar)
         self.setWindowTitle(s.program_title())

@@ -1,3 +1,5 @@
+import pdfplumber
+
 import resources.strings as s
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import PLACEHOLDERS, bbox_to_ident, read_key, verbose_print
@@ -8,13 +10,11 @@ class ShapePatternExtractor(PatternExtractor):
     using shapes.
 
     Parameters:
-        ident_map       dict[str:str]   maps every shape in the key to an
-                                        ident. Populated by the key if it is
-                                        loaded otherwise generated as the
-                                        cells are read.
-        _used_symbols   list            a list of symbols already used in the
-                                        pattern. Only populated if no key is
-                                        provided.
+        ident_map(dict[str:str]):   maps every shape in the key to an ident.
+            Populated by the key if it is loaded otherwise generated as the
+            cells are read.
+        _used_symbols(list):    a list of symbols already used in the pattern.
+            Only populated if no key is provided.
     """
 
     PATTERN_TABLE_SETTINGS = {
@@ -28,7 +28,7 @@ class ShapePatternExtractor(PatternExtractor):
         "edge_min_length": 200
     }
 
-    def __init__(self, pdf, pattern_name):
+    def __init__(self, pdf: pdfplumber.PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.ident_map = {}
         self._used_symbols = []
@@ -72,6 +72,6 @@ class ShapePatternExtractor(PatternExtractor):
         self.extract_pattern_given_pages(self.get_rows, *args, **kwargs)
 
     def load_key(self):
-        """ Implements the abstractmethod """
+        """ Implements the abstract method """
         self.ident_map = {t.identifier: t.symbol
                           for t in read_key(self.key_filename)}

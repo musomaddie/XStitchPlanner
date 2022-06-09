@@ -2,9 +2,11 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QToolBar
 
+from gui.patterns_view.pattern_display_grid import PatternDisplayModel
+from gui.view_hierarchy import ViewHierarchy
+
 
 class PatternViewToolBar(QToolBar):
-    # TODO: potentially move where this is located
     """ Contains all the buttons in the view pattern tool bar.
 
    +-------------------------------------------------------------------+
@@ -14,16 +16,15 @@ class PatternViewToolBar(QToolBar):
    +-------------------------------------------------------------------+
 
     Parameters:
-        parent      ViewHierarchy           the parent that this attaches to
-        pattern_model  PatternDisplayGridModel the model managing the visible
-                                                pattern
-        colour_on   CellColourSwitcher      an action that adds a colour
-                                                background
-        colour_off  CellColourSwitcher      an action that removes a colour
-                                                background
+        parent (ViewHierarchy): the parent that this attaches to
+        pattern_model (PatternDisplayModel): the model managing the visible
+            pattern
+        colour_on (CellColourSwitcher): an action that adds a colour background
+        colour_off (CellColourSwitcher): an action that removes a colour
+            background
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: ViewHierarchy = None):
         super().__init__(parent)
         self.parent = parent
         self.pattern_model = None
@@ -40,7 +41,7 @@ class PatternViewToolBar(QToolBar):
         self.addAction(self.colour_on)
         self.addAction(self.colour_off)
 
-    def pattern_chosen(self, pattern_model):
+    def pattern_chosen(self, pattern_model: PatternDisplayModel) -> None:
         self.pattern_model = pattern_model
         self.colour_on.triggered.connect(
             lambda: pattern_model.set_colour_mode(True))

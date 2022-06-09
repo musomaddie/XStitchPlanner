@@ -20,17 +20,17 @@ class PatternSelectorLayout(QVBoxLayout):
     +----------------------------------------------------------------+
 
     Parameters:
-        title       QLabel                          the title of the page
-        selector    PatternSelectorChoiceLayout     handles choosing the pattern
-        parent      ViewHierarchy                      the parent layout [default
-                                                        None].
+        title (QLabel): the title of the page
+        selector (PatternSelectorChoiceLayout): handles choosing the pattern to
+            display
+        parent (ViewHierarchy): the parent layout [default None].
 
     Methods:
-        __init__()          PatternSelectorLayout
-        pattern_chosen(pattern_name)        echos call to its parent
+        __init__()
+        pattern_chosen(pattern_name): echoes call to the parent
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: 'ViewHierarchy' = None):
         super().__init__()
         self.parent = parent
 
@@ -45,5 +45,5 @@ class PatternSelectorLayout(QVBoxLayout):
         layout_holder.setLayout(self.selector)
         self.addWidget(layout_holder)
 
-    def pattern_chosen(self, pattern_name):
-        return self.parent.pattern_chosen(pattern_name)
+    def pattern_chosen(self, pattern_name: str):
+        self.parent.pattern_chosen(pattern_name)

@@ -27,15 +27,15 @@ Options:
                                   "shape". [default: font]
 
   MODE:
-    font:  The default extraction mode if MODE is not given. Identifies symbols
+    font:  The default extraction mode if MODE is not given. Identify symbols
            in the pattern by extracting the text from the PDF.
     shape: Extract symbols from the PDF by attempting to identify and match
-           reoccuring lines and shapes on the page. These identifiers are then
+           reoccurring lines and shapes on the page. These identifiers are then
            matched up with arbitrary symbols for displaying the pattern.
 
 Notes:
   - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2,
-    pass 2 for start page.
+    pass 2 for start page).
   - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2,
     3, 4, and 5.
   - A general guideline for determining the mode is to open the pattern in a
@@ -54,43 +54,41 @@ from extractors.pattern_extractors.shape_pattern_extractor import \
 from utils import verbose_print
 
 
-def extract_from_pdf(pdf_name,
-                     extractor_mode,
-                     width,
-                     height,
-                     start_page_idx=None,
-                     end_page_idx=None,
-                     overlap=0,
-                     withkey=False,
-                     verbose=False):
-    """ Extracts the pattern information from the provided PDF.
+def extract_from_pdf(pdf_name: str,
+                     extractor_mode: ExtractorMode,
+                     width: int,
+                     height: int,
+                     start_page_idx: int = None,
+                     end_page_idx: int = None,
+                     overlap: int = 0,
+                     withkey: bool = False,
+                     verbose: bool = False) -> None:
+    """
+    Extracts the pattern information from the provided PDF.
 
-    Parameters:
-        pdf_name        (str)               the name of the pdf from which to
-                                            export the pattern.
-        extractor_mode  (ExtractorMode)     determines how the pattern is to be
-                                            read from the PDF.
-        width           (int)               the width of the pattern in
-                                            stitches.
-        height          (int)               the height of the pattern in
-                                            stitches.
-        start_page_idx  (int)               the index of first page containing
-                                            the pattern. [default: None]
-        end_page_idx    (int)               the index of the last page
-                                            containing the pattern. [default
-                                            None]
-        overlap         (int)               the number of cells that overlap
-                                            between pattern pages. [default 0]
-        withkey         (bool)              whether to ensure that every symbol
-                                            found also exists in the key.
-        verbose         (bool)              whether to print detailed debugging
-                                            statements. [default: False]
+    Args
+        pdf_name:           the name of the PDF from which to export the
+                                pattern
+        extractor_mode:     determines how the pattern is to be read from the
+                                PDF
+        width:              the width of the pattern in stitches
+        height:             the height of the pattern in stitches
+        start_page_idx:     the index of the first page containing the
+                                pattern [default: None]
+        end_page_idx:       the index of the last page containing the pattern
+                                [default: None]
+        overlap:            the number of cells that overlap between pattern
+                                pages [default: 0]
+        withkey:            whether to ensure that every symbol found also
+                                exists in the key.
+        verbose:            whether to print detailed debugging statements
+                                [default: False]
     Raises:
-        FileNotFoundError       if the pdf_name does not exist.
-        FileNotFoundError       if there is no associated key file (found at
-                                pdf_name.replace('pdf', 'key).
-        ValueError              if the extractor_mode is unknown.
-        ValueError              if no key files exists and no key page provided
+        FileNotFoundError:  if the pdf_name does not exist.
+        FileNotFoundError:  if there is no associated key file (found at
+                                pdf_name.replace('pdf', 'key'))
+        ValueError:         if the extractor_mode is unknown
+        ValueError          if no key file exists and no key page was provided
     """
     if extractor_mode == ExtractorMode.UNKNOWN:
         raise ValueError(s.extractor_error())

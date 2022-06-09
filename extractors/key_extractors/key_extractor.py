@@ -2,6 +2,10 @@ import csv
 import json
 from abc import abstractmethod
 
+from pdfplumber.page import Page
+from pdfplumber.pdf import PDF
+
+import floss_thread
 import resources.strings as s
 from extractors.extractor import Extractor
 from extractors.key_extractors.key_layout import KeyForm, KeyLayout
@@ -24,49 +28,37 @@ class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
     Parameters:
-        pdf             pdfplumber.PDF              the PDF to extract the key
-                                                    from
-        pattern_name    str                         the name of the pattern
-                                                    (filename with .pdf
-                                                    removed).
-        multipage       bool                        whether the key is spread
-                                                    over multiple pages.
-                                                    [default: False]
-        layout_params   KeyLayout                   how the columns for the key
-                                                    information are laid out.
-                                                    [default: None]
-        key             list[floss_thread.Thread]   a list containing all the
-                                                    thread details for every
-                                                    thread found in the pattern
-                                                    [default: []]
+        pdf (pdfplumber.PDF):   the PDF to extract the key from
+        pattern_name (str):     the name of the pattern
+        multipage (bool):       whether the key is spread over multiple pages
+        layout_params(KeyLayout):          how the columns for the key
+                                                information are laid out
+                                                [default: None]
+        key (list[floss_thread.Thread]):    a list containing all the thread
+                                                details for every thread found
+                                                in the key [default: []]
 
     Methods:
-        __init__(pdf)                       creates a new instance of the key
-                                            extractor for the given PDF
-        get_key_table(page)                 return a table to extract the
-                                            values from depending on the
-                                            KeyForm in layout params
-        read_from_layout_file()             loads the layout params
-        save_key()                          saves the key that has been
-                                            extracted by this extractor.
+        __init__(pdf)
+        get_key_table(page): returns a table to extract the thread values
+                                from if required by the KeyForm.
+        read_from_layout_file(): loads the layout params
+        save_key():             saves the key that has been extracted
 
     Abstract Methods:
         extract_key(start_page_idx, end_page_idx): extracts the key from the
                                                    given pages of the PDF.
     """
+    key_config_filename: str
+    multipage: bool
+    layout_params: KeyLayout
+    key: list[floss_thread.Thread]
 
     COLOUR_TABLE_SETTINGS = {"horizontal_strategy": "text",
                              "vertical_strategy": "text",
                              "keep_blank_chars": True}
 
-    def __init__(self, pdf, pattern_name):
-        """ Creates a new instance of the key extractor for the given PDF.
-
-        Parameters:
-            pdf             pdfplumber.PDF      the PDF to read the key from.
-            pattern_name    str                 the name of the pattern (pdf
-                                                filename without the extension)
-        """
+    def __init__(self, pdf: PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.key_config_filename = s.filename_key_config(pattern_name)
         self.multipage = False
@@ -75,29 +67,35 @@ class KeyExtractor(Extractor):
 
     @abstractmethod
     def extract_key(self,
-                    key_start_page_idx,
-                    key_end_page_idx=None,
-                    verbose=False):
-        """ Extracts the key which is found on the key page range provided.
+                    key_start_page_idx: int,
+                    key_end_page_idx: int = None,
+                    verbose: bool = False) -> list[floss_thread.Thread]:
+        """
+        Extracts the key which is found on the page range provided and saves
+        it to self.key
 
-        Parameters:
-            key_start_page_idx  int     The first page where the key can be
-                                        found.
-            key_end_page_idx    int     The last page where the key can be
-                                        found. If this is not passed only the
-                                        page specified by key_start_page_idx is
-                                        parsed. [default: None]
-            verbose             bool    whether to print detailed messages
-                                        [default: False]
-        Returns:
-            list(Thread)        a list of of all the threads contained in this
-                                pattern.
+        Args:
+            key_start_page_idx (int): the first page where the key can be found
+            key_end_page_idx (int):   the last page where the key can be found
+            verbose (bool):           whether to print detailed messages
         """
         pass
 
-    def get_key_table(self, page):
-        """ Helper for returning the table containing the key on a given page
-        depending on the layout params.
+    def get_key_table(self, page: Page) -> list[list[str]]:
+        """
+        Returns the table containing the key on the given page to be used as
+        part of the extraction process.
+
+        Args:
+            page (pdfplumber.Page):     the page the key is on
+
+        Returns:
+            list[list[str]]: a list of lists where the contents of the list
+            is the text found in that row of the table.
+
+        Raises:
+            ValueError:     if the key has no layout params
+            ValueError:     if the key form is not recognised
         """
         if not self.layout_params:
             raise ValueError(s.no_key_layout_params())
@@ -135,9 +133,9 @@ class KeyExtractor(Extractor):
             prompting for user input.
 
             Parameters:
-                filename    str     the filename of containing the layout
-                                    details if it exists. Prompt for manual
-                                    user input when None.
+                filename(str):  the filename of containing the layout details if
+                                    it exists. Prompt for manual user input
+                                    when None.
             Returns:
                 no return value     assigns the result to self.layout_params
             """
@@ -156,7 +154,8 @@ class KeyExtractor(Extractor):
                 read_from_user_input()
 
         def read_from_user_input():
-            """ Reads from the user input.
+            """ Reads from the user input and saves it as a JSON file for
+            future use.
             """
             key_form = input(s.input_key_table_form())
             num_rows_start = int(input(s.input_key_rows_start()))

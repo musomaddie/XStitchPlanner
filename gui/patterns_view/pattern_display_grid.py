@@ -1,4 +1,6 @@
-from PyQt6.QtCore import QAbstractTableModel, Qt
+import typing
+
+from PyQt6.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QTableView, QHeaderView
 
@@ -6,67 +8,64 @@ from pattern_cell import PatternCell
 from utils import read_key
 
 
-class PatternDisplayGridModel(QAbstractTableModel):
-    # TODO: consider renaming this to be missing the grid!
+class PatternDisplayModel(QAbstractTableModel):
     """ Handles the pattern data for display
 
     Parameters:
-        data            list[list[str]]     the pattern data
-        show_colours    bool                whether to display the pattern
-                                                colours
+        data(list[list[str]]):  the pattern data
+        show_colours(bool): whether to display the pattern colours
 
     Methods:
-        __init__(data)      PatternDisplayGridModel
-        data(index, role)       manages the display
-        rowCount(index)         number of rows
-        columnCount(index)      number of columns
-        set_colour_mode(bool)   updates the show_colours method
+        __init__(data)
+        data(index, role): displays the data
+        rowCount(index): number of rows
+        columnCount(index): number of columns
+        set_colour_mode(bool): updates the show_colours method
 
     Static Methods:
-        load_from_pattern_file(pattern_name)    PatternDisplayGridModel
+        load_from_pattern_file(pattern_name)    PatternDisplayModel
                 loads a pattern display grid model from the .pat file with the
                 given pattern name
 
     """
 
-    def __init__(self, data):
+    def __init__(self, data: list[list[PatternCell]]):
         super().__init__()
         self._data = data
         self.show_colours = False
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
         if role == Qt.ItemDataRole.BackgroundRole and self.show_colours:
             return QColor(
                 f"#{self._data[index.row()][index.column()].hex_colour}")
         if role == Qt.ItemDataRole.DisplayRole:
             return self._data[index.row()][index.column()].display_symbol
 
-    def rowCount(self, index):
+    def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self._data)
 
-    def columnCount(self, index):
+    def columnCount(self, parent: QModelIndex = ...) -> int:
         return len(self._data[0])
 
-    def set_colour_mode(self, mode):
-        print("Changing the colour mode")
+    def set_colour_mode(self, mode: bool):
+        """Changes whether the data is shown in colour"""
         self.show_colours = mode
 
     @staticmethod
-    def load_from_pattern_file(pattern_name):
-        """ Returns a PatternDisplayGridModel containing a data loaded from the
+    def load_from_pattern_file(pattern_name: str) -> 'PatternDisplayModel':
+        """ Returns a PatternDisplayModel containing a data loaded from the
         .pat file of the given pattern.
 
         Args:
-            pattern_name    str     the name of the pattern to load
+            pattern_name(str):  the name of the pattern to load
 
         Returns:
-            PatternDisplayGridModel     with the given pattern loaded as data
+            PatternDisplayModel     with the given pattern loaded as data
 
         Raises:
             FileNotFoundError   if the given pattern does not have a
-                                    corresponding file name. This should never
-                                    be reached as it MUST have a .pat file to be
-                                    selected from the pattern selector
+                corresponding file name. This should never be reached as it
+                MUST have a .pat file to be selected from the pattern selector
         """
 
         key = {k.symbol: k for k in read_key(f"patterns/{pattern_name}.key")}
@@ -81,25 +80,29 @@ class PatternDisplayGridModel(QAbstractTableModel):
                                                 (row_count, col_count),
                                                 key[letter].hex_colour))
                 all_rows.append(this_row)
-            return PatternDisplayGridModel(all_rows)
+            return PatternDisplayModel(all_rows)
 
 
 class PatternDisplayGridView(QTableView):
     """ Responsible for actually displaying the pattern in a table form.
 
     Parameters:
-        parent  PatternDisplayOverlay
-        model   PatternDisplayGridModel     the model managing this table
+        parent (PatternDisplayOverlay)
+        model  (PatternDisplayModel)     the model managing this table
 
     Methods:
         __init__(pattern_name)  PatternDisplayGridView
     """
 
-    def __init__(self, pattern_name, model, parent=None):
+    def __init__(self,
+                 pattern_name: str,
+                 model: PatternDisplayModel,
+                 parent: 'PatternDisplayOverlay' = None):
         super().__init__()
 
         self.parent = parent
         self.model = model
+        self.pattern_name = pattern_name
 
         self.setModel(self.model)
 

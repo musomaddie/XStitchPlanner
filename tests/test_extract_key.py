@@ -29,7 +29,7 @@ def test_extract_key_from_pdf_valid(pdfplumber_mock,
                                 # Not covering the exactPDF information here as
                                 # its assumedly covered by tests within the
                                 # module.
-                                call().extract_key(None, None),
+                                call().extract_key(None, None, False),
                                 call().save_key()]
     pdfplumber_expected_calls = [call(TESTING_PDF),
                                  call().__enter__(),
@@ -53,7 +53,7 @@ def test_extract_key_from_pdf_correct_page_numbers(
     extract_key_from_pdf(TESTING_PDF, ExtractorMode.FONT, start_page, end_page)
 
     extractor_expected_calls = [call(ANY, ANY),
-                                call().extract_key(start_page, end_page),
+                                call().extract_key(start_page, end_page, False),
                                 call().save_key()]
 
     assert extractor_mock.mock_calls == extractor_expected_calls

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridModel
+from gui.patterns_view.pattern_display_grid import PatternDisplayModel
 from gui.patterns_view.pattern_view_overview import \
     PatternViewOverviewLayout
 
@@ -41,7 +41,7 @@ class ViewHierarchy(QStackedWidget):
     def pattern_chosen(self, pattern_name):
         """ Loads the default display window for this pattern.
         """
-        self.pattern_model = PatternDisplayGridModel.load_from_pattern_file(
+        self.pattern_model = PatternDisplayModel.load_from_pattern_file(
             pattern_name)
         self.toolbar_ref.pattern_chosen(self.pattern_model)
         self.view_widget.setLayout(

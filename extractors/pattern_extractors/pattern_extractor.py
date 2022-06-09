@@ -1,4 +1,7 @@
 from abc import abstractmethod
+from typing import Callable
+
+import pdfplumber
 
 import resources.strings as s
 from extractors.extractor import Extractor, PatternFormatError
@@ -9,7 +12,9 @@ class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
 
     Parameters:
-        pdf         pdfplumber.PDF      the PDF to parse.
+        pdf (pdfplumber.PDF):       the PDF to parse
+        pattern (list[list[str]]):  the extracted pattern once the extract
+                                        methods have run
 
     Methods:
         __init__(pdf):              creates a new instance of pattern extractor
@@ -26,25 +31,29 @@ class PatternExtractor(Extractor):
 
     """
 
-    def __init__(self, pdf, pattern_name):
+    def __init__(self, pdf: pdfplumber.PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.pattern = []
 
     @abstractmethod
-    def get_rows(self, page_idx, withkey=False, verbose=False):
-        """ Returns the rows extracted from the given page number.
+    def get_rows(self,
+                 page_idx: int,
+                 withkey: bool = False,
+                 verbose: bool = False):
+        """ Returns all the rows on the given page
 
-        Parameters:
-            page_idx    int     the page to extract rows from.
-            verbose     bool    whether to print detailed debugging.
+        Args:
+            page_idx(int):  the index of the page to extract the pattern from
+            withkey(bool):  have we already extracted the key?
+            verbose(bool):  whether to print detailed debugging statements
 
         Returns:
-            list[list[str]]     a list of lists containing all the symbols
-                                translated from the pdf pattern maintaining the
+            list[list[str]]:    a list of all the information on the pattern
+                                    in the format of rows[column]
 
         Raises:
-           PatternFormatError       if withkey is true and a symbol is
-                                    identified thats not found in the key.
+            PatternFormatError  if withkey is true and a symbol is identified
+                                    that's not found in the key
         """
         pass
 
@@ -53,9 +62,9 @@ class PatternExtractor(Extractor):
         """ Extracts the pattern.
 
         Returns:
-            list[list[str]]     a list of lists containing all the symbols
-                                translated from the pdf pattern maintaining the
-                                rows and columns.
+            list[list[str]]:    a list of lists containing all the symbols
+                translated from the pdf pattern maintaining the rows and
+                columns
         """
         pass
 
@@ -63,55 +72,46 @@ class PatternExtractor(Extractor):
     def load_key(self):
         """ Loads the key from the given file.
 
-        Returns:
-            None    the key is saved as a class variable.
-
         Raises:
             FileNotFoundError   if the given file cannot be found.
         """
         pass
 
     def extract_pattern_given_pages(self,
-                                    get_rows_fn,
-                                    width,
-                                    height,
-                                    start_page_idx=None,
-                                    end_page_idx=None,
-                                    overlap=0,
-                                    withkey=False,
-                                    verbose=False):
-        """ Returns a list of symbols extracted from the pdf pattern.
+                                    get_rows_fn: Callable,
+                                    width: int,
+                                    height: int,
+                                    start_page_idx: int = None,
+                                    end_page_idx: int = None,
+                                    overlap: int = 0,
+                                    withkey: bool = False,
+                                    verbose: bool = False):
+        """
+        Returns the pattern extracted from the PDF across all provided pages
 
-        Parameters:
-            get_rows_fn     (function)  A function that returns the rows of a
-                                        given page.
-            width           (int)       the width of the pattern in stitches.
-            height          (int)       the height of the pattern in stitches.
-            start_page_idx  (int)       the index of the page where the pattern
-                                        starts.
-            end_page_idx    (int)       the index of the page where the pattern
-                                        ends.
-            overlap         (int)       the number of cells that overlap on
-                                        each page edge of the pattern.
-            withkey         (key)       whether to ensure that each symbol in
-                                        the pattern is also found in the
-                                        associated key.
-            verbose         (bool)      whether progress statements should be
-                                        printed.
-
-        Returns:
-            list[list[str]]     a list of lists containing all the symbols
-                                translated from the pdf pattern maintaining the
-                                rows and columns.
+        Args:
+            get_rows_fn(function):  the function that determines how every
+                pattern row (and by extension) columns are extracted from the
+                PDF
+            width(int):             the width of the pattern in stitches
+            height(int):            the height of the pattern in stitches
+            start_page_idx(int):    the index of the page where the pattern
+                                        starts
+            end_page_idx(int):      the index of the page where the pattern ends
+            overlap(int):           the number of cells that overlap on each
+                                        page edge of the pattern
+            withkey(bool):          whether to ensure that each symbol is also
+                                        found in the key
+            verbose(bool):          whether progress statements should be
+                                        printed
         Raises:
-            PatternFormatError      if the pattern has an uneven width on any
-                                    page.
-            PatternFormatError      if the pattern has an unexpected height on
-                                    any page.
-            PatternFormatError      if a pattern page exceeds the expected
-                                    size.
-            PatternFormatError      if the pattern is not the expected height
-            PatternFormatError      if the pattern is not the expected width
+            PatternFormatError:     if the pattern has an uneven width on any
+                                        page.
+            PatternFormatError:     if the pattern has an unexpected height on
+                                        any page.
+            PatternFormatError:     if a pattern page exceeds the expected size
+            PatternFormatError:     if the pattern is not the expected height
+            PatternFormatError:     if the pattern is not the expected width
         """
         verbose_print(s.row_extract("pattern"), verbose)
         all_pages = end_page_idx is None and start_page_idx is None
@@ -163,10 +163,6 @@ class PatternExtractor(Extractor):
         page_width = len(rows[0])
         page_height = len(rows)
 
-        print("hello")
-        print(page_width)
-        print(page_height)
-
         if cur_x == 0:
             expected_page_height = page_height
 
@@ -208,7 +204,7 @@ class PatternExtractor(Extractor):
             cur_x = 0
             cur_y += page_height
 
-        return (cur_x, cur_y, expected_page_height)
+        return cur_x, cur_y, expected_page_height
 
     def save_pattern(self):
         """ Saves the pattern extracted by this class.

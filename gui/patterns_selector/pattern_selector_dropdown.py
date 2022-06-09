@@ -8,19 +8,17 @@ class PatternSelectorDropDownWidget(QComboBox):
     """ Responsible for the dropdown box containing a choice of patterns.
 
     Parameters:
-        pattern_names    list[str]   a list containing all the possible pattern
-                                     names
+        pattern_names(list[str]):   a list containing all the possible pattern
+                                        names
+        selected_pattern(str):  currently selected pattern
 
     Methods:
-        __init__():             initialises a new dropdown box and populates it
-        activated(int):         updates the currently selected whenever the box
-                                is updated
+        __init__(): initialises a new dropdown box and populates it
+        activated(int): updates the currently selected whenever the box is
+            updated
     """
 
     def __init__(self):
-        """ Initialises a new pattern selector dropdown instance containing all
-        the viable file names.
-        """
         super().__init__()
         self.pattern_names = find_all_patterns()
         self.addItems(self.pattern_names)

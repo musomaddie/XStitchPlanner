@@ -16,19 +16,17 @@ class PatternSelectorChoiceLayout(QHBoxLayout):
     +----------------------------------------------------------------+
 
     Parameters:
-        parent      PatternSelectorLayout           the parent layout [default
-                                                        None]
-        combo_box   PatternSelectorDropDownWidget   controls pattern choice
-        submit_button    QPushButton                a button to press to move to
-                                                    the next step.
+        parent (PatternSelectorLayout): the parent layout [default None]
+        combo_box (PatternSelectorDropDownWidget): controls pattern choice
+        submit_button (QPushButton): a button to press to move to the next step.
 
     Methods:
-        __init__(parent)        PatternSelectorChoiceLayout
-        on_pattern_choice()     Moves to the next layout with the chosen pattern
-                                extracted from the combo_box
+        __init__(parent)
+        on_pattern_choice(): Moves to the next layout with the chosen pattern
+            extracted from the combo_box
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: 'PatternSelectorLayout' = None):
         super().__init__()
         self.parent = parent
 
@@ -43,4 +41,4 @@ class PatternSelectorChoiceLayout(QHBoxLayout):
 
     def choose_pattern(self):
         selected_pattern = self.combo_box.selected_pattern
-        return self.parent.pattern_chosen(selected_pattern)
+        self.parent.pattern_chosen(selected_pattern)

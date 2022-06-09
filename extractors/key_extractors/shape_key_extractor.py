@@ -7,16 +7,15 @@ from utils import (PLACEHOLDERS, bbox_to_ident, determine_pages, divide_row,
 
 
 class ShapeKeyExtractor(KeyExtractor):
-    """ A class for extracting the key from a PDF when it can only be acessed
+    """ A class for extracting the key from a PDF when it can only be accessed
     in shape form.
 
     Extends KeyExtractor.
 
     Static Parameters:
-        COLOUR_TABLE_SETTINGS   dict    the dictionary specifying the params to
-                                        lookup the key in the PDF. If having
-                                        trouble with reading the key on a new
-                                        file, trying tweaking these.
+        COLOUR_TABLE_SETTINGS(dict):    the dictionary specifying the params to
+            look up the key in the PDF. If having trouble with reading the key
+            on a new file, trying tweaking these.
     """
     COLOUR_TABLE_SETTINGS = {"horizontal_strategy": "text",
                              "vertical_strategy": "text",
@@ -62,7 +61,7 @@ class ShapeKeyExtractor(KeyExtractor):
                     row[ref.index("Number")],
                     idents[page_count],
                     PLACEHOLDERS[count])],
-                    count + 1, page_count + 1)
+                        count + 1, page_count + 1)
             colours = divide_row(row, self.layout_params.n_colours_per_row)
             resulting_list = []
             for c in colours:

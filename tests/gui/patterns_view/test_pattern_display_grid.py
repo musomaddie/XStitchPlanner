@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 
 from floss_thread import Thread
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridModel, \
+from gui.patterns_view.pattern_display_grid import PatternDisplayModel, \
     PatternDisplayGridView
 from pattern_cell import PatternCell
 
@@ -37,7 +37,7 @@ class Idx:
 
 @pytest.fixture()
 def model():
-    return PatternDisplayGridModel(TESTING_DATA_3_2)
+    return PatternDisplayModel(TESTING_DATA_3_2)
 
 
 # Model tests!
@@ -48,8 +48,8 @@ def test_load_pattern_from_file():
     with mock.patch("gui.patterns_view.pattern_display_grid.open", open_mock):
         with mock.patch("gui.patterns_view.pattern_display_grid.read_key",
                         read_key_mock):
-            result = PatternDisplayGridModel.load_from_pattern_file("TESTING")
-    assert type(result) == PatternDisplayGridModel
+            result = PatternDisplayModel.load_from_pattern_file("TESTING")
+    assert type(result) == PatternDisplayModel
     assert len(result._data) == 3
     for actual, expected in zip(result._data, TESTING_DATA_3_3):
         assert len(actual) == len(expected)
@@ -59,7 +59,7 @@ def test_load_pattern_from_file():
 
 def test_load_pattern_from_file_fnf():
     with pytest.raises(FileNotFoundError):
-        PatternDisplayGridModel.load_from_pattern_file("I don't exist")
+        PatternDisplayModel.load_from_pattern_file("I don't exist")
 
 
 def test_init(model):

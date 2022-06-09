@@ -19,7 +19,7 @@ def test_init(layout_child_mock, qtbot):
 
 
 @patch("gui.view_hierarchy.PatternSelectorLayout")
-@patch("gui.view_hierarchy.PatternDisplayGridModel.load_from_pattern_file")
+@patch("gui.view_hierarchy.PatternDisplayModel.load_from_pattern_file")
 @patch("gui.view_hierarchy.PatternViewOverviewLayout")
 def test_pattern_chosen(view_child_mock, model_mock, layout_child_mock, qtbot):
     layout_child_mock.return_value = QVBoxLayout()

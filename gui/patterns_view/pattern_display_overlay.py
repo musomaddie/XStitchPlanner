@@ -15,17 +15,20 @@ class PatternDisplayOverlay(QGridLayout):
    +-------------------------------------------------------------------+
 
    Parameters:
-       parent           PatternViewOverviewLayout
-       pattern_model    PatternDisplayGridModel
-       toolbar          PatternToolbarOverlay
-       pattern_grid     PatternDisplayGridView
-       so_menu          StitchingOptMenuOverlay
+       parent (PatternViewOverviewLayout)
+       pattern_model (PatternDisplayModel)
+       toolbar (PatternToolbarOverlay)
+       pattern_grid (PatternDisplayGridView)
+       so_menu (StitchingOptMenuOverlay)
 
     Methods:
         __init__(pattern_name)  PatternDisplayOverlay
    """
 
-    def __init__(self, pattern_name, pattern_model, parent=None):
+    def __init__(self,
+                 pattern_name: str,
+                 pattern_model: 'PatternDisplayModel',
+                 parent: 'PatternViewOverviewLayout' = None):
         super().__init__()
 
         self.pattern_model = pattern_model

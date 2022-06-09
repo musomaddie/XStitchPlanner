@@ -1,3 +1,5 @@
+import pdfplumber
+
 import resources.strings as s
 from extractors.pattern_extractors.pattern_extractor import PatternExtractor
 from utils import read_key
@@ -5,16 +7,22 @@ from utils import read_key
 
 class FontPatternExtractor(PatternExtractor):
     """ A class for extracting from the pdf when it is in font mode.
+
     Parameters:
-        symbols:    a list of every symbol that appears in the key (if the key
-                    is loaded).
+        symbols(list[str]):     a list of every symbol that appears in the key
+                                    once the key is loaded
     """
 
-    def __init__(self, pdf, pattern_name):
+    def __init__(self, pdf: pdfplumber.PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.symbols = []
 
-    def get_rows(self, page_idx, withkey=False, verbose=False):
+    def get_rows(self,
+                 page_idx: int,
+                 withkey: bool = False,
+                 verbose: bool = False) -> list[list[str]]:
+        """ Implements abstract method """
+
         result = self.pdf.pages[page_idx].extract_table(
             {"vertical_strategy": "lines_strict"})
 

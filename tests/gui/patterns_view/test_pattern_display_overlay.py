@@ -2,7 +2,7 @@ from unittest.mock import patch, MagicMock
 
 from PyQt6.QtWidgets import QWidget, QTableView
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridModel
+from gui.patterns_view.pattern_display_grid import PatternDisplayModel
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 
 
@@ -10,7 +10,7 @@ from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 def test_init(table_view_mock, qtbot):
     table_view_mock.return_value = QTableView()
     table_model_mock = MagicMock(
-        return_value=PatternDisplayGridModel([["a", "b"], ["b", "a"]]))
+        return_value=PatternDisplayModel([["a", "b"], ["b", "a"]]))
     test_widget = QWidget()
     test_widget.setLayout(PatternDisplayOverlay("Testing", table_model_mock))
     qtbot.addWidget(test_widget)
