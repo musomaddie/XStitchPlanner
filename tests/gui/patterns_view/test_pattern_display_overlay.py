@@ -1,14 +1,16 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from PyQt6.QtWidgets import QWidget, QTableView
+from PyQt6.QtWidgets import QTableView, QVBoxLayout, QWidget
 
 from gui.patterns_view.pattern_display_grid import PatternDisplayModel
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 
 
 @patch("gui.patterns_view.pattern_display_overlay.PatternDisplayGridView")
-def test_init(table_view_mock, qtbot):
+@patch("gui.patterns_view.pattern_display_overlay.StitchingOptMenuOverview")
+def test_init(stitching_opt_mock, table_view_mock, qtbot):
     table_view_mock.return_value = QTableView()
+    stitching_opt_mock.return_value = QVBoxLayout()
     table_model_mock = MagicMock(
         return_value=PatternDisplayModel([["a", "b"], ["b", "a"]]))
     test_widget = QWidget()
@@ -18,4 +20,6 @@ def test_init(table_view_mock, qtbot):
     table_view_mock.assert_called_once_with("Testing",
                                             test_widget.layout().pattern_model,
                                             test_widget.layout())
-    assert test_widget.layout().count() == 1
+    stitching_opt_mock.assert_called_once_with(test_widget.layout())
+
+    assert test_widget.layout().count() == 2
