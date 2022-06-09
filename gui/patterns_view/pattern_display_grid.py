@@ -1,8 +1,8 @@
 import typing
 
-from PyQt6.QtCore import QAbstractTableModel, Qt, QModelIndex
+from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QTableView, QHeaderView
+from PyQt6.QtWidgets import QHeaderView, QTableView
 
 from pattern_cell import PatternCell
 from utils import read_key
@@ -49,6 +49,9 @@ class PatternDisplayModel(QAbstractTableModel):
 
     def set_colour_mode(self, mode: bool):
         """Changes whether the data is shown in colour"""
+        # TODO: manually 'refresh' the table view: currently it will load
+        #  the colour changes if you navigate away from the program window
+        #  and back but otherwise won't.
         self.show_colours = mode
 
     @staticmethod
@@ -94,10 +97,11 @@ class PatternDisplayGridView(QTableView):
         __init__(pattern_name)  PatternDisplayGridView
     """
 
-    def __init__(self,
-                 pattern_name: str,
-                 model: PatternDisplayModel,
-                 parent: 'PatternDisplayOverlay' = None):
+    def __init__(
+            self,
+            pattern_name: str,
+            model: PatternDisplayModel,
+            parent: 'PatternDisplayOverlay' = None):
         super().__init__()
 
         self.parent = parent

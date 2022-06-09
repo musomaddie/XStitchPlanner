@@ -31,7 +31,9 @@ class PatternViewToolBar(QToolBar):
         self.setIconSize(QSize(16, 16))
 
         # TODO: if I also have a menu bar it's going to be hard to access
-        #  these icons so fix it in this case
+        #  these icons so reposition this logic if required.
+        # TODO: gray out and make un-clickable these icons appropriately (i.e.
+        #  if no pattern selected OR already in that view mode).
         self.colour_on = QAction(
             QIcon("resources/gui_icons/color-swatch.png"),
             "Enable Colour Background", parent)
