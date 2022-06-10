@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayGridView
+from gui.pattern_display_model import PatternDisplayModel
+from gui.patterns_view.pattern_editor_view import PatternEditorView
 from gui.patterns_view.stitching_opt_menu_overview import (
     StitchingOptMenuOverview)
 
@@ -10,33 +11,41 @@ class PatternDisplayOverlay(QHBoxLayout):
 
    +-------------------------------------------------------------------+
    |                                                    |   STITCHING  |
-   |        PATTERN GRID                                |   OPTIONS    |
+   |        PATTERN EDITOR                              |   OPTIONS    |
    |                                                    |   MENU       |
    +-------------------------------------------------------------------+
 
    Parameters:
+       pattern_title (str)
        parent (PatternViewOverviewLayout)
-       pattern_model (PatternDisplayModel)
-       pattern_grid (PatternDisplayGridView)
-       so_menu (StitchingOptMenuOverlay)
+       model (PatternDisplayModel)
+       editor (PatternEditorView)
+       opt_menu (StitchingOptMenuOverlay)
 
     Methods:
-        __init__(pattern_name)  PatternDisplayOverlay
+        __init__()
    """
+    pattern_title: str
+    parent: 'ViewHierarchy'
+    editor: PatternEditorView
+    model: 'PatternDisplayModel'
+    opt_menu: StitchingOptMenuOverview
 
     def __init__(
             self,
             pattern_name: str,
             pattern_model: 'PatternDisplayModel',
-            parent: 'PatternViewOverviewLayout' = None):
+            parent: 'ViewHierarchy' = None):
         super().__init__()
 
-        self.pattern_model = pattern_model
         self.parent = parent
-        self.pattern_grid = PatternDisplayGridView(pattern_name,
-                                                   self.pattern_model, self)
-        self.so_menu = StitchingOptMenuOverview(self)
-        opt_menu_layout_widget = QWidget()
-        opt_menu_layout_widget.setLayout(self.so_menu)
-        self.addWidget(self.pattern_grid)
-        self.addWidget(opt_menu_layout_widget)
+        self.model = pattern_model  # TODO: rename consistency to model
+        self.editor = PatternEditorView(pattern_name, self.model, self)
+        editor_layout_widget = QWidget()
+        editor_layout_widget.setLayout(self.editor)
+        self.addWidget(editor_layout_widget)
+
+        # self.opt_menu = StitchingOptMenuOverview(self)
+        # opt_menu_layout_widget = QWidget()
+        # opt_menu_layout_widget.setLayout(self.opt_menu)
+        # self.addWidget(opt_menu_layout_widget)

@@ -6,9 +6,10 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 
 from floss_thread import Thread
-from gui.patterns_view.pattern_display_grid import PatternDisplayModel, \
-    PatternDisplayGridView
+from gui.pattern_display_model import PatternDisplayModel
 from pattern_cell import PatternCell
+
+FILE_LOC = "gui.pattern_display_model"
 
 TESTING_DATA_3_2 = [[PatternCell("a", "310", [0, 0], "000000"),
                      PatternCell("a", "310", [0, 1], "000000"),
@@ -42,12 +43,10 @@ def model():
 
 # Model tests!
 def test_load_pattern_from_file():
-    # read_key_mock.return_value = TESTING_DATA_3_THREAD_DICT
     read_key_mock = MagicMock(return_value=TESTING_DATA_3_THREAD_DICT)
     open_mock = mock.mock_open(read_data=TESTING_DATA_3_3_STR)
-    with mock.patch("gui.patterns_view.pattern_display_grid.open", open_mock):
-        with mock.patch("gui.patterns_view.pattern_display_grid.read_key",
-                        read_key_mock):
+    with mock.patch(f"{FILE_LOC}.open", open_mock):
+        with mock.patch(f"{FILE_LOC}.read_key", read_key_mock):
             result = PatternDisplayModel.load_from_pattern_file("TESTING")
     assert type(result) == PatternDisplayModel
     assert len(result._data) == 3
@@ -96,11 +95,3 @@ def test_data(r, col, model):
 def test_data_no_colour(model):
     color_result = model.data(Idx(0, 0), Qt.ItemDataRole.BackgroundRole)
     assert color_result is None
-
-
-# View tests
-def test_init_view(model, qtbot):
-    test_widget = PatternDisplayGridView("TESTING", model)
-    qtbot.addWidget(test_widget)
-
-    assert test_widget.model == model

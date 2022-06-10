@@ -2,7 +2,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import QToolBar
 
-from gui.patterns_view.pattern_display_grid import PatternDisplayModel
+from gui.pattern_display_model import PatternDisplayModel
 from gui.view_hierarchy import ViewHierarchy
 
 

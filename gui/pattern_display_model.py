@@ -2,7 +2,6 @@ import typing
 
 from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QHeaderView, QTableView
 
 from pattern_cell import PatternCell
 from utils import read_key
@@ -84,37 +83,3 @@ class PatternDisplayModel(QAbstractTableModel):
                                                 key[letter].hex_colour))
                 all_rows.append(this_row)
             return PatternDisplayModel(all_rows)
-
-
-class PatternDisplayGridView(QTableView):
-    """ Responsible for actually displaying the pattern in a table form.
-
-    Parameters:
-        parent (PatternDisplayOverlay)
-        model  (PatternDisplayModel)     the model managing this table
-
-    Methods:
-        __init__(pattern_name)  PatternDisplayGridView
-    """
-
-    def __init__(
-            self,
-            pattern_name: str,
-            model: PatternDisplayModel,
-            parent: 'PatternDisplayOverlay' = None):
-        super().__init__()
-
-        self.parent = parent
-        self.model = model
-        self.pattern_name = pattern_name
-
-        self.setModel(self.model)
-
-        # Using ResizeMode.Fixed to control the size of the cells as using a
-        # more dynamic resize caused the program to take a long time loading
-        self.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Fixed)
-        self.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Fixed)
-        self.horizontalHeader().setDefaultSectionSize(10)
-        self.verticalHeader().setDefaultSectionSize(10)
