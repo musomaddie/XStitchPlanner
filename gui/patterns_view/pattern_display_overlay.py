@@ -45,7 +45,7 @@ class PatternDisplayOverlay(QHBoxLayout):
         editor_layout_widget.setLayout(self.editor)
         self.addWidget(editor_layout_widget)
 
-        # self.opt_menu = StitchingOptMenuOverview(self)
-        # opt_menu_layout_widget = QWidget()
-        # opt_menu_layout_widget.setLayout(self.opt_menu)
-        # self.addWidget(opt_menu_layout_widget)
+        self.opt_menu = StitchingOptMenuOverview(self)
+        opt_menu_layout_widget = QWidget()
+        opt_menu_layout_widget.setLayout(self.opt_menu)
+        self.addWidget(opt_menu_layout_widget)

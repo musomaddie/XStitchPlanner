@@ -19,10 +19,8 @@ def test_init(stitching_opt_mock, editor_view_mock, qtbot):
     test_widget.setLayout(PatternDisplayOverlay("Testing", table_model_mock))
     qtbot.addWidget(test_widget)
 
+    assert test_widget.layout().count() == 2
     editor_view_mock.assert_called_once_with("Testing",
                                              test_widget.layout().model,
                                              test_widget.layout())
-    # stitching_opt_mock.assert_called_once_with(test_widget.layout())
-
-    assert test_widget.layout().count() == 1
-    # assert test_widget.layout().count() == 2
+    stitching_opt_mock.assert_called_once_with(test_widget.layout())
