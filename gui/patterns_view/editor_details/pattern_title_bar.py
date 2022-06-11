@@ -1,4 +1,7 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
+
+from gui.patterns_view.editor_details.current_cell_layout import \
+    CurrentCellLayout
 
 
 class PatternTitleBar(QHBoxLayout):
@@ -11,8 +14,7 @@ class PatternTitleBar(QHBoxLayout):
     parent: 'PatternEditorView'
     model: 'PatternDisplayModel'
     title: QLabel
-
-    # current_cell_layout: CurrentCellLayout
+    current_cell: CurrentCellLayout
 
     def __init__(
             self,
@@ -26,3 +28,8 @@ class PatternTitleBar(QHBoxLayout):
         self.model = model
 
         self.addWidget(self.title)
+
+        self.current_cell = CurrentCellLayout(self)
+        current_cell_layout_widget = QWidget()
+        current_cell_layout_widget.setLayout(self.current_cell)
+        self.addWidget(current_cell_layout_widget)

@@ -8,14 +8,14 @@ class CurrentCellLayout(QHBoxLayout):
     +-------------------------------------------------------------------+
     """
     # TODO: handle selected range somehow nicely
-    parent: 'PatternEditorView'
+    parent: 'PatternTitleBar'
     title: QLabel
     row_display: QLabel
     col_display: QLabel
     row_value: int
     col_value: int
 
-    def __init__(self, parent: 'PatternEditorView' = None):
+    def __init__(self, parent: 'PatternTitleBar' = None):
         super().__init__()
         self.parent = parent
 

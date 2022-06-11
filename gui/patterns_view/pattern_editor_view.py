@@ -18,7 +18,6 @@ class PatternEditorView(QVBoxLayout):
     parent: 'PatternDisplayOverlay'
     model: 'PatternDisplayModel'
     title_bar: PatternTitleBar
-    # current_cell_layout: 'CurrentCellLayout'
     table_view: 'PatternDisplayView'
 
     def __init__(
