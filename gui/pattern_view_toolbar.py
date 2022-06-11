@@ -23,11 +23,15 @@ class PatternViewToolBar(QToolBar):
         colour_off (CellColourSwitcher): an action that removes a colour
             background
     """
+    parent: 'ViewHierarchy'
+    model: PatternDisplayModel
+    colour_on: QAction
+    colour_off: QAction
 
     def __init__(self, parent: ViewHierarchy = None):
         super().__init__(parent)
         self.parent = parent
-        self.pattern_model = None
+        self.model = None
         self.setIconSize(QSize(16, 16))
 
         # TODO: if I also have a menu bar it's going to be hard to access
@@ -43,9 +47,9 @@ class PatternViewToolBar(QToolBar):
         self.addAction(self.colour_on)
         self.addAction(self.colour_off)
 
-    def pattern_chosen(self, pattern_model: PatternDisplayModel) -> None:
-        self.pattern_model = pattern_model
+    def pattern_chosen(self, model: PatternDisplayModel) -> None:
+        self.model = model
         self.colour_on.triggered.connect(
-            lambda: pattern_model.set_colour_mode(True))
+            lambda: model.set_colour_mode(True))
         self.colour_off.triggered.connect(
-            lambda: pattern_model.set_colour_mode(False))
+            lambda: model.set_colour_mode(False))

@@ -23,8 +23,10 @@ class ParentMock(QWidget):
         self.called = True
 
 
-@patch(
-    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
+FILE_LOC = "gui.patterns_selector.pattern_selector_choice."
+
+
+@patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
 def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     test_widget = QWidget()
@@ -41,8 +43,7 @@ def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
     assert psdl_mock.call_count == 1
 
 
-@patch(
-    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
+@patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
 def test_choose_pattern(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     parent_mock = ParentMock()
@@ -57,8 +58,7 @@ def test_choose_pattern(psdl_mock, qtbot):
     assert parent_mock.called
 
 
-@patch(
-    "gui.patterns_selector.pattern_selector_choice.PatternSelectorDropDownWidget")
+@patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
 def test_choose_pattern_called_on_button_pressed(psdl_mock, qtbot):
     psdl_mock.return_value = ChildMock()
     parent_mock = ParentMock()
