@@ -3,7 +3,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 import resources.gui_strings as s
-from gui.patterns_view.pattern_view_toolbar import PatternViewToolBar
+from gui.pattern_view_toolbar import PatternViewToolBar
 from gui.view_hierarchy import ViewHierarchy
 
 
