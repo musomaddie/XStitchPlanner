@@ -1,23 +1,24 @@
-from PyQt6.QtWidgets import QGridLayout, QLabel
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from gui.patterns_view.editor_details.pattern_display_view import \
     PatternDisplayView
+from gui.patterns_view.editor_details.pattern_title_bar import PatternTitleBar
 
 
-class PatternEditorView(QGridLayout):
+class PatternEditorView(QVBoxLayout):
     """ A class containing the pattern editor view
     +-------------------------------------------------------------------+
-    |   PATTERN-TITLE                 |       CURRENTLY_SELECTED_CELL   |
+    |                          PATTERN_TITLE_BAR                        |
     +-------------------------------------------------------------------+
     |                                                                   |
-    |                        TABLE_VIEW                                 |
+    |                              TABLE_VIEW                           |
     |                                                                   |
     +-------------------------------------------------------------------+
     """
     parent: 'PatternDisplayOverlay'
-    title: QLabel
     model: 'PatternDisplayModel'
-    current_cell_layout: 'CurrentCellLayout'
+    title_bar: PatternTitleBar
+    # current_cell_layout: 'CurrentCellLayout'
     table_view: 'PatternDisplayView'
 
     def __init__(
@@ -29,8 +30,10 @@ class PatternEditorView(QGridLayout):
         self.parent = parent
         self.model = model
 
-        self.title = QLabel(title)
-        self.addWidget(self.title)
+        self.title_bar = PatternTitleBar(title, model, self)
+        title_bar_layout_widget = QWidget()
+        title_bar_layout_widget.setLayout(self.title_bar)
+        self.addWidget(title_bar_layout_widget)
 
         self.table_view = PatternDisplayView(title, model, self)
         self.addWidget(self.table_view)
