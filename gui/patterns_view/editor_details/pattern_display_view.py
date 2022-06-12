@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QHeaderView, QTableView
 
 from gui.pattern_display_model import PatternDisplayModel
+from gui.patterns_view.editor_details.current_cell_layout import \
+    CurrentCellLayout
 
 
 class PatternDisplayView(QTableView):
@@ -9,24 +11,19 @@ class PatternDisplayView(QTableView):
     Parameters:
         parent (PatternDisplayOverlay)
         model  (PatternDisplayModel)     the model managing this table
-
-    Methods:
-        __init__(pattern_name)  PatternDisplayGridView
     """
-    pattern_name: str
     model: 'PatternDisplayModel'
     parent: 'PatternEditorView'
 
     def __init__(
             self,
-            pattern_name: str,
             model: PatternDisplayModel,
+            current_cell_layout: CurrentCellLayout,
             parent: 'PatternEditorView' = None):
         super().__init__()
 
         self.parent = parent
         self.model = model
-        self.pattern_name = pattern_name
 
         self.setModel(self.model)
 
@@ -43,9 +40,6 @@ class PatternDisplayView(QTableView):
         current_font = self.font()
         current_font.setPointSize(8)
         self.horizontalHeader().setFont(current_font)
+        self.verticalHeader().setFont(current_font)
 
-        # Handling interactions with the table
-        # self.cellClicked.connect(self.on_cell_click)
-
-    # def on_cell_click(self, row, column):
-    #     print(row, column)
+        self.clicked.connect(current_cell_layout.update_values)

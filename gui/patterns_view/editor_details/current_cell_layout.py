@@ -1,3 +1,4 @@
+from PyQt6.QtCore import QModelIndex
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
 
 
@@ -38,7 +39,7 @@ class CurrentCellLayout(QHBoxLayout):
         self.row_display.setText(f"(row:) {self.row_value}")
         self.col_display.setText(f"(col:) {self.col_value}")
 
-    def update_values(self, row: int, col: int) -> None:
-        self.row_value = row
-        self.col_value = col
+    def update_values(self, index: QModelIndex) -> None:
+        self.row_value = index.row()
+        self.col_value = index.column()
         self._update_displays()
