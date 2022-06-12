@@ -48,10 +48,9 @@ class PatternDisplayModel(QAbstractTableModel):
 
     def set_colour_mode(self, mode: bool):
         """Changes whether the data is shown in colour"""
-        # TODO: manually 'refresh' the table view: currently it will load
-        #  the colour changes if you navigate away from the program window
-        #  and back but otherwise won't.
         self.show_colours = mode
+        self.dataChanged.emit(self.index(0, 0),
+                              self.index(self.rowCount(), self.columnCount()))
 
     @staticmethod
     def load_from_pattern_file(pattern_name: str) -> 'PatternDisplayModel':
