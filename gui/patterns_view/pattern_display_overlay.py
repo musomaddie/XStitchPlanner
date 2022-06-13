@@ -1,3 +1,4 @@
+from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from gui.pattern_display_model import PatternDisplayModel
@@ -14,16 +15,6 @@ class PatternDisplayOverlay(QHBoxLayout):
    |        PATTERN EDITOR                              |   OPTIONS    |
    |                                                    |   MENU       |
    +-------------------------------------------------------------------+
-
-   Parameters:
-       pattern_title (str)
-       parent (PatternViewOverviewLayout)
-       model (PatternDisplayModel)
-       editor (PatternEditorView)
-       opt_menu (StitchingOptMenuOverlay)
-
-    Methods:
-        __init__()
    """
     pattern_title: str
     parent: 'ViewHierarchy'
@@ -48,4 +39,7 @@ class PatternDisplayOverlay(QHBoxLayout):
         self.opt_menu = StitchingOptMenuOverview(self)
         opt_menu_layout_widget = QWidget()
         opt_menu_layout_widget.setLayout(self.opt_menu)
+        # TODO: make the width a bit more dynamic
+        opt_menu_layout_widget.setMaximumSize(
+            QSize(200, opt_menu_layout_widget.size().height()))
         self.addWidget(opt_menu_layout_widget)

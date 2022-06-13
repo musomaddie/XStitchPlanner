@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from gui.patterns_view.modifications.limit_columns import LimitColumnsLayout
 
@@ -27,7 +27,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
         super().__init__()
         self.parent = parent
 
-        # self.column_control = LimitColumnsLayout()
-        # column_control_layout_widget = QWidget()
-        # column_control_layout_widget.setLayout(self.column_control)
-        # self.addWidget(column_control_layout_widget)
+        self.column_control = LimitColumnsLayout()
+        column_control_layout_widget = QWidget()
+        column_control_layout_widget.setLayout(self.column_control)
+        self.addWidget(column_control_layout_widget)
