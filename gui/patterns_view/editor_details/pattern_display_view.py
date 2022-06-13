@@ -31,12 +31,14 @@ class PatternDisplayView(QTableView):
         # more dynamic resize caused the program to take a long time loading
         self.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.Fixed)
+        self.horizontalHeader().setMinimumSectionSize(20)
+        self.horizontalHeader().setDefaultSectionSize(20)
+
         self.verticalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.Fixed)
-        self.horizontalHeader().setDefaultSectionSize(10)
-        self.verticalHeader().setDefaultSectionSize(10)
+        self.verticalHeader().setMinimumSectionSize(20)
+        self.verticalHeader().setDefaultSectionSize(20)
 
-        # Setting the font size of the header row
         current_font = self.font()
         current_font.setPointSize(8)
         self.horizontalHeader().setFont(current_font)
