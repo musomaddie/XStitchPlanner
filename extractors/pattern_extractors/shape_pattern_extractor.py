@@ -75,3 +75,6 @@ class ShapePatternExtractor(PatternExtractor):
         """ Implements the abstract method """
         self.ident_map = {t.identifier: t.symbol
                           for t in read_key(self.key_filename)}
+
+        # The ident map matches the key file correctly
+        print(self.ident_map)

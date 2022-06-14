@@ -3,7 +3,8 @@ Credit for the original of this goes to Kelly Stewart:
     https://gitlab.com/miscoined/critchpat
 
 Usage:
-  extract_pattern [-v] [-k] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
+  extract_pattern [-v] [-k] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [
+  STARTPAGE] [ENDPAGE]
 
 Arguments:
   PDF         input pdf path
@@ -54,15 +55,16 @@ from extractors.pattern_extractors.shape_pattern_extractor import \
 from utils import verbose_print
 
 
-def extract_from_pdf(pdf_name: str,
-                     extractor_mode: ExtractorMode,
-                     width: int,
-                     height: int,
-                     start_page_idx: int = None,
-                     end_page_idx: int = None,
-                     overlap: int = 0,
-                     withkey: bool = False,
-                     verbose: bool = False) -> None:
+def extract_from_pdf(
+        pdf_name: str,
+        extractor_mode: ExtractorMode,
+        width: int,
+        height: int,
+        start_page_idx: int = None,
+        end_page_idx: int = None,
+        overlap: int = 0,
+        withkey: bool = False,
+        verbose: bool = False) -> None:
     """
     Extracts the pattern information from the provided PDF.
 
@@ -107,6 +109,7 @@ def extract_from_pdf(pdf_name: str,
         if withkey:
             extractor.load_key()
             verbose_print(s.key_load_success(), verbose)
+            return
 
         extractor.extract_pattern(
             width, height,
