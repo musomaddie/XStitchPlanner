@@ -109,7 +109,6 @@ def extract_from_pdf(
         if withkey:
             extractor.load_key()
             verbose_print(s.key_load_success(), verbose)
-            return
 
         extractor.extract_pattern(
             width, height,

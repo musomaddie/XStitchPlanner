@@ -60,7 +60,6 @@ class ShapePatternExtractor(PatternExtractor):
         """ Implementing abstract method.  """
         page = self.pdf.pages[page_idx]
         table = page.find_tables(self.PATTERN_TABLE_SETTINGS)[0]
-        print(table)
         return [[self._get_symbol(page, cell) for cell in row.cells]
                 for row in table.rows]
 

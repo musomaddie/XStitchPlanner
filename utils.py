@@ -18,9 +18,10 @@ HEX_KEY = "hex"
 PLACEHOLDERS = ascii_letters + punctuation.replace(",", "").replace(" ", "")
 
 
-def bbox_to_ident(page: Page,
-                  bbox: tuple[int, int, int, int],
-                  verbose: bool = False) -> str:
+def bbox_to_ident(
+        page: Page,
+        bbox: tuple[int, int, int, int],
+        verbose: bool = False) -> str:
     """
 
     Args:
@@ -34,6 +35,9 @@ def bbox_to_ident(page: Page,
             curves found within the bbox on the given page
     """
 
+    left_edge = bbox[0]
+    top_edge = page.height - bbox[1]
+
     def objs_ident(objs, prefix):
         # Saving the fill as well as x and y as may need to differentiate
         # between a blank circle and a full circle.
@@ -42,10 +46,10 @@ def bbox_to_ident(page: Page,
             string = ""
             for x, y in obj['pts']:
                 string += s.ident_string(
-                    int(x - obj["x0"]), int(y - obj["y0"]))
+                    int(x - left_edge), int(top_edge - y))
             string += "f" if obj["fill"] else ""
             coords.append(string)
-        return [prefix + "".join(sorted(coords))]
+        return [prefix + "".join(coords)]
 
     page_sect = page.within_bbox(bbox)
 
@@ -63,12 +67,10 @@ def bbox_to_ident(page: Page,
             verbose_print(s.warning_no_symbol_found(bbox), verbose)
             return ""
 
-        return "-".join(sorted(
-            objs_ident(check_rects, "r")))
+        return "-".join(objs_ident(check_rects, "r"))
 
-    return "-".join(sorted(
-        objs_ident(page_sect.curves, "c") + objs_ident(
-            page_sect.lines, "l")))
+    return "-".join(
+        objs_ident(page_sect.curves, "c") + objs_ident(page_sect.lines, "l"))
 
 
 def determine_pages(page_start_idx: int, page_end_idx: int) -> tuple[int, int]:
@@ -116,7 +118,8 @@ def load_dmc_data(
     Loads the additional data about all dmc colours from the given file.
 
     Args:
-        filename (str):  the filename containing the additional dmc data. The file
+        filename (str):  the filename containing the additional dmc data. The
+        file
                             must have a header row with the following columns
                             (exactly): `Foss#, Description, Hex` the order and
                             additional columns do not matter. [default:
