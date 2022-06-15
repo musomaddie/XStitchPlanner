@@ -44,6 +44,8 @@ class LimitColumnsDropDown(QComboBox):
 
 
 class LimitColumnsValueSelector(QVBoxLayout):
+    # TODO: move to another class and allow this to be applied for both rows
+    #  and columns depending on the value passed in (?)
     """ Contains the layout for this mode --> magic
     The apply button here pushes the call to the applied layout (above) (TODO)
     which will handle the implementation logic the applied layout then calls a
@@ -83,20 +85,20 @@ class LimitColumnsValueSelector(QVBoxLayout):
 
     def display_explanation(self):
         if self.selector_mode == ColumnLimiterMode.NO_SELECTOR:
-            return s.remove_column_limit_desc()
+            return s.limit_column_remove_desc()
         elif self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
-            return s.from_column_limit_desc()
+            return s.limit_column_from_desc()
         elif self.selector_mode == ColumnLimiterMode.TO_COLUMN:
-            return s.to_column_limit_desc()
+            return s.limit_column_to_desc()
         else:
             # TODO: raise error (?)
             return ""
 
     @staticmethod
     def _make_value_prompt(direction: str) -> QLabel:
-        fv_prompt = QLabel(s.from_column_prompt()
+        fv_prompt = QLabel(s.limit_column_from_prompt()
                            if direction == "from"
-                           else s.to_column_prompt())
+                           else s.limit_column_to_prompt())
         fv_prompt.setAlignment(Qt.AlignmentFlag.AlignCenter)
         return fv_prompt
 
@@ -108,7 +110,7 @@ class LimitColumnsValueSelector(QVBoxLayout):
 
     @staticmethod
     def _make_value_button(dim: str, le: QLineEdit) -> QPushButton:
-        but = QPushButton(s.use_selected_desc(dim))
+        but = QPushButton(s.limit_use_current_cell_desc(dim))
         but.clicked.connect(lambda: le.setText("100"))
         return but
 
