@@ -20,6 +20,8 @@ class PatternEditorView(QVBoxLayout):
     title_bar: PatternTitleBar
     table_view: 'PatternDisplayView'
 
+    # TODO: add zoom options!
+
     def __init__(
             self,
             title: str,
