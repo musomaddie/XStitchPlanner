@@ -40,9 +40,11 @@ def find_all_patterns():
         f for f in listdir("patterns/") if isfile(join("patterns/", f))]
 
     key_files = [
-        f.split(".")[0] for f in all_pattern_related_files if ".key" in f]
+        f.split(".")[0] for f in all_pattern_related_files
+        if f.endswith(".key")]
     pat_files = [
-        f.split(".")[0] for f in all_pattern_related_files if ".pat" in f]
+        f.split(".")[0] for f in all_pattern_related_files
+        if f.endswith(".pat")]
 
     return sorted(
         [file_name for file_name in key_files if file_name in pat_files])
