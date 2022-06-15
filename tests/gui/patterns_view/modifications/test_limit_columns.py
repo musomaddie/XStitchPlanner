@@ -11,6 +11,14 @@ from gui.patterns_view.modifications.limit_columns import (
 FILE_LOC = "gui.patterns_view.modifications.limit_columns."
 
 
+def make_value_selector(mode, qtbot):
+    test_widget = QWidget()
+    vs = LimitColumnsValueSelector(mode)
+    test_widget.setLayout(vs)
+    qtbot.addWidget(test_widget)
+    return test_widget, vs
+
+
 # VALUE_SELECTOR
 def test_init_no_selector(qtbot):
     test_widget = QWidget()
@@ -25,10 +33,7 @@ def test_init_no_selector(qtbot):
 
 
 def test_init_from(qtbot):
-    test_widget = QWidget()
-    vs = LimitColumnsValueSelector(ColumnLimiterMode.FROM_COLUMN)
-    test_widget.setLayout(vs)
-    qtbot.addWidget(test_widget)
+    test_widget, vs = make_value_selector(ColumnLimiterMode.FROM_COLUMN, qtbot)
 
     assert test_widget.layout().count() == 3
     assert vs.from_value_layout_widget.layout().count() == 2
@@ -36,18 +41,30 @@ def test_init_from(qtbot):
     prompt = vs.from_value_layout_widget.children()[1]
     input_fields = vs.from_value_layout_widget.children()[2]
 
-    assert prompt.text() == "From:"
+    assert prompt.text() == "From: "
     assert input_fields.layout().count() == 2
     assert input_fields.children()[1].text() == ""
     button = input_fields.children()[2]
     assert button.text() == "Use current column"
 
 
+def test_init_to(qtbot):
+    test_widget, vs = make_value_selector(ColumnLimiterMode.TO_COLUMN, qtbot)
+
+    assert test_widget.layout().count() == 3
+    assert vs.to_value_layout_widget.layout().count() == 2
+
+    prompt = vs.to_value_layout_widget.children()[1]
+    input_fields = vs.from_value_layout_widget.children()[2]
+
+    assert prompt.text() == "To: "
+    assert input_fields.layout().count() == 2
+    assert input_fields.children()[1].text() == ""
+    assert input_fields.children()[2].text() == "Use current column"
+
+
 def test_from_button_click(qtbot):
-    test_widget = QWidget()
-    vs = LimitColumnsValueSelector(ColumnLimiterMode.FROM_COLUMN)
-    test_widget.setLayout(vs)
-    qtbot.addWidget(test_widget)
+    test_widget, vs = make_value_selector(ColumnLimiterMode.FROM_COLUMN, qtbot)
 
     button = vs.from_value_layout_widget.children()[2].children()[2]
     text_box = vs.from_value_layout_widget.children()[2].children()[1]
@@ -55,6 +72,18 @@ def test_from_button_click(qtbot):
 
     # TODO: update this text once I successfully connect the button to the
     #  current cell layout
+    qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
+    assert text_box.text() == "100"
+
+
+def test_to_button_click(qtbot):
+    test_widget, vs = make_value_selector(ColumnLimiterMode.TO_COLUMN, qtbot)
+
+    button = vs.to_value_layout_widget.children()[2].children()[2]
+    text_box = vs.to_value_layout_widget.children()[2].children()[1]
+    assert button
+
+    # TODO: update this text
     qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
     assert text_box.text() == "100"
 
