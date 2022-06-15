@@ -29,4 +29,4 @@ def test_init(stitching_opt_mock, editor_view_mock, qtbot):
                                              test_widget.layout())
     stitching_opt_mock.assert_called_once_with(test_widget.layout())
     opt_menu_layout_widg = test_widget.childAt(0, 1)
-    assert opt_menu_layout_widg.maximumSize().width() == 200
+    assert opt_menu_layout_widg.maximumSize().width() == 300

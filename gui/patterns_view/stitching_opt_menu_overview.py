@@ -4,6 +4,8 @@ from gui.patterns_view.modifications.limit_columns import LimitColumnsLayout
 
 
 class StitchingOptMenuOverview(QVBoxLayout):
+    # TODO: allow very basic pattern changes (i.e. on harry potter allow
+    #  assigning of colours to replace the "and the ....." text
     """ Menu containing buttons that interaction with the pattern
 
    +---------------+
