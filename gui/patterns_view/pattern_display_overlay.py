@@ -40,6 +40,7 @@ class PatternDisplayOverlay(QHBoxLayout):
         opt_menu_layout_widget = QWidget()
         opt_menu_layout_widget.setLayout(self.opt_menu)
         # TODO: make the width a bit more dynamic
+        # TODO: make this hide / show with a button (animations?)
         opt_menu_layout_widget.setMaximumSize(
-            QSize(200, opt_menu_layout_widget.size().height()))
+            QSize(300, opt_menu_layout_widget.size().height()))
         self.addWidget(opt_menu_layout_widget)
