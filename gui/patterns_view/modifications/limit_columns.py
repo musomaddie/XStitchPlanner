@@ -1,10 +1,16 @@
 from enum import Enum
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import (
-    QComboBox, QHBoxLayout, QLabel, QPushButton, QStackedLayout, QVBoxLayout,
+    QComboBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QStackedLayout,
+    QVBoxLayout,
     QWidget)
 
 import resources.gui_strings as s
+
+
+# TODO: consider splitting this into separate files??
 
 
 class ColumnLimiterMode(Enum):
@@ -39,15 +45,16 @@ class LimitColumnsDropDown(QComboBox):
 
 class LimitColumnsValueSelector(QVBoxLayout):
     """ Contains the layout for this mode --> magic
-    The apply button here pushes the call to the applied layout (above) which
-    will handle the implementation logic
-    the applied layout then calls a method on its parent which echos the call
-    back until there are tabs added to the editor view
+    The apply button here pushes the call to the applied layout (above) (TODO)
+    which will handle the implementation logic the applied layout then calls a
+    method on its parent which echos the call back until there are tabs
+    added to the editor view
     """
     overlay: 'LimitColumnsValueSelectorOverlay'
     selector_mode: ColumnLimiterMode
     apply_button: QPushButton
     explanation: QLabel
+    from_value_layout_widget: QWidget
 
     def __init__(
             self, selector_mode: ColumnLimiterMode,
@@ -60,12 +67,58 @@ class LimitColumnsValueSelector(QVBoxLayout):
         self.explanation = QLabel(self.display_explanation())
         self.explanation.setWordWrap(True)
 
+        # TODO: make this dynamically resize based on window size!
+        self._create_from_value_layout()
+
         self.addWidget(self.explanation)
+        if self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
+            self.addWidget(self.from_value_layout_widget)
         self.addWidget(self.apply_button)
 
     def display_explanation(self):
         if self.selector_mode == ColumnLimiterMode.NO_SELECTOR:
             return s.remove_column_limit_desc()
+        if self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
+            return s.from_column_limit_desc()
+
+    @staticmethod
+    def _make_value_prompt(dim: str) -> QLabel:
+        fv_prompt = QLabel(s.from_column_prompt() if dim == "column" else "")
+        fv_prompt.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        return fv_prompt
+
+    @staticmethod
+    def _make_value_line_edit() -> QLineEdit:
+        le = QLineEdit()
+        le.setValidator(QIntValidator())
+        return le
+
+    @staticmethod
+    def _make_value_button(dim: str, le: QLineEdit) -> QPushButton:
+        but = QPushButton(s.use_selected_desc(dim))
+        but.clicked.connect(lambda: le.setText("100"))
+        return but
+
+    # TODO: move these out of the class completely when refactoring to new file
+    @staticmethod
+    def _make_value_input(dim: str) -> QWidget:
+        i_lay = QHBoxLayout()
+        le = LimitColumnsValueSelector._make_value_line_edit()
+        i_lay.addWidget(le)
+        i_lay.addWidget(LimitColumnsValueSelector._make_value_button(dim, le))
+        i_wid = QWidget()
+        i_wid.setLayout(i_lay)
+        return i_wid
+
+    def _create_from_value_layout(self):
+        fv_layout = QVBoxLayout()
+        fv_layout.addWidget(LimitColumnsValueSelector._make_value_prompt(
+            "column"))
+        fv_layout.addWidget(LimitColumnsValueSelector._make_value_input(
+            "column"))
+
+        self.from_value_layout_widget = QWidget()
+        self.from_value_layout_widget.setLayout(fv_layout)
 
 
 class LimitColumnsValueSelectorOverlay(QStackedLayout):
@@ -78,8 +131,6 @@ class LimitColumnsValueSelectorOverlay(QStackedLayout):
     parent: 'LimitColumnsLayout'
     selection_dictionary: dict[ColumnLimiterMode, QWidget]
 
-    # TODO: not sure if these should be saved as class variables too
-    # no_selector_layout: QWidget
     # between_columns_layout: QHBoxLayout
     # from_column_layout: QHBoxLayout
     # to_column_layout: QHBoxLayout
@@ -89,8 +140,8 @@ class LimitColumnsValueSelectorOverlay(QStackedLayout):
         self.parent = parent
 
         no_selector_layout_widget = QWidget()
-        no_selector_layout_widget.setLayout(LimitColumnsValueSelector(
-            ColumnLimiterMode.NO_SELECTOR, self))
+        no_selector_layout_widget.setLayout(
+            LimitColumnsValueSelector(ColumnLimiterMode.NO_SELECTOR, self))
         self.addWidget(no_selector_layout_widget)
 
         between_columns_layout = QHBoxLayout()
@@ -100,10 +151,9 @@ class LimitColumnsValueSelectorOverlay(QStackedLayout):
             between_columns_layout)
         self.addWidget(between_columns_layout_widget)
 
-        from_column_layout = QHBoxLayout()
-        from_column_layout.addWidget(QLabel("from column"))
         from_column_layout_widget = QWidget()
-        from_column_layout_widget.setLayout(from_column_layout)
+        from_column_layout_widget.setLayout(
+            LimitColumnsValueSelector(ColumnLimiterMode.FROM_COLUMN, self))
         self.addWidget(from_column_layout_widget)
 
         to_column_layout = QHBoxLayout()

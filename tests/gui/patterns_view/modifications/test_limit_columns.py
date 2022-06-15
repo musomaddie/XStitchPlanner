@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, call, patch
 
 import pytest
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QStackedLayout, QWidget
 
 from gui.patterns_view.modifications.limit_columns import (
@@ -21,6 +22,41 @@ def test_init_no_selector(qtbot):
     assert value_selector.apply_button.text() == "Apply!"
     assert value_selector.explanation.text() == (
         "Removes any currently applied column limits")
+
+
+def test_init_from(qtbot):
+    test_widget = QWidget()
+    vs = LimitColumnsValueSelector(ColumnLimiterMode.FROM_COLUMN)
+    test_widget.setLayout(vs)
+    qtbot.addWidget(test_widget)
+
+    assert test_widget.layout().count() == 3
+    assert vs.from_value_layout_widget.layout().count() == 2
+
+    prompt = vs.from_value_layout_widget.children()[1]
+    input_fields = vs.from_value_layout_widget.children()[2]
+
+    assert prompt.text() == "From:"
+    assert input_fields.layout().count() == 2
+    assert input_fields.children()[1].text() == ""
+    button = input_fields.children()[2]
+    assert button.text() == "Use current column"
+
+
+def test_from_button_click(qtbot):
+    test_widget = QWidget()
+    vs = LimitColumnsValueSelector(ColumnLimiterMode.FROM_COLUMN)
+    test_widget.setLayout(vs)
+    qtbot.addWidget(test_widget)
+
+    button = vs.from_value_layout_widget.children()[2].children()[2]
+    text_box = vs.from_value_layout_widget.children()[2].children()[1]
+    assert button
+
+    # TODO: update this text once I successfully connect the button to the
+    #  current cell layout
+    qtbot.mouseClick(button, Qt.MouseButton.LeftButton)
+    assert text_box.text() == "100"
 
 
 # VALUE_SELECTOR_OVERLAY
