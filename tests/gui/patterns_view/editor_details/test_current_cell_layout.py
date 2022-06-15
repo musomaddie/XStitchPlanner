@@ -25,8 +25,8 @@ def test_init(qtbot):
     assert test_widget.layout().count() == 3
     assert current_cell_lay.row_value == 0
     assert current_cell_lay.col_value == 0
-    assert current_cell_lay.row_display.text() == "(row:) 0"
-    assert current_cell_lay.col_display.text() == "(col:) 0"
+    assert current_cell_lay.row_display.text() == "(row:) 1"
+    assert current_cell_lay.col_display.text() == "(col:) 1"
 
 
 def test_update_values(qtbot):
@@ -39,5 +39,5 @@ def test_update_values(qtbot):
 
     assert current_cell_lay.row_value == 1
     assert current_cell_lay.col_value == 2
-    assert current_cell_lay.row_display.text() == "(row:) 1"
-    assert current_cell_lay.col_display.text() == "(col:) 2"
+    assert current_cell_lay.row_display.text() == "(row:) 2"
+    assert current_cell_lay.col_display.text() == "(col:) 3"
