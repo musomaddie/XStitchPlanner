@@ -42,5 +42,14 @@ def remove_column_limit_desc() -> str:
     return "Removes any currently applied column limits"
 
 
+def to_column_limit_desc() -> str:
+    return "Only shows the pattern left (inclusive) of the provided column " \
+           "number"
+
+
+def to_column_prompt() -> str:
+    return "To: "
+
+
 def use_selected_desc(dim: str) -> str:
     return f"Use current {dim}"

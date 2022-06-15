@@ -55,6 +55,7 @@ class LimitColumnsValueSelector(QVBoxLayout):
     apply_button: QPushButton
     explanation: QLabel
     from_value_layout_widget: QWidget
+    to_value_layout_widget: QWidget
 
     def __init__(
             self, selector_mode: ColumnLimiterMode,
@@ -68,22 +69,34 @@ class LimitColumnsValueSelector(QVBoxLayout):
         self.explanation.setWordWrap(True)
 
         # TODO: make this dynamically resize based on window size!
-        self._create_from_value_layout()
+        self.from_value_layout_widget = \
+            self._create_from_value_layout("from")
+        self.to_value_layout_widget = \
+            self._create_from_value_layout("to")
 
         self.addWidget(self.explanation)
         if self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
             self.addWidget(self.from_value_layout_widget)
+        if self.selector_mode == ColumnLimiterMode.TO_COLUMN:
+            self.addWidget(self.to_value_layout_widget)
         self.addWidget(self.apply_button)
 
     def display_explanation(self):
         if self.selector_mode == ColumnLimiterMode.NO_SELECTOR:
             return s.remove_column_limit_desc()
-        if self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
+        elif self.selector_mode == ColumnLimiterMode.FROM_COLUMN:
             return s.from_column_limit_desc()
+        elif self.selector_mode == ColumnLimiterMode.TO_COLUMN:
+            return s.to_column_limit_desc()
+        else:
+            # TODO: raise error (?)
+            return ""
 
     @staticmethod
-    def _make_value_prompt(dim: str) -> QLabel:
-        fv_prompt = QLabel(s.from_column_prompt() if dim == "column" else "")
+    def _make_value_prompt(direction: str) -> QLabel:
+        fv_prompt = QLabel(s.from_column_prompt()
+                           if direction == "from"
+                           else s.to_column_prompt())
         fv_prompt.setAlignment(Qt.AlignmentFlag.AlignCenter)
         return fv_prompt
 
@@ -110,15 +123,15 @@ class LimitColumnsValueSelector(QVBoxLayout):
         i_wid.setLayout(i_lay)
         return i_wid
 
-    def _create_from_value_layout(self):
-        fv_layout = QVBoxLayout()
-        fv_layout.addWidget(LimitColumnsValueSelector._make_value_prompt(
-            "column"))
-        fv_layout.addWidget(LimitColumnsValueSelector._make_value_input(
-            "column"))
+    def _create_from_value_layout(self, direction: str) -> QWidget:
+        layout = QVBoxLayout()
+        layout.addWidget(
+            LimitColumnsValueSelector._make_value_prompt(direction))
+        layout.addWidget(LimitColumnsValueSelector._make_value_input("column"))
 
-        self.from_value_layout_widget = QWidget()
-        self.from_value_layout_widget.setLayout(fv_layout)
+        layout_widget = QWidget()
+        layout_widget.setLayout(layout)
+        return layout_widget
 
 
 class LimitColumnsValueSelectorOverlay(QStackedLayout):
@@ -159,7 +172,8 @@ class LimitColumnsValueSelectorOverlay(QStackedLayout):
         to_column_layout = QHBoxLayout()
         to_column_layout.addWidget(QLabel("to column"))
         to_column_layout_widget = QWidget()
-        to_column_layout_widget.setLayout(to_column_layout)
+        to_column_layout_widget.setLayout(
+            LimitColumnsValueSelector(ColumnLimiterMode.TO_COLUMN, self))
         self.addWidget(to_column_layout_widget)
 
         self.selection_dictionary = {
