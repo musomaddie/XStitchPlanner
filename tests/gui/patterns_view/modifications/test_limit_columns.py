@@ -1,24 +1,40 @@
 from unittest.mock import MagicMock, call, patch
 
 import pytest
-from PyQt6.QtWidgets import QComboBox, QStackedLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QStackedLayout, QWidget
 
 from gui.patterns_view.modifications.limit_columns import (
     ColumnLimiterMode, LimitColumnsDropDown, LimitColumnsLayout,
-    LimitColumnsValueSelector)
+    LimitColumnsValueSelector, LimitColumnsValueSelectorOverlay)
 
 FILE_LOC = "gui.patterns_view.modifications.limit_columns."
 
 
 # VALUE_SELECTOR
-def test_init_value_selector(qtbot):
+def test_init_no_selector(qtbot):
     test_widget = QWidget()
-    value_selector = LimitColumnsValueSelector()
+    value_selector = LimitColumnsValueSelector(ColumnLimiterMode.NO_SELECTOR)
     test_widget.setLayout(value_selector)
     qtbot.addWidget(test_widget)
 
+    assert test_widget.layout().count() == 2
+    assert value_selector.apply_button.text() == "Apply!"
+    assert value_selector.explanation.text() == (
+        "Removes any currently applied column limits")
+
+
+# VALUE_SELECTOR_OVERLAY
+@patch(f"{FILE_LOC}LimitColumnsValueSelector")
+def test_init_value_selector(value_selector_mock, qtbot):
+    value_selector_mock.return_value = QHBoxLayout()
+    test_widget = QWidget()
+    value_selector_overlay = LimitColumnsValueSelectorOverlay()
+    test_widget.setLayout(value_selector_overlay)
+    qtbot.addWidget(test_widget)
+
+    assert value_selector_mock.called
     assert test_widget.layout().count() == 4
-    assert value_selector.currentIndex() == 0
+    assert value_selector_overlay.currentIndex() == 0
 
 
 @pytest.mark.parametrize(
@@ -30,7 +46,7 @@ def test_init_value_selector(qtbot):
 )
 def test_change_selected(new_mode, num_child, qtbot):
     test_widget = QWidget()
-    value_selector = LimitColumnsValueSelector()
+    value_selector = LimitColumnsValueSelectorOverlay()
     test_widget.setLayout(value_selector)
     qtbot.addWidget(test_widget)
 

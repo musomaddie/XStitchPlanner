@@ -1,7 +1,10 @@
 from enum import Enum
 
 from PyQt6.QtWidgets import (
-    QComboBox, QHBoxLayout, QLabel, QStackedLayout, QVBoxLayout, QWidget)
+    QComboBox, QHBoxLayout, QLabel, QPushButton, QStackedLayout, QVBoxLayout,
+    QWidget)
+
+import resources.gui_strings as s
 
 
 class ColumnLimiterMode(Enum):
@@ -15,12 +18,12 @@ class LimitColumnsDropDown(QComboBox):
     """ Contains the dropdown with the choice of which column limiter to use
     """
     parent: 'LimitColumnsLayout'
-    value_selector: 'LimitColumnsValueSelector'
+    value_selector: 'LimitColumnsValueSelectorOverlay'
     options: list[ColumnLimiterMode]
 
     def __init__(
             self,
-            value_selector: 'LimitColumnsValueSelector',
+            value_selector: 'LimitColumnsValueSelectorOverlay',
             parent: 'LimitColumnsLayout' = None):
         super().__init__()
         self.parent = parent
@@ -34,7 +37,38 @@ class LimitColumnsDropDown(QComboBox):
             self.options[self.currentIndex()])
 
 
-class LimitColumnsValueSelector(QStackedLayout):
+class LimitColumnsValueSelector(QVBoxLayout):
+    """ Contains the layout for this mode --> magic
+    The apply button here pushes the call to the applied layout (above) which
+    will handle the implementation logic
+    the applied layout then calls a method on its parent which echos the call
+    back until there are tabs added to the editor view
+    """
+    overlay: 'LimitColumnsValueSelectorOverlay'
+    selector_mode: ColumnLimiterMode
+    apply_button: QPushButton
+    explanation: QLabel
+
+    def __init__(
+            self, selector_mode: ColumnLimiterMode,
+            overlay: 'LimitColumnsValueSelectorOverlay' = None):
+        super().__init__()
+        self.selector_mode = selector_mode
+        self.overlay = overlay
+
+        self.apply_button = QPushButton(s.apply_button())
+        self.explanation = QLabel(self.display_explanation())
+        self.explanation.setWordWrap(True)
+
+        self.addWidget(self.explanation)
+        self.addWidget(self.apply_button)
+
+    def display_explanation(self):
+        if self.selector_mode == ColumnLimiterMode.NO_SELECTOR:
+            return s.remove_column_limit_desc()
+
+
+class LimitColumnsValueSelectorOverlay(QStackedLayout):
     """ A layout to enter information depending on the selector mode chosen.
     NO_SELECTOR: (empty)
     BETWEEN_COLUMNS: | FROM xx (use_selection)   TO   xx  (us) |
@@ -55,6 +89,8 @@ class LimitColumnsValueSelector(QStackedLayout):
         self.parent = parent
 
         no_selector_layout_widget = QWidget()
+        no_selector_layout_widget.setLayout(LimitColumnsValueSelector(
+            ColumnLimiterMode.NO_SELECTOR, self))
         self.addWidget(no_selector_layout_widget)
 
         between_columns_layout = QHBoxLayout()
@@ -104,14 +140,14 @@ class LimitColumnsLayout(QVBoxLayout):
     parent: 'StitchingOptMenuOverview'
     title: QLabel
     mode_selector_dd: LimitColumnsDropDown
-    value_selector: LimitColumnsValueSelector
+    value_selector: LimitColumnsValueSelectorOverlay
 
     def __init__(self, parent: 'StitchingOptMenuOverview' = None):
         super().__init__()
         self.parent = parent
 
         self.title = QLabel("Limit pattern via columns")
-        self.value_selector = LimitColumnsValueSelector()
+        self.value_selector = LimitColumnsValueSelectorOverlay()
         self.mode_selector_dd = LimitColumnsDropDown(self.value_selector,
                                                      self)
         self.addWidget(self.title)
