@@ -66,29 +66,3 @@ def pattern_selector_select() -> str:
 
 def program_title() -> str:
     return "Stitch Please!"
-
-
-def limit_column_from_desc() -> str:
-    return "Only shows the pattern right (inclusive) of the provided column " \
-           "number"
-
-
-def limit_column_from_prompt() -> str:
-    return "From: "
-
-
-def limit_column_remove_desc() -> str:
-    return "Removes any currently applied column limits"
-
-
-def limit_column_to_desc() -> str:
-    return "Only shows the pattern left (inclusive) of the provided column " \
-           "number"
-
-
-def limit_column_to_prompt() -> str:
-    return "To: "
-
-
-def limit_use_current_cell_desc(dim: str) -> str:
-    return f"Use current {dim}"

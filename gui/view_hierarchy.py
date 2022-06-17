@@ -8,28 +8,21 @@ from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 class ViewHierarchy(QStackedWidget):
     """ Manages the main window for the GUI. This is where all layouts
     eventually stem from.
-
     """
+    parent: 'MainWindow'
+    toolbar_ref: 'PatternViewToolbar'
+    model: PatternDisplayModel
+    selector_widget: QWidget
+    view_widget: QWidget
 
-    def __init__(self, toolbar_ref, parent=None):
-        """ Initialises the main window. This is the GUI contain that contains
-        all the elements of the program.
-
-        Parameters:
-            parent              MainWindow
-            toolbar_ref         ToolbarTHING
-            pattern_model          PattenModel THING
-            selector_widget     QWidget     a basic widget containing the
-                                                layout for the parent selector
-            view_widget         QWidget     a default widget containing the
-                                                layout for the pattern viewer
-        """
+    def __init__(
+            self, toolbar_ref: 'PatternViewToolbar',
+            parent: 'MainWindow' = None):
         super().__init__()
-
         self.parent = parent
-
         self.toolbar_ref = toolbar_ref
         self.pattern_model = None
+
         self.selector_widget = QWidget()
         self.selector_widget.setLayout(PatternSelectorLayout(self))
         self.view_widget = QWidget()
