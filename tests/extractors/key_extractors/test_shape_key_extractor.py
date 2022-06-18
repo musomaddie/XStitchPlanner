@@ -1,11 +1,10 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 import resources.strings as s
 from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
-from utils import divide_row
 
 DIR = "tests/resources/"
 SINGLE_CONFIG_FILE = f"{DIR}test_key_layout_single_config.json"
@@ -14,51 +13,42 @@ SINGLE_CONFIG_2COLOURS_FILE = (
 MULTI_CONFIG_FILE = f"{DIR}test_key_layout_config.json"
 
 SINGLE_LINE = {
-    "x0": 2,
-    "y0": 3,
     "fill": False,
-    "pts": [(3, 4), (10, 10)]
+    "pts": [(13, 4), (20, 10)]
 }
+SINGLE_LINE_STR = "c-lx3y6x10y0"
 SINGLE_LINE_2 = {
-    "x0": 2,
-    "y0": 3,
     "fill": True,
-    "pts": [(3, 4), (10, 10)]
+    "pts": [(93, 5), (100, 10)]
 }
-SINGLE_LINE_STR = "c-lx1y1x8y7"
-SINGLE_LINE_STR_2 = "c-lx1y1x8y7f"
+SINGLE_LINE_STR_2 = "c-lx3y5x10y0f"
 
 SINGLE_CURVE = {
-    "x0": 1,
-    "y0": 1,
     "fill": False,
-    "pts": [(1, 1), (2, 2), (3, 4)]
+    "pts": [(21, 1), (22, 2), (23, 4)]
 }
+SINGLE_CURVE_STR = "cx1y9x2y8x3y6-l"
 SINGLE_CURVE_2 = {
-    "x0": 1,
-    "y0": 1,
     "fill": True,
-    "pts": [(1, 1), (2, 2), (3, 4)]
+    "pts": [(81, 1), (82, 2), (83, 8)]
 }
-SINGLE_CURVE_STR = "cx0y0x1y1x2y3-l"
-SINGLE_CURVE_STR_2 = "cx0y0x1y1x2y3f-l"
+SINGLE_CURVE_STR_2 = "cx1y9x2y8x3y2f-l"
 SINGLE_LINE_CURVE_STR = (f"{SINGLE_CURVE_STR.split('-')[0]}"
                          f"-{SINGLE_LINE_STR.split('-')[1]}")
 
 SINGLE_RECT = {
     "x0": 2,
-    "y0": 2,
     "fill": False,
-    "pts": [(2, 2), (2, 4), (4, 4), (4, 2)]
+    "pts": [(32, 2), (32, 4), (34, 4), (34, 2)]
 }
+SINGLE_RECT_STR = "rx2y8x2y6x4y6x4y8"
 SINGLE_RECT_2 = {
     "x0": 2,
     "y0": 2,
     "fill": True,
-    "pts": [(2, 2), (2, 4), (4, 4), (4, 2)]
+    "pts": [(72, 2), (72, 4), (74, 4), (74, 2)]
 }
-SINGLE_RECT_STR = "rx0y0x0y2x2y2x2y0"
-SINGLE_RECT_STR_2 = "rx0y0x0y2x2y2x2y0f"
+SINGLE_RECT_STR_2 = "rx2y8x2y6x4y6xy8f"
 
 EXAMPLE_KEY_TABLE_1 = [
     [SINGLE_LINE_STR, "310", "Black"],
@@ -78,45 +68,71 @@ EXAMPLE_KEY_TABLE_2 = [
      "", "", ""]
 ]
 
-colour_2_table = []
-for r in [divide_row(row, 2) for row in EXAMPLE_KEY_TABLE_2]:
-    colour_2_table.append(r[0])
-    colour_2_table.append(r[1])
-colour_2_table = colour_2_table[:-1]
+EXAMPLE_KEY_TABLE_COLOUR_2 = [
+    [SINGLE_LINE_STR, "310", "Black"],
+    [SINGLE_LINE_STR_2, "550", "Violet Very Dark"],
+    [SINGLE_CURVE_STR, "666", "Bright Red"],
+    [SINGLE_CURVE_STR_2, "904", "Parrot Green Very Dark"],
+    [SINGLE_RECT_STR, "776", "Pink Medium"],
+    [SINGLE_RECT_STR_2, "3747", "BLue Violet Very Light"],
+    [SINGLE_LINE_CURVE_STR, "743", "Yellow Medium"]
+]
 
 
-def _make_mock_bbox_page(lines, curves, rects):
+def _make_mock_bbox_page(lines, curves, rects, page_height):
     page = MagicMock()
     page.lines = lines
     page.curves = curves
     page.rects = rects
+    page.height = page_height  # Should be 10 more than the bbox left edge to make maths easy
     return page
 
 
+def bbox_fake_return_values(*args):
+    bbox = args[1]
+    if bbox == (10, 10, 20, 20):
+        return SINGLE_LINE_STR
+    elif bbox == (90, 10, 100, 20):
+        return SINGLE_LINE_STR_2
+    elif bbox == (20, 20, 30, 30):
+        return SINGLE_CURVE_STR
+    elif bbox == (80, 20, 90, 30):
+        return SINGLE_CURVE_STR_2
+    elif bbox == (30, 30, 40, 40):
+        return SINGLE_RECT_STR
+    elif bbox == (70, 30, 80, 40):
+        return SINGLE_RECT_STR_2
+    elif bbox == (40, 40, 50, 50):
+        return SINGLE_LINE_CURVE_STR
+    return ""
+
+
+# TODO: clean up this test some more, ideally we don't need to be calling bbox to ident
 def mock_within_bbox(*args, **kwargs):
     bbox = args[0]
+    page_height = bbox[1] + 10
     if bbox == (10, 10, 20, 20):
-        return _make_mock_bbox_page([SINGLE_LINE], [], [])
+        return _make_mock_bbox_page([SINGLE_LINE], [], [], page_height)
     elif bbox == (90, 10, 100, 20):
-        return _make_mock_bbox_page([SINGLE_LINE_2], [], [])
+        return _make_mock_bbox_page([SINGLE_LINE_2], [], [], page_height)
     elif bbox == (20, 20, 30, 30):
-        return _make_mock_bbox_page([], [SINGLE_CURVE], [])
+        return _make_mock_bbox_page([], [SINGLE_CURVE], [], page_height)
     elif bbox == (80, 20, 90, 30):
-        return _make_mock_bbox_page([], [SINGLE_CURVE_2], [])
+        return _make_mock_bbox_page([], [SINGLE_CURVE_2], [], page_height)
     elif bbox == (30, 30, 40, 40):
-        return _make_mock_bbox_page([], [], [SINGLE_RECT])
+        return _make_mock_bbox_page([], [], [SINGLE_RECT], page_height)
     elif bbox == (70, 30, 80, 40):
-        return _make_mock_bbox_page([], [], [SINGLE_RECT_2])
+        return _make_mock_bbox_page([], [], [SINGLE_RECT_2], page_height)
     elif bbox == (40, 40, 50, 50):
-        return _make_mock_bbox_page([SINGLE_LINE], [SINGLE_CURVE], [])
+        return _make_mock_bbox_page([SINGLE_LINE], [SINGLE_CURVE], [], page_height)
     elif bbox == (60, 40, 70, 50):
-        return _make_mock_bbox_page([SINGLE_LINE_2], [SINGLE_CURVE_2], [])
-    return _make_mock_bbox_page([], [], [])
+        return _make_mock_bbox_page([SINGLE_LINE_2], [SINGLE_CURVE_2], [], page_height)
+    return _make_mock_bbox_page([], [], [], page_height)
 
 
 def make_bbox(x0, top, x1, bottom):
     return {"fill": False, "width": 100, "height": 100,
-            "x0"  : x0, "top": top, "x1": x1, "bottom": bottom}
+            "x0": x0, "top": top, "x1": x1, "bottom": bottom}
 
 
 @pytest.fixture
@@ -172,7 +188,7 @@ def page_mock(num_colours):
 
 # TODO (issues/23): improve the test cases for extractKeyFromPage.
 @pytest.mark.parametrize(
-    "num_pages,num_colours,is_full_table,expected_key_table,is_first_page",
+    ("num_pages", "num_colours", "is_full_table", "expected_key_table", "is_first_page"),
     [(1, 1, True, EXAMPLE_KEY_TABLE_1, True),
      (1, 1, False, EXAMPLE_KEY_TABLE_1[:-1], True),
      (2, 1, True, EXAMPLE_KEY_TABLE_1, True),
@@ -181,13 +197,17 @@ def page_mock(num_colours):
         EXAMPLE_KEY_TABLE_1[idx][1],
         EXAMPLE_KEY_TABLE_1[idx][2]]
        for idx in range(1, len(EXAMPLE_KEY_TABLE_1))], False),
-     (1, 2, True, colour_2_table, True),
-     (2, 2, True, colour_2_table, True),
+     (1, 2, True, EXAMPLE_KEY_TABLE_COLOUR_2, True),
+     (2, 2, True, EXAMPLE_KEY_TABLE_COLOUR_2, True),
      ])
-def test_extract_key_from_page_passes(extractor,
-                                      page_mock,
-                                      expected_key_table,
-                                      is_first_page):
+@patch("extractors.key_extractors.shape_key_extractor.bbox_to_ident")
+def test_extract_key_from_page_passes(
+        bbox_to_ident_mock,
+        extractor,
+        page_mock,
+        expected_key_table,
+        is_first_page):
+    bbox_to_ident_mock.side_effect = bbox_fake_return_values
     result, count = extractor._extract_key_from_page(
         page_mock, is_first_page, 0)
 
@@ -196,7 +216,8 @@ def test_extract_key_from_page_passes(extractor,
         expected_key_table)]
 
     for actual, expected, symbol in zip(result, expected_key_table, symbols):
-        assert actual.identifier == expected[0]
+        assert actual.identifier == expected[0], f"non matching identifiers for expected " \
+                                                 f"{expected[1]}"
         assert actual.dmc_value == expected[1]
         assert actual.symbol == symbol
 
@@ -218,13 +239,14 @@ def test_extract_key_from_page_too_many_idents():
 
 
 @pytest.mark.parametrize("single_page", ([True, False]))
-def test_extract_key_passes(single_page):
+@patch("extractors.key_extractors.shape_key_extractor.bbox_to_ident")
+def test_extract_key_passes(bbox_to_ident_mock, single_page):
+    bbox_to_ident_mock.side_effect = bbox_fake_return_values
     # Set up page mock
     page_mock = MagicMock()
     page_mock.rects = [make_bbox(10, 10, 20, 20), make_bbox(20, 20, 30, 30),
                        make_bbox(30, 30, 40, 40), make_bbox(40, 40, 50, 50)]
     page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
-    page_mock.within_bbox.side_effect = mock_within_bbox
     pdf_mock = MagicMock()
     if single_page:
         pdf_mock.pages = [page_mock]
@@ -275,9 +297,11 @@ def test_extract_key_passes(single_page):
 
 @pytest.mark.parametrize(
     "num_colours,expected_table",
-    [(2, colour_2_table)]
+    [(2, EXAMPLE_KEY_TABLE_COLOUR_2)]
 )
-def test_extract_key_two_colours(page_mock, expected_table):
+@patch("extractors.key_extractors.shape_key_extractor.bbox_to_ident")
+def test_extract_key_two_colours(bbox_to_ident_mock, page_mock, expected_table):
+    bbox_to_ident_mock.side_effect = bbox_fake_return_values
     pdf_mock = MagicMock()
     pdf_mock.pages = [page_mock]
 

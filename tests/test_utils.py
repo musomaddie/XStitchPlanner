@@ -23,6 +23,7 @@ def make_page_mock_for_bbox(lines, curves, rects):
     bbox_mock.rects = rects
 
     page_mock = MagicMock()
+    page_mock.height = 10
     page_mock.within_bbox.return_value = bbox_mock
     return page_mock
 
@@ -33,30 +34,24 @@ def make_page_mock_for_bbox(lines, curves, rects):
 @pytest.mark.parametrize(
     "page_mock,expected_string",
     [
-        [make_page_mock_for_bbox(
-            [{"x0" : 2, "y0": 3, "fill": False,
-              "pts": [(3, 4), (10, 10)]}], [], []),
-            "c-lx1y1x8y7"],
-        [make_page_mock_for_bbox(
-            [{"x0" : 2, "y0": 3, "fill": False,
-              "pts": [(3, 4), (10, 10)]},
-             {"x0" : 0, "y0": 0, "fill": True,
-              "pts": [(1, 2), (3, 4), (5, 6)]}], [], []),
-            "c-lx1y1x8y7x1y2x3y4x5y6f"],
-        [make_page_mock_for_bbox(
-            [], [{"x0" : 1, "y0": 1, "fill": False,
-                  "pts": [(1, 1), (2, 2), (3, 4)]}], []),
-            "cx0y0x1y1x2y3-l"],
-        [make_page_mock_for_bbox(
-            [{"x0" : 0, "y0": 0, "fill": False,
-              "pts": [(1, 2), (3, 4)]}],
-            [{"x0" : 0, "y0": 0, "fill": True,
-              "pts": [(5, 6), (7, 8), (9, 10)]}], []),
-            "cx5y6x7y8x9y10f-lx1y2x3y4"],
-        [make_page_mock_for_bbox(
-            [], [], [{"x0" : 2, "y0": 2, "fill": True,
+        [make_page_mock_for_bbox(  # One line object
+            [{"fill": False, "pts": [(3, 4), (10, 10)]}], [], []),
+            "c-lx3y6x10y0"],
+        [make_page_mock_for_bbox(  # Two line objects
+            [{"fill": False, "pts": [(3, 4), (10, 10)]},
+             {"fill": True, "pts": [(1, 2), (3, 4), (5, 6)]}], [], []),
+            "c-lx3y6x10y0x1y8x3y6x5y4f"],
+        [make_page_mock_for_bbox(  # One curve object
+            [], [{"fill": False, "pts": [(1, 1), (2, 2), (3, 4)]}], []),
+            "cx1y9x2y8x3y6-l"],
+        [make_page_mock_for_bbox(  # One line, one curve
+            [{"fill": False, "pts": [(1, 2), (3, 4)]}],
+            [{"fill": True, "pts": [(5, 6), (7, 8), (9, 10)]}], []),
+            "cx5y4x7y2x9y0f-lx1y8x3y6"],
+        [make_page_mock_for_bbox(  # One rect
+            [], [], [{"x0": 2, "y0": 2, "fill": True,
                       "pts": [(2, 2), (2, 4), (4, 4), (4, 2)]}]),
-            "rx0y0x0y2x2y2x2y0f"],
+            "rx2y8x2y6x4y6x4y8f"],
     ])
 def test_bbox_to_ident_valid(page_mock, expected_string):
     """ Scenarios tested:

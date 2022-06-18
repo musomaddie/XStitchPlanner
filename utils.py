@@ -36,7 +36,7 @@ def bbox_to_ident(
     """
 
     left_edge = bbox[0]
-    top_edge = page.height - bbox[1]
+    top_edge = page.height - bbox[1]  # TODO: figure out if top or bottom edge is better
 
     def objs_ident(objs, prefix):
         # Saving the fill as well as x and y as may need to differentiate
