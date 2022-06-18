@@ -1,17 +1,11 @@
 from PyQt6.QtWidgets import QHeaderView, QTableView
 
 from gui.pattern_display_model import PatternDisplayModel
-from gui.patterns_view.editor_details.current_cell_layout import \
-    CurrentCellLayout
+from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayout
 
 
 class PatternDisplayView(QTableView):
-    """ Responsible for actually displaying the pattern in a table form.
-
-    Parameters:
-        parent (PatternDisplayOverlay)
-        model  (PatternDisplayModel)     the model managing this table
-    """
+    """ Responsible for actually displaying the pattern in a table form. """
     model: 'PatternDisplayModel'
     parent: 'PatternEditorView'
 
@@ -27,15 +21,13 @@ class PatternDisplayView(QTableView):
 
         self.setModel(self.model)
 
-        # Using ResizeMode.Fixed to control the size of the cells as using a
-        # more dynamic resize caused the program to take a long time loading
-        self.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Fixed)
+        # Using ResizeMode.Fixed to control the size of the cells as using a more dynamic resize
+        # caused the program to take a long time loading
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         self.horizontalHeader().setMinimumSectionSize(20)
         self.horizontalHeader().setDefaultSectionSize(20)
 
-        self.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Fixed)
+        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
         self.verticalHeader().setMinimumSectionSize(20)
         self.verticalHeader().setDefaultSectionSize(20)
 

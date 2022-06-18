@@ -5,6 +5,8 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 
+FILE_LOC = "gui.patterns_selector.pattern_selector"
+
 
 class ParentMock:
     def __init__(self):
@@ -14,12 +16,11 @@ class ParentMock:
         self.called = True
 
 
-@patch("gui.patterns_selector.pattern_selector.PatternSelectorChoiceLayout")
-def test_init(child_mock, qtbot):
+@patch(f"{FILE_LOC}.PatternSelectorChoiceLayout")
+def test_init(child_mock):
     child_mock.return_value = QHBoxLayout()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorLayout())
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 2
 
@@ -31,13 +32,12 @@ def test_init(child_mock, qtbot):
     assert child_mock.call_count == 1
 
 
-@patch("gui.patterns_selector.pattern_selector.PatternSelectorChoiceLayout")
-def test_pattern_chosen(child_mock, qtbot):
+@patch(f"{FILE_LOC}.PatternSelectorChoiceLayout")
+def test_pattern_chosen(child_mock):
     child_mock.return_value = QHBoxLayout()
     parent_mock = ParentMock()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorLayout(parent_mock))
-    qtbot.addWidget(test_widget)
 
     assert not parent_mock.called
 

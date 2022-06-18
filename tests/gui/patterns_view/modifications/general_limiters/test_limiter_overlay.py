@@ -3,26 +3,21 @@ from unittest.mock import patch
 import pytest
 from PyQt6.QtWidgets import QComboBox, QLabel, QStackedWidget, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_overlay import \
-    LimiterOverlay
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_overlay"
 
 
-@pytest.mark.parametrize(
-    "direction", [LimiterDirection.ROW, LimiterDirection.COLUMN]
-)
+@pytest.mark.parametrize("direction", [LimiterDirection.ROW, LimiterDirection.COLUMN])
 @patch(f"{FILE_LOC}.LimiterSelectorStack")
 @patch(f"{FILE_LOC}.LimiterDropDown")
-def test_init(dropdown_mock, stack_mock, direction, qtbot):
+def test_init(dropdown_mock, stack_mock, direction):
     stack_mock.return_value = QStackedWidget()
     dropdown_mock.return_value = QComboBox()
     test_widget = QWidget()
     overlay = LimiterOverlay(direction)
     test_widget.setLayout(overlay)
-    qtbot.addWidget(test_widget)
 
     stack_mock.assert_called_once_with(direction)
     dropdown_mock.assert_called_once_with(

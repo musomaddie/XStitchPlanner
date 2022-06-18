@@ -9,12 +9,12 @@ from gui.view_hierarchy import ViewHierarchy
 
 class MainWindow(QMainWindow):
     """
-    Responsible for managing the main window of this application. Contains the
-    overall view hierarchy and the toolbar.
+    Responsible for managing the main window of this application. Contains the overall view
+    hierarchy and the toolbar.
 
     Parameters:
-        view_hierarchy:     the view hierarchy which is shown
-        toolbar:            the toolbar for the pattern view
+        view_hierarchy: the view hierarchy which is shown
+        toolbar: the toolbar for the pattern view
 
     Methods:
         __init__    MainWindow

@@ -14,20 +14,19 @@ WIDTH = 300
 
 def test_extract_from_pdf_invalid_key():
     with pytest.raises(ValueError) as e:
-        extract_from_pdf(TESTING_PATTERN_NAME, ExtractorMode.UNKNOWN,
-                         WIDTH, HEIGHT)
+        extract_from_pdf(TESTING_PATTERN_NAME, ExtractorMode.UNKNOWN, WIDTH, HEIGHT)
     assert str(e.value) == s.extractor_error()
 
 
-@pytest.mark.parametrize("extractor_mode",
-                         [ExtractorMode.FONT, ExtractorMode.SHAPE])
+@pytest.mark.parametrize("extractor_mode", [ExtractorMode.FONT, ExtractorMode.SHAPE])
 @patch("extract_pattern.FontPatternExtractor")
 @patch("extract_pattern.ShapePatternExtractor")
 @patch("extract_pattern.pdfplumber.open")
-def test_extract_pattern_from_pdf_valid(pdfplumber_mock,
-                                        shape_pattern_extractor_mock,
-                                        font_pattern_extractor_mock,
-                                        extractor_mode):
+def test_extract_pattern_from_pdf_valid(
+        pdfplumber_mock,
+        shape_pattern_extractor_mock,
+        font_pattern_extractor_mock,
+        extractor_mode):
     pdfplumber_expected_calls = [call(TESTING_PDF),
                                  call().__enter__(),
                                  call().__enter__().__bool__(),
@@ -63,16 +62,15 @@ def test_extract_from_pdf_correct_arguments(
     overlap = 3
     withkey = True
     verbose = True
-    extract_from_pdf(TESTING_PDF, ExtractorMode.FONT, WIDTH, HEIGHT,
-                     start_page_idx, end_page_idx, overlap,
-                     withkey=withkey, verbose=verbose)
+    extract_from_pdf(
+        TESTING_PDF, ExtractorMode.FONT, WIDTH, HEIGHT, start_page_idx, end_page_idx, overlap,
+        withkey=withkey, verbose=verbose)
 
     extractor_expected_calls = [
         call(ANY, TESTING_PATTERN_NAME),
         call().load_key(),
-        call().extract_pattern(WIDTH, HEIGHT,
-                               start_page_idx, end_page_idx, overlap,
-                               withkey=withkey, verbose=verbose),
+        call().extract_pattern(
+            WIDTH, HEIGHT, start_page_idx, end_page_idx, overlap, withkey=withkey, verbose=verbose),
         call().save_pattern()]
 
     assert font_pattern_extractor_mock.mock_calls == extractor_expected_calls

@@ -4,8 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QPushButton, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_selector.pattern_selector_choice import \
-    PatternSelectorChoiceLayout
+from gui.patterns_selector.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
 class ChildMock(QWidget):
@@ -27,11 +26,10 @@ FILE_LOC = "gui.patterns_selector.pattern_selector_choice."
 
 
 @patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
-def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
+def test_pattern_selector_choice_layout_init(psdl_mock):
     psdl_mock.return_value = ChildMock()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorChoiceLayout())
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 2
 
@@ -44,12 +42,11 @@ def test_pattern_selector_choice_layout_init(psdl_mock, qtbot):
 
 
 @patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
-def test_choose_pattern(psdl_mock, qtbot):
+def test_choose_pattern(psdl_mock):
     psdl_mock.return_value = ChildMock()
     parent_mock = ParentMock()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorChoiceLayout(parent_mock))
-    qtbot.addWidget(test_widget)
 
     assert not parent_mock.called
 
@@ -69,7 +66,6 @@ def test_choose_pattern_called_on_button_pressed(psdl_mock, qtbot):
 
     assert not parent_mock.called
 
-    qtbot.mouseClick(test_widget.layout().submit_button,
-                     Qt.MouseButton.LeftButton)
+    qtbot.mouseClick(test_widget.layout().submit_button, Qt.MouseButton.LeftButton)
 
     assert parent_mock.called

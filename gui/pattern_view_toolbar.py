@@ -14,14 +14,6 @@ class PatternViewToolBar(QToolBar):
    | COLOUR | B / W |                                                  |
    |        |       |                                                  |
    +-------------------------------------------------------------------+
-
-    Parameters:
-        parent (ViewHierarchy): the parent that this attaches to
-        pattern_model (PatternDisplayModel): the model managing the visible
-            pattern
-        colour_on (CellColourSwitcher): an action that adds a colour background
-        colour_off (CellColourSwitcher): an action that removes a colour
-            background
     """
     parent: 'ViewHierarchy'
     model: PatternDisplayModel
@@ -39,17 +31,13 @@ class PatternViewToolBar(QToolBar):
         # TODO: gray out and make un-clickable these icons appropriately (i.e.
         #  if no pattern selected OR already in that view mode).
         self.colour_on = QAction(
-            QIcon("resources/gui_icons/color-swatch.png"),
-            "Enable Colour Background", parent)
+            QIcon("resources/gui_icons/color-swatch.png"), "Enable Colour Background", parent)
         self.colour_off = QAction(
-            QIcon("resources/gui_icons/gradient.png"),
-            "Disable Colour Background", parent)
+            QIcon("resources/gui_icons/gradient.png"), "Disable Colour Background", parent)
         self.addAction(self.colour_on)
         self.addAction(self.colour_off)
 
     def pattern_chosen(self, model: PatternDisplayModel) -> None:
         self.model = model
-        self.colour_on.triggered.connect(
-            lambda: model.set_colour_mode(True))
-        self.colour_off.triggered.connect(
-            lambda: model.set_colour_mode(False))
+        self.colour_on.triggered.connect(lambda: model.set_colour_mode(True))
+        self.colour_off.triggered.connect(lambda: model.set_colour_mode(False))

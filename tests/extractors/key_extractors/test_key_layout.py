@@ -5,8 +5,7 @@ from extractors.key_extractors.key_layout import KeyForm, KeyLayout
 
 @pytest.fixture
 def key_layout():
-    return KeyLayout(KeyForm.NO_LINES,
-                     1, 2, 3, 4, 1, ["Symbol", "Number", "Colours"])
+    return KeyLayout(KeyForm.NO_LINES, 1, 2, 3, 4, 1, ["Symbol", "Number", "Colours"])
 
 
 def test_key_layout_init(key_layout):
@@ -20,7 +19,7 @@ def test_key_layout_init(key_layout):
 
 
 @pytest.mark.parametrize(
-    "fline,hline,nline,unknown",
+    ("fline", "hline", "nline", "unknown"),
     [("full lines", "only header line", "no lines", "aghhghghghg"),
      ("FULL LINES", "oNlY hEaDeR lInE", "no LINES", "AAAAAAAAAAAAAAA"),
      ("full lines!", ".only.header.line.", "!@#&%^&*()no!l!i!n!es,,,,,,,", ""),

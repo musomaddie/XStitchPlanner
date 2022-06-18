@@ -19,8 +19,7 @@ class TextFormat:
 
 
 def empty_on_save(item):
-    return (f"No {item} to save, please ensure the {item} has first been "
-            "extracted.")
+    return f"No {item} to save, please ensure the {item} has first been extracted."
 
 
 def extract_pattern_no_key():
@@ -32,8 +31,7 @@ def extractor_load_success():
 
 
 def extractor_error():
-    return ("The extractor mode is unknown. It should either be 'font' or "
-            "'shape'")
+    return "The extractor mode is unknown. It should either be 'font' or 'shape'"
 
 
 def filename_key_config(pattern_name):
@@ -57,8 +55,7 @@ def input_key_colours_per_row():
 
 
 def input_key_headings_desc():
-    return ("Input the headings of the columns for the key followed by a "
-            "blank line.")
+    return "Input the headings of the columns for the key followed by a blank line."
 
 
 def input_key_headings():
@@ -70,8 +67,7 @@ def input_key_rows_end():
 
 
 def input_key_rows_end_pages():
-    return ("How many rows from the bottom do the key values end on pages "
-            "besides the first one? ")
+    return "How many rows from the bottom do the key values end on pages besides the first one? "
 
 
 def input_key_rows_start():
@@ -79,13 +75,11 @@ def input_key_rows_start():
 
 
 def input_key_rows_start_pages():
-    return ("On what row do the key values start on pages besides the first "
-            "one? ")
+    return "On what row do the key values start on pages besides the first one? "
 
 
 def input_key_table_form():
-    return ("What form is the key table in? (one of 'full lines' 'only "
-            "header line', 'no lines')? ")
+    return "What form is the key table in? (one of 'full lines' 'only header line', 'no lines')? "
 
 
 def key_form_invalid():
@@ -97,8 +91,7 @@ def key_load_success():
 
 
 def multikey_row_not_divided_evenly():
-    return ("The row does not evenly divide into the number of colours "
-            "provided.")
+    return "The row does not evenly divide into the number of colours provided."
 
 
 def new_row(row):
@@ -106,8 +99,7 @@ def new_row(row):
 
 
 def no_key_layout_params():
-    return ("The key layout params must first be set up before attempting to "
-            "extract a key.")
+    return "The key layout params must first be set up before attempting to extract a key."
 
 
 def number_of_identifiers(count):
@@ -123,23 +115,22 @@ def pages_found(si, ei):
 
 
 def page_number_error(string):
-    return (f"'{string}' is not a valid page number as it is not a number. "
-            "Please provide a valid number.")
+    return (f"'{string}' is not a valid page number as it is not a number. Please provide a valid "
+            f"number.")
 
 
 def pattern_extracting_page(idx, page_w, page_h, cur_w, cur_h):
-    return (f"Extracting page {idx} ({page_w}x{page_h}), pat size {cur_w}x"
-            f"{cur_h}")
+    return (f"Extracting page {idx} ({page_w}x{page_h}), pat size {cur_w}x{cur_h}")
 
 
 def pattern_size_too_big(idx, pw, ph, cw, ch, width, height):
-    return (f"Page {idx} ({pw}x{ph}) results in exceeded pattern dimensions "
-            f"({cw}x{ch} vs {width}x{height}")
+    return (
+        f"Page {idx} ({pw}x{ph}) results in exceeded pattern dimensions ({cw}x{ch} vs {width}x"
+        f"{height}")
 
 
 def pattern_uneven_height(idx, actual, expected, other_option):
-    return (f"Pattern {actual} tall on page {idx} when expected {expected} or "
-            f"{other_option}")
+    return f"Pattern {actual} tall on page {idx} when expected {expected} or {other_option}"
 
 
 def pattern_uneven_width(idx):
@@ -147,8 +138,7 @@ def pattern_uneven_width(idx):
 
 
 def pattern_wrong_size(dimension, actual, expected):
-    return (f"{actual} stitches {dimension} but expected {expected} after "
-            "parsing whole pattern.")
+    return f"{actual} stitches {dimension} but expected {expected} after parsing whole pattern."
 
 
 def row_extract(item):
@@ -156,26 +146,25 @@ def row_extract(item):
 
 
 def symbol_empty(bbox):
-    return ("This symbol has no curves, lines or rects (besides the bbox) "
-            f"found at {bbox}")
+    return "This symbol has no curves, lines or rects (besides the bbox) found at {bbox}"
 
 
 def symbol_not_in_key(symbol):
-    return f"Encounted a symbol ({symbol}) not found in the key"
+    return f"Encountered a symbol ({symbol}) not found in the key"
 
 
 def too_many_symbols():
-    return ("Too many colours to automatically generated all symbols, file a "
-            "bug to generate more.")
+    return "Too many colours to automatically generated all symbols, file a bug to generate more."
 
 
 def warning_dmc_not_found(value):
-    return (f"{TextFormat.BRIGHT_RED}WARNING: DMC '{value}' is not found in "
-            "our database. Default (black) description and hex code have "
-            f"been assigned instead.{TextFormat.END}")
+    return (
+        f"{TextFormat.BRIGHT_RED}WARNING: DMC '{value}' is not found in our database. Default ("
+        f"black) description and hex code have been assigned instead.{TextFormat.END}")
 
 
 def warning_no_symbol_found(number):
-    return (f"{TextFormat.BRIGHT_RED}WARNING: no associated symbol could be "
-            f"found for the DMC value associated with {number}. You will need "
-            f"to add this to the key file manually.{TextFormat.END}")
+    return (
+        f"{TextFormat.BRIGHT_RED}WARNING: no associated symbol could be found for the DMC value "
+        f"associated with {number}. You will need to add this to the key file manually."
+        f"{TextFormat.END}")

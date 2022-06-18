@@ -2,16 +2,11 @@ from unittest.mock import patch
 
 import pytest
 from PyQt6.QtWidgets import (
-    QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QVBoxLayout, QWidget)
+    QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import \
-    LimiterMode
-from gui.patterns_view.modifications.general_limiters.limiter_value_selector \
-    import \
-    (
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from gui.patterns_view.modifications.general_limiters.limiter_value_selector import (
     LimiterValueSelector, create_value_widget)
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters" \
@@ -32,10 +27,8 @@ def assert_button(widget: QWidget, exp_button_str: str):
     assert widget.children()[2].text() == exp_button_str
 
 
-@pytest.mark.parametrize(
-    "direction", [LimiterDirection.COLUMN, LimiterDirection.ROW]
-)
-def test_create_value_widget(direction, qtbot):
+@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
+def test_create_value_widget(direction):
     # No selector
     wid = create_value_widget(direction, LimiterMode.NO_SELECTOR)
     assert len(wid.children()) == 0
@@ -66,9 +59,7 @@ def test_create_value_widget(direction, qtbot):
     assert_button(wid.children()[2], cur_str)
 
 
-@pytest.mark.parametrize(
-    "direction", [LimiterDirection.COLUMN, LimiterDirection.ROW]
-)
+@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
 @patch(f"{FILE_LOC}.create_value_widget")
 def test_init_general(creator_mock, direction):
     creator_mock.return_value = QWidget()

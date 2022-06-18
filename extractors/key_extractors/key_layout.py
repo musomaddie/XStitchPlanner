@@ -15,29 +15,19 @@ class KeyForm(Enum):
     """
 
     @staticmethod
-    def from_string(string):
-        """ Converts a string into a KeyForm.
-        Args:
-            string:     the string to convert
-
-        Returns:
-            KeyForm     the KeyForm described by the string
-        """
+    def from_string(string: str) -> 'KeyForm':
+        """ Converts a string into a KeyForm """
         string = string.lower().translate(
-            str.maketrans('', '', punctuation)
-        ).replace(" ", "").replace("\t", "")
+            str.maketrans('', '', punctuation)).replace(" ", "").replace("\t", "")
 
-        if string == "fulllines":
-            return KeyForm.FULL_LINES
-        elif string == "onlyheaderline":
-            return KeyForm.ONLY_HEADER_LINE
-        elif string == "nolines":
-            return KeyForm.NO_LINES
+        for opt in KeyForm:
+            if string == opt.value:
+                return opt
         return KeyForm.UNKNOWN
 
-    FULL_LINES = auto()
-    ONLY_HEADER_LINE = auto()
-    NO_LINES = auto()
+    FULL_LINES = "fulllines"
+    ONLY_HEADER_LINE = "onlyheaderline"
+    NO_LINES = "nolines"
     UNKNOWN = auto()
 
 
@@ -46,15 +36,12 @@ class KeyLayout:
     """
     A data class for storing information about the layout of the key.
     Parameters:
-        key_form(KeyForm):          the form this key file takes
-        n_rows_start(int):          the row where the key starts on the 1st page
-        n_rows_end(int):            the row where the key stops on the 1st page
-        n_rows_start_pages(int):    the row where the key starts for the pages
-                                        that aren't the first page
-        n_rows_end_pages(int):      the row where the key ends for pages that
-                                        aren't the first page
-        headings(list[str]):        an ordered list of every heading in the key
-                                        column
+        key_form: the form this key file takes
+        n_rows_start: the row where the key starts on the 1st page
+        n_rows_end: the row where the key stops on the 1st page
+        n_rows_start_pages: the row where the key starts for the pages that aren't the first page
+        n_rows_end_pages: the row where the key ends for pages that aren't the first page
+        headings: an ordered list of every heading in the key column
     """
     key_form: KeyForm
     n_rows_start: int

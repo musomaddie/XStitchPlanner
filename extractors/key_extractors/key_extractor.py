@@ -27,27 +27,15 @@ JK_H = "column headings"
 class KeyExtractor(Extractor):
     """ A super class for the different types of key extractor classes.
 
-    Parameters:
-        pdf (pdfplumber.PDF):   the PDF to extract the key from
-        pattern_name (str):     the name of the pattern
-        multipage (bool):       whether the key is spread over multiple pages
-        layout_params(KeyLayout):          how the columns for the key
-                                                information are laid out
-                                                [default: None]
-        key (list[floss_thread.Thread]):    a list containing all the thread
-                                                details for every thread found
-                                                in the key [default: []]
-
     Methods:
         __init__(pdf)
-        get_key_table(page): returns a table to extract the thread values
-                                from if required by the KeyForm.
+        get_key_table(page): returns a table to extract the thread values from if required by the
+            KeyForm.
         read_from_layout_file(): loads the layout params
-        save_key():             saves the key that has been extracted
+        save_key(): saves the key that has been extracted
 
     Abstract Methods:
-        extract_key(start_page_idx, end_page_idx): extracts the key from the
-                                                   given pages of the PDF.
+        extract_key(start_page_idx, end_page_idx): extracts the key from the given pages of the PDF.
     """
     key_config_filename: str
     multipage: bool
@@ -66,32 +54,32 @@ class KeyExtractor(Extractor):
         self.key = []
 
     @abstractmethod
-    def extract_key(self,
-                    key_start_page_idx: int,
-                    key_end_page_idx: int = None,
-                    verbose: bool = False) -> list[floss_thread.Thread]:
+    def extract_key(
+            self,
+            key_start_page_idx: int,
+            key_end_page_idx: int = None,
+            verbose: bool = False) -> None:
         """
-        Extracts the key which is found on the page range provided and saves
-        it to self.key
+        Extracts the key which is found on the page range provided and saves it to self.key
 
         Args:
-            key_start_page_idx (int): the first page where the key can be found
-            key_end_page_idx (int):   the last page where the key can be found
-            verbose (bool):           whether to print detailed messages
+            key_start_page_idx: the first page where the key can be found
+            key_end_page_idx:   the last page where the key can be found
+            verbose: whether to print detailed messages
         """
         pass
 
     def get_key_table(self, page: Page) -> list[list[str]]:
         """
-        Returns the table containing the key on the given page to be used as
-        part of the extraction process.
+        Returns the table containing the key on the given page to be used as part of the extraction
+        process.
 
         Args:
-            page (pdfplumber.Page):     the page the key is on
+            page: the page the key is on
 
         Returns:
-            list[list[str]]: a list of lists where the contents of the list
-            is the text found in that row of the table.
+            list[list[str]]: a list of lists where the contents of the list is the text found in
+                that row of the table.
 
         Raises:
             ValueError:     if the key has no layout params
@@ -113,31 +101,22 @@ class KeyExtractor(Extractor):
             for rect in page.rects:
                 if rect["width"] > starting_line["width"]:
                     starting_line = rect
-            # Getting all the rects in this vertical line in case they weren't
-            # all grabbed
-            starting_rects = [rect for rect in page.rects
-                              if rect["y0"] == starting_line["y0"]]
+            # Getting all the rects in this vertical line in case they weren't all grabbed
+            starting_rects = [rect for rect in page.rects if rect["y0"] == starting_line["y0"]]
             bbox[0] = min([rect["x0"] for rect in starting_rects])
             bbox[1] = starting_line["top"]
             return page.crop(bbox).extract_table(
                 self.COLOUR_TABLE_SETTINGS)
 
     def get_layout_info(self):
-        """ Gets information on the layout of the key from the user. First
-        attempts to read the layout params from the config file and if it
-        doesn't exist get it from user input and save it.
+        """ Gets information on the layout of the key from the user. First attempts to read the
+        layout params from the config file and if it doesn't exist get it from user input and
+        save it.
         """
 
         def read_from_layout_file():
-            """ Reads from a layout file, if there are any issues reverts to
-            prompting for user input.
-
-            Parameters:
-                filename(str):  the filename of containing the layout details if
-                                    it exists. Prompt for manual user input
-                                    when None.
-            Returns:
-                no return value     assigns the result to self.layout_params
+            """ Reads from a layout file, if there are any issues reverts to prompting for user
+            input.
             """
             try:
                 with open(self.key_config_filename) as f:
@@ -154,9 +133,7 @@ class KeyExtractor(Extractor):
                 read_from_user_input()
 
         def read_from_user_input():
-            """ Reads from the user input and saves it as a JSON file for
-            future use.
-            """
+            """ Reads from the user input and saves it as a JSON file for future use. """
             key_form = input(s.input_key_table_form())
             num_rows_start = int(input(s.input_key_rows_start()))
             num_rows_end = int(input(s.input_key_rows_end()))

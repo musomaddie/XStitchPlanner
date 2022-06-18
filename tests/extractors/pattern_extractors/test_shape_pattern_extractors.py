@@ -3,8 +3,7 @@ from unittest.mock import MagicMock, call, patch
 import pytest
 
 import resources.strings as s
-from extractors.pattern_extractors.shape_pattern_extractor import \
-    ShapePatternExtractor
+from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 from floss_thread import Thread
 from utils import PLACEHOLDERS
 
@@ -44,19 +43,19 @@ def setup_bbox_mock(bbox_mock):
 
 
 @pytest.mark.parametrize(
-    "starting_placeholders,expected_placeholder",
-    [([], PLACEHOLDERS[0]),
-     (PLACEHOLDERS[:40], PLACEHOLDERS[40])]
+    ("starting_placeholders", "expected_placeholders"),
+    [([], PLACEHOLDERS[0]), (PLACEHOLDERS[:40], PLACEHOLDERS[40])]
 )
-def test_find_next_placeholder(extractor,
-                               starting_placeholders,
-                               expected_placeholder):
+def test_find_next_placeholder(
+        extractor,
+        starting_placeholders,
+        expected_placeholders):
     extractor._used_symbols = [s for s in starting_placeholders]
     orig_len = len(extractor._used_symbols)
     next_placeholder = extractor._find_next_placeholder()
-    assert next_placeholder == expected_placeholder
+    assert next_placeholder == expected_placeholders
     assert len(extractor._used_symbols) == orig_len + 1
-    assert extractor._used_symbols[-1] == expected_placeholder
+    assert extractor._used_symbols[-1] == expected_placeholders
 
 
 def test_find_next_placeholder_raises_error(extractor):
@@ -66,7 +65,6 @@ def test_find_next_placeholder_raises_error(extractor):
     assert str(e.value) == s.too_many_symbols()
 
 
-# Use patch the ident box method since it's already been tested.
 @patch("extractors.pattern_extractors.shape_pattern_extractor.bbox_to_ident")
 def test_get_symbol_without_key(bbox_mock, extractor):
     # Set up bbox mock

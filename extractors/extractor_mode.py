@@ -14,17 +14,13 @@ class ExtractorMode(Enum):
 
     @staticmethod
     def from_string(string: str) -> 'ExtractorMode':
-        """
-        Converts a string into an Extractor Mode.
-        """
+        """ Converts a string into an Extractor Mode. """
         string = string.lower()
-        if string == "font":
-            return ExtractorMode.FONT
-        elif string == "shape":
-            return ExtractorMode.SHAPE
-        else:
-            return ExtractorMode.UNKNOWN
+        for opt in ExtractorMode:
+            if string == opt.value:
+                return opt
+        return ExtractorMode.UNKNOWN
 
-    FONT = auto()
-    SHAPE = auto()
+    FONT = "font"
+    SHAPE = "shape"
     UNKNOWN = auto()

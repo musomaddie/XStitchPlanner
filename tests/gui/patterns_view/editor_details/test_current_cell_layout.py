@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget
 
-from gui.patterns_view.editor_details.current_cell_layout import \
-    CurrentCellLayout
+from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayout
 
 
 class Idx:
@@ -16,11 +15,10 @@ class Idx:
         return self._c
 
 
-def test_init(qtbot):
+def test_init():
     test_widget = QWidget()
     current_cell_lay = CurrentCellLayout()
     test_widget.setLayout(current_cell_lay)
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 3
     assert current_cell_lay.row_value == 0
@@ -29,11 +27,10 @@ def test_init(qtbot):
     assert current_cell_lay.col_display.text() == "(col:) 1"
 
 
-def test_update_values(qtbot):
+def test_update_values():
     test_widget = QWidget()
     current_cell_lay = CurrentCellLayout()
     test_widget.setLayout(current_cell_lay)
-    qtbot.addWidget(test_widget)
 
     current_cell_lay.update_values(Idx(1, 2))
 

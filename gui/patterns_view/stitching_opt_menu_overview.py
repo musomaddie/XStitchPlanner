@@ -1,9 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_overlay import \
-    LimiterOverlay
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
 
 
 class StitchingOptMenuOverview(QVBoxLayout):
@@ -19,11 +17,6 @@ class StitchingOptMenuOverview(QVBoxLayout):
    |               |
    |               |
    +---------------+
-
-    Parameters:
-        parent (PatternDisplayOverlay)
-        columnn_control (LimitColumnsLayout) layout responsible for limiting
-            by columns
     """
     parent: 'PatternDisplayOverlay'
     column_overlay: LimiterOverlay

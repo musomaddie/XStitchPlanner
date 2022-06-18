@@ -3,8 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 
 import resources.strings as s
-from extractors.pattern_extractors.font_pattern_extractor import \
-    FontPatternExtractor
+from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
 
 EXAMPLE_PATTERN_TABLE_1 = [
     ["1", "1", "1", "1", "2"],
@@ -31,8 +30,7 @@ def extractor():
 @pytest.mark.parametrize("withkey", [True, False])
 def test_get_row(extractor, withkey):
     extractor.symbols = ["1", "2"]
-    for actual, expected in zip(extractor.get_rows(0, withkey),
-                                EXAMPLE_PATTERN_TABLE_1):
+    for actual, expected in zip(extractor.get_rows(0, withkey), EXAMPLE_PATTERN_TABLE_1):
         assert actual == expected
 
 

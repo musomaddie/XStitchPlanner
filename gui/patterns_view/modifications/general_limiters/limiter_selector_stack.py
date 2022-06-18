@@ -1,11 +1,8 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import \
-    LimiterMode
-from gui.patterns_view.modifications.general_limiters.limiter_value_selector \
-    import \
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from gui.patterns_view.modifications.general_limiters.limiter_value_selector import \
     LimiterValueSelector
 
 
@@ -26,14 +23,12 @@ class LimiterSelectorStack(QStackedWidget):
 
         no_selector_layout_widget = QWidget()
         no_selector_layout_widget.setLayout(
-            LimiterValueSelector(
-                self.limiter_direction, LimiterMode.NO_SELECTOR))
+            LimiterValueSelector(self.limiter_direction, LimiterMode.NO_SELECTOR))
         self.addWidget(no_selector_layout_widget)
 
         between_layout_widget = QWidget()
         between_layout_widget.setLayout(
-            LimiterValueSelector(
-                self.limiter_direction, LimiterMode.BETWEEN))
+            LimiterValueSelector(self.limiter_direction, LimiterMode.BETWEEN))
         self.addWidget(between_layout_widget)
 
         from_layout_widget = QWidget()

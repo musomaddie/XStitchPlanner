@@ -3,55 +3,46 @@ Credit for the original of this goes to Kelly Stewart:
     https://gitlab.com/miscoined/critchpat
 
 Usage:
-  extract_pattern [-v] [-k] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [
-  STARTPAGE] [ENDPAGE]
+  extract_pattern [-v] [-k] [-m MODE] [-o OVERLAP] PDF WIDTH HEIGHT [STARTPAGE] [ENDPAGE]
 
 Arguments:
   PDF         input pdf path
   WIDTH       width of pattern in stitches
   HEIGHT      height of pattern in stitches
-  STARTPAGE   page number of the first page of the pattern to parse.
-              [default: 1]
-  ENDPAGE     page number of the last page of the pattern to parse. If not
-              provided and STARTPAGE is provided, parse only one page. If
-              neither this nor STARTPAGE is provided, parse the whole PDF file.
+  STARTPAGE   page number of the first page of the pattern to parse. [default: 1]
+  ENDPAGE     page number of the last page of the pattern to parse. If not provided and STARTPAGE
+              is provided, parse only one page. If neither this nor STARTPAGE is provided,
+              parse the whole PDF file.
 
 Options:
   -h  -help                       show this help message and exit
   -v --verbose                    print status messages
-  -k --withkey                    whether to enforce that every symbol found in
-                                  the pattern is also found in the key found at
-                                  pdf_name.key. [default: False]
-  -o OVERLAP --overlap=OVERLAP    number of rows/columns of overlap on each
-                                  page to trim before concatenating pages
-  -m MODE --mode=MODE             extraction mode can either be "font" or
-                                  "shape". [default: font]
+  -k --withkey                    whether to enforce that every symbol found in the pattern is also
+                                  found in the key found at pdf_name.key. [default: False]
+  -o OVERLAP --overlap=OVERLAP    number of rows/columns of overlap on each page to trim before
+                                  concatenating pages [default: 0]
+  -m MODE --mode=MODE             extraction mode can either be "font" or "shape". [default: font]
 
   MODE:
-    font:  The default extraction mode if MODE is not given. Identify symbols
-           in the pattern by extracting the text from the PDF.
-    shape: Extract symbols from the PDF by attempting to identify and match
-           reoccurring lines and shapes on the page. These identifiers are then
-           matched up with arbitrary symbols for displaying the pattern.
+    font:  The default extraction mode if MODE is not given. Identify symbols in the pattern by
+                extracting the text from the PDF.
+    shape: Extract symbols from the PDF by attempting to identify and match reoccurring lines and
+                shapes on the page. These identifiers are then matched up with arbitrary symbols
+                for displaying the pattern.
 
 Notes:
-  - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2,
-    pass 2 for start page).
-  - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2,
-    3, 4, and 5.
-  - A general guideline for determining the mode is to open the pattern in a
-    PDF browser. If you can select the pattern symbols and copy them it is
-    probably best to use 'font'.
+  - The page numbers start at 1 NOT 0 (i.e, if the pattern starts on page 2, pass 2 for start page).
+  - STARTPAGE, ENDPAGE range is inclusive. The values 2, 5 will parse page 2, 3, 4, and 5.
+  - A general guideline for determining the mode is to open the pattern in a PDF reader. If you
+        can select the pattern symbols and copy them it is probably best to use 'font'.
 """
 import pdfplumber
 from docopt import docopt
 
 import resources.strings as s
 from extractors.extractor_mode import ExtractorMode
-from extractors.pattern_extractors.font_pattern_extractor import \
-    FontPatternExtractor
-from extractors.pattern_extractors.shape_pattern_extractor import \
-    ShapePatternExtractor
+from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
+from extractors.pattern_extractors.shape_pattern_extractor import ShapePatternExtractor
 from utils import verbose_print
 
 
@@ -99,11 +90,9 @@ def extract_from_pdf(
             raise ValueError
 
         if extractor_mode == ExtractorMode.FONT:
-            extractor = FontPatternExtractor(
-                pdf, pdf_name.replace(".pdf", ""))
+            extractor = FontPatternExtractor(pdf, pdf_name.replace(".pdf", ""))
         elif extractor_mode == ExtractorMode.SHAPE:
-            extractor = ShapePatternExtractor(
-                pdf, pdf_name.replace(".pdf", ""))
+            extractor = ShapePatternExtractor(pdf, pdf_name.replace(".pdf", ""))
         verbose_print(s.extractor_load_success(), verbose)
 
         if withkey:
@@ -138,12 +127,13 @@ if __name__ == "__main__":
 
 
     args = docopt(__doc__)
-    extract_from_pdf(args["PDF"],
-                     ExtractorMode.from_string(args["--mode"]),
-                     int(args["WIDTH"]),
-                     int(args["HEIGHT"]),
-                     start_page_idx=subtract_one(make_int(args["STARTPAGE"])),
-                     end_page_idx=subtract_one(make_int(args["ENDPAGE"])),
-                     overlap=make_zero(make_int(args["--overlap"])),
-                     withkey=bool(args["--withkey"]),
-                     verbose=bool(args["--verbose"]))
+    extract_from_pdf(
+        args["PDF"],
+        ExtractorMode.from_string(args["--mode"]),
+        int(args["WIDTH"]),
+        int(args["HEIGHT"]),
+        start_page_idx=subtract_one(make_int(args["STARTPAGE"])),
+        end_page_idx=subtract_one(make_int(args["ENDPAGE"])),
+        overlap=make_zero(make_int(args["--overlap"])),
+        withkey=bool(args["--withkey"]),
+        verbose=bool(args["--verbose"]))

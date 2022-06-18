@@ -32,7 +32,7 @@ def make_page_mock_for_bbox(lines, curves, rects):
 
 
 @pytest.mark.parametrize(
-    "page_mock,expected_string",
+    ("page_mock", "expected_string"),
     [
         [make_page_mock_for_bbox(  # One line object
             [{"fill": False, "pts": [(3, 4), (10, 10)]}], [], []),
@@ -64,10 +64,8 @@ def test_bbox_to_ident_valid(page_mock, expected_string):
 
 def test_bbox_to_ident_rect_matches_bbox(capsys):
     page_mock = MagicMock()
-    page_mock.within_bbox.return_value = MockPage(
-        [], [], [{"x0": 0, "y0": 0}])
-    result = utils.bbox_to_ident(
-        page_mock, BOUNDING_BOX, verbose=True)
+    page_mock.within_bbox.return_value = MockPage([], [], [{"x0": 0, "y0": 0}])
+    result = utils.bbox_to_ident(page_mock, BOUNDING_BOX, verbose=True)
 
     out = capsys.readouterr().out
 
@@ -79,7 +77,7 @@ def test_bbox_to_ident_rect_matches_bbox(capsys):
 
 
 @pytest.mark.parametrize(
-    "s_idx,e_idx,se_idx,ee_idx",
+    ("s_idx", "e_idx", "se_idx", "ee_idx"),
     [(None, None, 0, 0), (1, None, 1, 1), (1, 10, 1, 10)]
 )
 def test_determine_page_both_none(s_idx, e_idx, se_idx, ee_idx):
@@ -110,8 +108,7 @@ def test_divide_row_doesnt_divide():
 
 
 def test_load_dmc_data_simple():
-    result = utils.load_dmc_data(
-        filename="tests/resources/dmc_data_testing.csv")
+    result = utils.load_dmc_data(filename="tests/resources/dmc_data_testing.csv")
     assert len(result) == 10
     for num, key in enumerate(result.keys()):
         assert str(num + 1) == key

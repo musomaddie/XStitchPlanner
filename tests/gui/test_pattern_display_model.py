@@ -11,12 +11,13 @@ from pattern_cell import PatternCell
 
 FILE_LOC = "gui.pattern_display_model"
 
-TESTING_DATA_3_2 = [[PatternCell("a", "310", [0, 0], "000000"),
-                     PatternCell("a", "310", [0, 1], "000000"),
-                     PatternCell("b", "666", [0, 2], "FF0000")],
-                    [PatternCell("b", "666", [1, 0], "FF0000"),
-                     PatternCell("b", "666", [1, 1], "FF0000"),
-                     PatternCell("a", "310", [1, 2], "000000")]]
+TESTING_DATA_3_2 = [
+    [PatternCell("a", "310", [0, 0], "000000"),
+     PatternCell("a", "310", [0, 1], "000000"),
+     PatternCell("b", "666", [0, 2], "FF0000")],
+    [PatternCell("b", "666", [1, 0], "FF0000"),
+     PatternCell("b", "666", [1, 1], "FF0000"),
+     PatternCell("a", "310", [1, 2], "000000")]]
 TESTING_DATA_3_3 = [['a', 'a', 'b'], ['b', 'b', 'c'], ['c', 'c', 'a']]
 TESTING_DATA_3_3_STR = "aab\nbbc\ncca\n"
 TESTING_DATA_3_THREAD_DICT = [Thread("310", "a", "a", "Black", "000000"),

@@ -10,25 +10,22 @@ TESTING_PDF = "Testing.pdf"
 TESTING_PATTERN_NAME = "Testing"
 
 
-def test_ExtractKeyFromPdf_InvalidKey():
+def test_extract_key_from_pdf_invalid_key():
     with pytest.raises(ValueError) as e:
         extract_key_from_pdf(TESTING_PATTERN_NAME, ExtractorMode.UNKNOWN)
     assert str(e.value) == s.extractor_error()
 
 
-@pytest.mark.parametrize("extractor_mode",
-                         [ExtractorMode.FONT, ExtractorMode.SHAPE])
+@pytest.mark.parametrize("extractor_mode", [ExtractorMode.FONT, ExtractorMode.SHAPE])
 @patch("extract_key.FontKeyExtractor")
 @patch("extract_key.ShapeKeyExtractor")
 @patch("extract_key.pdfplumber.open")
-def test_extract_key_from_pdf_valid(pdfplumber_mock,
-                                    shape_key_extractor_mock,
-                                    font_key_extractor_mock,
-                                    extractor_mode):
+def test_extract_key_from_pdf_valid(
+        pdfplumber_mock,
+        shape_key_extractor_mock,
+        font_key_extractor_mock,
+        extractor_mode):
     extractor_expected_calls = [call(ANY, TESTING_PATTERN_NAME),
-                                # Not covering the exactPDF information here as
-                                # its assumedly covered by tests within the
-                                # module.
                                 call().extract_key(None, None, False),
                                 call().save_key()]
     pdfplumber_expected_calls = [call(TESTING_PDF),
@@ -46,8 +43,7 @@ def test_extract_key_from_pdf_valid(pdfplumber_mock,
 
 @patch("extract_key.FontKeyExtractor")
 @patch("extract_key.pdfplumber.open")
-def test_extract_key_from_pdf_correct_page_numbers(
-        pdfplumber_mock, extractor_mock):
+def test_extract_key_from_pdf_correct_page_numbers(pdfplumber_mock, extractor_mock):
     start_page = 2
     end_page = 100
     extract_key_from_pdf(TESTING_PDF, ExtractorMode.FONT, start_page, end_page)

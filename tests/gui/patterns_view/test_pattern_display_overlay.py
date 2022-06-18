@@ -13,7 +13,7 @@ FILE_LOC = "gui.patterns_view.pattern_display_overlay"
 
 @patch(f"{FILE_LOC}.PatternEditorView")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview")
-def test_init(stitching_opt_mock, editor_view_mock, qtbot):
+def test_init(stitching_opt_mock, editor_view_mock):
     editor_view_mock.return_value = QGridLayout()
     stitching_opt_mock.return_value = QVBoxLayout()
     table_model_mock = MagicMock(
@@ -21,7 +21,6 @@ def test_init(stitching_opt_mock, editor_view_mock, qtbot):
     test_widget = QWidget()
     overlay = PatternDisplayOverlay("Testing", table_model_mock)
     test_widget.setLayout(overlay)
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 2
     editor_view_mock.assert_called_once_with("Testing",

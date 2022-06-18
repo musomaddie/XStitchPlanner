@@ -28,5 +28,4 @@ def test_model_on_triggered(qtbot):
 
     toolbar.colour_on.trigger()
     toolbar.colour_off.trigger()
-    assert model_mock.mock_calls == [call.set_colour_mode(True),
-                                     call.set_colour_mode(False)]
+    assert model_mock.mock_calls == [call.set_colour_mode(True), call.set_colour_mode(False)]

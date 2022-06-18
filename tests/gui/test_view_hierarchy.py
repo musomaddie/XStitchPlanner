@@ -8,11 +8,10 @@ FILE_LOC = "gui.view_hierarchy"
 
 
 @patch(f"{FILE_LOC}.PatternSelectorLayout")
-def test_init(layout_child_mock, qtbot):
+def test_init(layout_child_mock):
     layout_child_mock.return_value = QVBoxLayout()
     toolbar_ref = MagicMock()
     test_widget = ViewHierarchy(toolbar_ref)
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 2
 
@@ -25,13 +24,12 @@ def test_init(layout_child_mock, qtbot):
 @patch(f"{FILE_LOC}.PatternSelectorLayout")
 @patch(f"{FILE_LOC}.PatternDisplayModel.load_from_pattern_file")
 @patch(f"{FILE_LOC}.PatternDisplayOverlay")
-def test_pattern_chosen(view_child_mock, model_mock, layout_child_mock, qtbot):
+def test_pattern_chosen(view_child_mock, model_mock, layout_child_mock):
     layout_child_mock.return_value = QVBoxLayout()
     view_child_mock.return_value = QVBoxLayout()
     toolbar_ref = MagicMock()
 
     test_widget = ViewHierarchy(toolbar_ref)
-    qtbot.addWidget(test_widget)
 
     test_widget.pattern_chosen("Testing")
     assert view_child_mock.called == 1

@@ -3,8 +3,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.pattern_editor_view import PatternEditorView
-from gui.patterns_view.stitching_opt_menu_overview import (
-    StitchingOptMenuOverview)
+from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
 
 
 class PatternDisplayOverlay(QHBoxLayout):

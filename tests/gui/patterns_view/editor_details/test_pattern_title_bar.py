@@ -8,14 +8,13 @@ FILE_LOC = "gui.patterns_view.editor_details.pattern_title_bar."
 
 
 @patch(f"{FILE_LOC}CurrentCellLayout")
-def test_init(current_cell_mock, qtbot):
+def test_init(current_cell_mock):
     current_cell_mock.return_value = QVBoxLayout()
     mock_model = MagicMock()
 
     test_widget = QWidget()
     title_bar = PatternTitleBar("TESTING", mock_model)
     test_widget.setLayout(title_bar)
-    qtbot.addWidget(test_widget)
 
     assert test_widget.layout().count() == 2
     assert title_bar.model == mock_model

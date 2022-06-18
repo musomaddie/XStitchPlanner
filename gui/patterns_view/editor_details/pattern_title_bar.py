@@ -1,12 +1,11 @@
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
-from gui.patterns_view.editor_details.current_cell_layout import \
-    CurrentCellLayout
+from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayout
 
 
 class PatternTitleBar(QHBoxLayout):
-    """ Responsible for containing all the information that is required in
-    the pattern editor title bar
+    """ Responsible for containing all the information that is required in the pattern editor
+    title bar
    +-------------------------------------------------------------------+
    |   PATTERN-TITLE                 |       CURRENTLY_SELECTED_CELL   |
    +-------------------------------------------------------------------+

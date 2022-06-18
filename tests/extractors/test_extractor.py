@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 from extractors.extractor import Extractor
 
 
-def test_Init():
+def test_init():
     pattern_name = "Testing"
     made_extractor = Extractor(MagicMock(), pattern_name)
 

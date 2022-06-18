@@ -16,19 +16,19 @@ FILENAME_NO = f"{DIR}key_layout_NO.json"
 
 @pytest.fixture
 def extractor(with_layout_params):
-    # The KeyExtractor requires the abstract methods to be initialised so I'm
-    # using a font key extractor instead.
+    # The KeyExtractor requires the abstract methods to be initialised so I'm using a font key
+    # extractor instead.
     extractor = FontKeyExtractor(MagicMock(), "test")
     if with_layout_params:
-        extractor.layout_params = KeyLayout(KeyForm.UNKNOWN, 1, 2, 3, 4, 1,
-                                            ["Symbol", "Number", "Colour"])
+        extractor.layout_params = KeyLayout(
+            KeyForm.UNKNOWN, 1, 2, 3, 4, 1, ["Symbol", "Number", "Colour"])
     return extractor
 
 
 @pytest.fixture
 def remove_file():
-    # This is a fixture so that I can ensure the created JSON file is removed
-    # for the tests where I expect no JSON file to exist.
+    # This is a fixture so that I can ensure the created JSON file is removed for the tests where
+    # I expect no JSON file to exist.
     yield
     os.remove(FILENAME_NO)
 
@@ -41,8 +41,7 @@ def test_init(extractor):
     assert len(extractor.key) == 0
 
 
-@pytest.mark.parametrize("is_multi_page,with_layout_params",
-                         [[True, False], [False, False]])
+@pytest.mark.parametrize(("is_multi_page", "with_layout_params"), [[True, False], [False, False]])
 def test_get_layout_info_from_file(extractor, is_multi_page):
     extractor.key_config_filename = (
         f"{DIR}test_key_layout_config.json"
@@ -60,13 +59,13 @@ def test_get_layout_info_from_file(extractor, is_multi_page):
         "Symbol", "Number", "Type", "Strands", "Colour"]
 
 
-@pytest.mark.parametrize("is_multi_page,with_layout_params",
-                         [[True, False], [False, False]])
+@pytest.mark.parametrize(("is_multi_page", "with_layout_params"), [[True, False], [False, False]])
 @patch("extractors.key_extractors.key_extractor.input", create=True)
-def test_get_layout_info_no_file(mock_input,
-                              extractor,
-                              remove_file,
-                              is_multi_page):
+def test_get_layout_info_no_file(
+        mock_input,
+        extractor,
+        remove_file,
+        is_multi_page):
     if is_multi_page:
         extractor.multipage = True
         mock_input.side_effect = ["full lines",
@@ -153,9 +152,8 @@ def test_get_key_table_invalid_key_from(extractor):
 
 
 @pytest.mark.parametrize(
-    "with_layout_params,key_form",
-    [[True, KeyForm.FULL_LINES],
-     [True, KeyForm.NO_LINES]]
+    ("with_layout_params", "key_form"),
+    [[True, KeyForm.FULL_LINES], [True, KeyForm.NO_LINES]]
 )
 def test_get_key_table_key_forms(extractor, key_form):
     extractor.layout_params.key_form = key_form
@@ -170,7 +168,7 @@ def test_get_key_table_key_forms(extractor, key_form):
             KeyExtractor.COLOUR_TABLE_SETTINGS)
 
 
-@pytest.mark.parametrize("with_layout_params", [True])
+@pytest.mark.parametrize("with_layout_params", [True])  # Required for extractor fixture
 def test_get_key_table_header_line(extractor):
     extractor.layout_params.key_form = KeyForm.ONLY_HEADER_LINE
     page_mock = MagicMock()

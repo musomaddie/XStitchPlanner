@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Callable
 
-import pdfplumber
+from pdfplumber import PDF
 
 import resources.strings as s
 from extractors.extractor import Extractor, PatternFormatError
@@ -12,48 +12,43 @@ class PatternExtractor(Extractor):
     """ A super class for the different types of pattern extractor classes.
 
     Parameters:
-        pdf (pdfplumber.PDF):       the PDF to parse
-        pattern (list[list[str]]):  the extracted pattern once the extract
-                                        methods have run
+        pdf: the PDF to parse
+        pattern: the extracted pattern once the extract methods have run
 
     Methods:
-        __init__(pdf):              creates a new instance of pattern extractor
-                                    for the given PDF.
-        get_rows(page_idx):         returns all the rows on the page_idx'th
-                                    page of the PDF.
-        extract_pattern(*args, **kwargs):   extracts the pattern
-        extract_key(key_page_idx):  extracts the key from the provided page of
-                                    the PDF.
-        extract_pattern_given_pages(get_rows_fn, width, height,
-            start_page_idx=None, end_page_idx=None, overlap=0, verbose=False)
-                                    Does the work of actually extracting the
-                                    pattern.
+        __init__(pdf, pattern_name)
+        get_rows(page_idx): returns all the rows on the page_idx'th page of the PDF.
+        extract_pattern(*args, **kwargs): extracts the pattern
+        extract_key(key_page_idx): extracts the key from the provided page of the PDF.
+        extract_pattern_given_pages(get_rows_fn, width, height, start_page_idx=None,
+            end_page_idx=None, overlap=0, verbose=False): Does the work of actually extracting the
+                pattern.
 
     """
+    pdf: PDF
+    pattern: list[list[str]]
 
-    def __init__(self, pdf: pdfplumber.PDF, pattern_name: str):
+    def __init__(self, pdf: PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.pattern = []
 
     @abstractmethod
-    def get_rows(self,
-                 page_idx: int,
-                 withkey: bool = False,
-                 verbose: bool = False):
+    def get_rows(
+            self, page_idx: int, withkey: bool = False, verbose: bool = False) -> list[list[str]]:
         """ Returns all the rows on the given page
 
         Args:
-            page_idx(int):  the index of the page to extract the pattern from
-            withkey(bool):  have we already extracted the key?
-            verbose(bool):  whether to print detailed debugging statements
+            page_idx: the index of the page to extract the pattern from
+            withkey: have we already extracted the key?
+            verbose: whether to print detailed debugging statements
 
         Returns:
-            list[list[str]]:    a list of all the information on the pattern
-                                    in the format of rows[column]
+            list[list[str]]: a list of all the information on the pattern in the format of
+                rows[column]
 
         Raises:
-            PatternFormatError  if withkey is true and a symbol is identified
-                                    that's not found in the key
+            PatternFormatError  if withkey is true and a symbol is identified that's not found in
+                the key
         """
         pass
 
@@ -62,9 +57,8 @@ class PatternExtractor(Extractor):
         """ Extracts the pattern.
 
         Returns:
-            list[list[str]]:    a list of lists containing all the symbols
-                translated from the pdf pattern maintaining the rows and
-                columns
+            list[list[str]]: a list of lists containing all the symbols translated from the pdf
+            pattern maintaining the rows and columns
         """
         pass
 
@@ -77,41 +71,36 @@ class PatternExtractor(Extractor):
         """
         pass
 
-    def extract_pattern_given_pages(self,
-                                    get_rows_fn: Callable,
-                                    width: int,
-                                    height: int,
-                                    start_page_idx: int = None,
-                                    end_page_idx: int = None,
-                                    overlap: int = 0,
-                                    withkey: bool = False,
-                                    verbose: bool = False):
+    def extract_pattern_given_pages(
+            self,
+            get_rows_fn: Callable,
+            width: int,
+            height: int,
+            start_page_idx: int = None,
+            end_page_idx: int = None,
+            overlap: int = 0,
+            withkey: bool = False,
+            verbose: bool = False):
         """
         Returns the pattern extracted from the PDF across all provided pages
 
         Args:
-            get_rows_fn(function):  the function that determines how every
-                pattern row (and by extension) columns are extracted from the
-                PDF
-            width(int):             the width of the pattern in stitches
-            height(int):            the height of the pattern in stitches
-            start_page_idx(int):    the index of the page where the pattern
-                                        starts
-            end_page_idx(int):      the index of the page where the pattern ends
-            overlap(int):           the number of cells that overlap on each
-                                        page edge of the pattern
-            withkey(bool):          whether to ensure that each symbol is also
-                                        found in the key
-            verbose(bool):          whether progress statements should be
-                                        printed
+            get_rows_fn: the function that determines how every pattern row (and by extension)
+                columns are extracted from the PDF
+            width: the width of the pattern in stitches
+            height: the height of the pattern in stitches
+            start_page_idx: the index of the page where the pattern starts
+            end_page_idx: the index of the page where the pattern ends
+            overlap: the number of cells that overlap on each page edge of the pattern
+            withkey: whether to ensure that each symbol is also found in the key
+            verbose: whether progress statements should be printed
+
         Raises:
-            PatternFormatError:     if the pattern has an uneven width on any
-                                        page.
-            PatternFormatError:     if the pattern has an unexpected height on
-                                        any page.
-            PatternFormatError:     if a pattern page exceeds the expected size
-            PatternFormatError:     if the pattern is not the expected height
-            PatternFormatError:     if the pattern is not the expected width
+            PatternFormatError: if the pattern has an uneven width on any page
+            PatternFormatError: if the pattern has an unexpected height on any page
+            PatternFormatError: if a pattern page exceeds the expected size
+            PatternFormatError: if the pattern is not the expected height
+            PatternFormatError: if the pattern is not the expected width
         """
         verbose_print(s.row_extract("pattern"), verbose)
         all_pages = end_page_idx is None and start_page_idx is None
@@ -134,20 +123,19 @@ class PatternExtractor(Extractor):
                 overlap, verbose)
 
         if len(self.pattern) != height:
-            raise PatternFormatError(
-                s.pattern_wrong_size("high", len(self.pattern), height))
+            raise PatternFormatError(s.pattern_wrong_size("high", len(self.pattern), height))
         if len(self.pattern[0]) != width:
-            raise PatternFormatError(
-                s.pattern_wrong_size("wide", len(self.pattern[0]), width))
+            raise PatternFormatError(s.pattern_wrong_size("wide", len(self.pattern[0]), width))
 
-    def _extract_from_this_page(self,
-                                page_idx,
-                                rows,
-                                cur_x, cur_y,
-                                expected_page_height,
-                                height, width,
-                                overlap,
-                                verbose):
+    def _extract_from_this_page(
+            self,
+            page_idx,
+            rows,
+            cur_x, cur_y,
+            expected_page_height,
+            height, width,
+            overlap,
+            verbose):
         """ A helper so that the method above is not quite as long.
             DO NOT USE on its own.
 
@@ -184,14 +172,14 @@ class PatternExtractor(Extractor):
                 s.pattern_size_too_big(pi_p, page_width, page_height,
                                        cur_width, cur_height, width, height))
 
-        verbose_print(s.pattern_extracting_page(
-            pi_p, page_width, page_height, cur_width, cur_height), verbose)
+        verbose_print(
+            s.pattern_extracting_page(pi_p, page_width, page_height, cur_width, cur_height),
+            verbose)
 
         if cur_x != 0 and self.pattern:
             # New columns, so just need to add these to the end of existing
             # rows
-            for pat_row, page_row in zip(
-                    self.pattern[cur_y: cur_y + page_height], rows):
+            for pat_row, page_row in zip(self.pattern[cur_y: cur_y + page_height], rows):
                 pat_row += page_row
         else:
             # New rows, so just need to add them to the end of existing

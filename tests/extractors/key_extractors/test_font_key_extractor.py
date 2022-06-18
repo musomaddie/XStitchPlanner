@@ -33,25 +33,17 @@ EXPECTED_TABLE_2 = [
 MISSING_SYMBOL_T1 = [["", "310", "Black"]]
 MISSING_SYMBOL_T2 = [["1", "310", "Black", "", "550", "Purple"]]
 
-ARGUMENTS = [
-    "is_multi_page", "num_colours", "extracted_table",  # fixtures
-    "using_first_page", "expected_table"  # results
-]
-
 
 @pytest.fixture
 def extractor(is_multi_page, num_colours):
     extractor = FontKeyExtractor(MagicMock(), "test")
-    extractor.layout_params = KeyLayout(
-        KeyForm.FULL_LINES, 1, 2,
-        2 if is_multi_page else 0,
-        1 if is_multi_page else 0,
-        num_colours, ["Symbol", "Number", "Colour"])
+    extractor.layout_params = KeyLayout(KeyForm.FULL_LINES, 1, 2,
+                                        2 if is_multi_page else 0, 1 if is_multi_page else 0,
+                                        num_colours, ["Symbol", "Number", "Colour"])
     extractor.multipage = is_multi_page
     prefix = "tests/resources/test_key_layout_"
     extractor.key_config_filename = (
-        f"{prefix}config.json" if is_multi_page
-        else f"{prefix}single_config.json")
+        f"{prefix}config.json" if is_multi_page else f"{prefix}single_config.json")
     return extractor
 
 
@@ -82,16 +74,17 @@ def pdf_mock(is_multi_page):
 
 
 @pytest.mark.parametrize(
-    ",".join(ARGUMENTS),
+    ("is_multi_page", "num_colours", "extracted_table", "using_first_page", "expected_table"),
     [(False, 1, EXAMPLE_KEY_TABLE_1, True, EXAMPLE_KEY_TABLE_1),
      (False, 2, EXAMPLE_KEY_TABLE_2, True, EXPECTED_TABLE_2),
      (True, 1, EXAMPLE_KEY_TABLE_1, False, EXAMPLE_KEY_TABLE_1[1:]),
      (True, 2, EXAMPLE_KEY_TABLE_2, False, EXPECTED_TABLE_2[2:])]
 )
-def test_extract_key_from_page_full_table(extractor,
-                                          page_mock,
-                                          using_first_page,
-                                          expected_table):
+def test_extract_key_from_page_full_table(
+        extractor,
+        page_mock,
+        using_first_page,
+        expected_table):
     extractor.layout_params.n_rows_end = 1
     result = extractor._extract_key_from_page(page_mock, using_first_page)
 
@@ -102,22 +95,23 @@ def test_extract_key_from_page_full_table(extractor,
 
 
 @pytest.mark.parametrize(
-    ",".join(ARGUMENTS + ["missing_symbol"]),
+    ("is_multi_page", "num_colours", "extracted_table", "using_first_page", "expected_table",
+     "missing_symbol"),
     [(False, 1, MISSING_SYMBOL_T1, True, MISSING_SYMBOL_T1, "310"),
      (False, 2, MISSING_SYMBOL_T2, True,
       [MISSING_SYMBOL_T2[0][:3], MISSING_SYMBOL_T2[0][3:]], "550"),
      (True, 1, [["2", "550", "Purple"], MISSING_SYMBOL_T1[0]], False,
       MISSING_SYMBOL_T1, "310"),
-     (True, 2,
-      [["2", "666", "Red", "3", "904", "Green"], MISSING_SYMBOL_T2[0]],
+     (True, 2, [["2", "666", "Red", "3", "904", "Green"], MISSING_SYMBOL_T2[0]],
       False, [MISSING_SYMBOL_T2[0][:3], MISSING_SYMBOL_T2[0][3:]], "550")]
 )
-def test_extract_key_from_page_missing_symbol(extractor,
-                                              page_mock,
-                                              capsys,
-                                              using_first_page,
-                                              expected_table,
-                                              missing_symbol):
+def test_extract_key_from_page_missing_symbol(
+        extractor,
+        page_mock,
+        capsys,
+        using_first_page,
+        expected_table,
+        missing_symbol):
     extractor.layout_params.n_rows_end = 1
 
     result = extractor._extract_key_from_page(page_mock, using_first_page)
@@ -126,20 +120,19 @@ def test_extract_key_from_page_missing_symbol(extractor,
     for actual, expected in zip(result, expected_table):
         assert actual.symbol == expected[0]
         assert actual.dmc_value == expected[1]
-    assert capsys.readouterr().out == s.warning_no_symbol_found(
-        missing_symbol) + "\n"
+    assert capsys.readouterr().out == s.warning_no_symbol_found(missing_symbol) + "\n"
 
 
 @pytest.mark.parametrize(
-    ",".join(["is_multi_page", "num_colours",
-              "expected_table", "ek_arguments"]),
+    ("is_multi_page", "num_colours", "expected_table", "ek_arguments"),
     [(False, 1, EXAMPLE_KEY_TABLE_1[:-1], (0,)),
      (True, 1, [EXAMPLE_KEY_TABLE_1[0], EXAMPLE_KEY_TABLE_1[1],
                 EXAMPLE_KEY_TABLE_1[2], EXAMPLE_KEY_TABLE_1[2],
                 EXAMPLE_KEY_TABLE_1[3], EXAMPLE_KEY_TABLE_1[0]], (0, 1))]
 )
-def test_extract_key_valid(extractor, pdf_mock,
-                           expected_table, ek_arguments):
+def test_extract_key_valid(
+        extractor, pdf_mock,
+        expected_table, ek_arguments):
     extractor.pdf = pdf_mock
     if len(ek_arguments) == 1:
         extractor.extract_key(ek_arguments[0])

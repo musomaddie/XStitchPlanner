@@ -3,7 +3,7 @@ from floss_thread import Thread
 
 # This is a pretty boring test but its probably still worth having.
 
-def test_FlossThread_init():
+def test_floss_thread_init():
     dmc_value = "310"
     identifier = "@"
     symbol = "@"

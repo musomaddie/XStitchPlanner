@@ -2,8 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_selector.pattern_selector_choice import \
-    PatternSelectorChoiceLayout
+from gui.patterns_selector.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
 class PatternSelectorLayout(QVBoxLayout):
@@ -20,15 +19,17 @@ class PatternSelectorLayout(QVBoxLayout):
     +----------------------------------------------------------------+
 
     Parameters:
-        title (QLabel): the title of the page
-        selector (PatternSelectorChoiceLayout): handles choosing the pattern to
-            display
-        parent (ViewHierarchy): the parent layout [default None].
+        title: the title of the page
+        selector: handles choosing the pattern to display
+        parent: the parent layout [default None].
 
     Methods:
         __init__()
         pattern_chosen(pattern_name): echoes call to the parent
     """
+    title: QLabel
+    selector: PatternSelectorChoiceLayout
+    parent: 'ViewHierarchy'
 
     def __init__(self, parent: 'ViewHierarchy' = None):
         super().__init__()

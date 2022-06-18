@@ -2,10 +2,8 @@ from unittest.mock import patch
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.stitching_opt_menu_overview import \
-    StitchingOptMenuOverview
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
 
 FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview."
 

@@ -8,8 +8,7 @@ from extractors.key_extractors.shape_key_extractor import ShapeKeyExtractor
 
 DIR = "tests/resources/"
 SINGLE_CONFIG_FILE = f"{DIR}test_key_layout_single_config.json"
-SINGLE_CONFIG_2COLOURS_FILE = (
-    f"{DIR}test_key_layout_single_2colours_config.json")
+SINGLE_CONFIG_2COLOURS_FILE = f"{DIR}test_key_layout_single_2colours_config.json"
 MULTI_CONFIG_FILE = f"{DIR}test_key_layout_config.json"
 
 SINGLE_LINE = {
@@ -33,8 +32,7 @@ SINGLE_CURVE_2 = {
     "pts": [(81, 1), (82, 2), (83, 8)]
 }
 SINGLE_CURVE_STR_2 = "cx1y9x2y8x3y2f-l"
-SINGLE_LINE_CURVE_STR = (f"{SINGLE_CURVE_STR.split('-')[0]}"
-                         f"-{SINGLE_LINE_STR.split('-')[1]}")
+SINGLE_LINE_CURVE_STR = f"{SINGLE_CURVE_STR.split('-')[0]}-{SINGLE_LINE_STR.split('-')[1]}"
 
 SINGLE_RECT = {
     "x0": 2,
@@ -58,14 +56,11 @@ EXAMPLE_KEY_TABLE_1 = [
 ]
 
 EXAMPLE_KEY_TABLE_2 = [
-    [SINGLE_LINE_STR, "310", "Black",
-     SINGLE_LINE_STR_2, "776", "Pink Medium"],
-    [SINGLE_CURVE_STR, "550", "Violet Very Dark",
-     SINGLE_CURVE_STR_2, "3747", "Blue Violet Very Light"],
-    [SINGLE_RECT_STR, "666", "Bright Red",
-     SINGLE_RECT_STR_2, "743", "Yellow Medium"],
-    [SINGLE_LINE_CURVE_STR, "904", "Parrot Green Very Dark",
-     "", "", ""]
+    [SINGLE_LINE_STR, "310", "Black", SINGLE_LINE_STR_2, "776", "Pink Medium"],
+    [SINGLE_CURVE_STR, "550", "Violet Very Dark", SINGLE_CURVE_STR_2, "3747",
+     "Blue Violet Very Light"],
+    [SINGLE_RECT_STR, "666", "Bright Red", SINGLE_RECT_STR_2, "743", "Yellow Medium"],
+    [SINGLE_LINE_CURVE_STR, "904", "Parrot Green Very Dark", "", "", ""]
 ]
 
 EXAMPLE_KEY_TABLE_COLOUR_2 = [
@@ -77,15 +72,6 @@ EXAMPLE_KEY_TABLE_COLOUR_2 = [
     [SINGLE_RECT_STR_2, "3747", "BLue Violet Very Light"],
     [SINGLE_LINE_CURVE_STR, "743", "Yellow Medium"]
 ]
-
-
-def _make_mock_bbox_page(lines, curves, rects, page_height):
-    page = MagicMock()
-    page.lines = lines
-    page.curves = curves
-    page.rects = rects
-    page.height = page_height  # Should be 10 more than the bbox left edge to make maths easy
-    return page
 
 
 def bbox_fake_return_values(*args):
@@ -107,54 +93,26 @@ def bbox_fake_return_values(*args):
     return ""
 
 
-# TODO: clean up this test some more, ideally we don't need to be calling bbox to ident
-def mock_within_bbox(*args, **kwargs):
-    bbox = args[0]
-    page_height = bbox[1] + 10
-    if bbox == (10, 10, 20, 20):
-        return _make_mock_bbox_page([SINGLE_LINE], [], [], page_height)
-    elif bbox == (90, 10, 100, 20):
-        return _make_mock_bbox_page([SINGLE_LINE_2], [], [], page_height)
-    elif bbox == (20, 20, 30, 30):
-        return _make_mock_bbox_page([], [SINGLE_CURVE], [], page_height)
-    elif bbox == (80, 20, 90, 30):
-        return _make_mock_bbox_page([], [SINGLE_CURVE_2], [], page_height)
-    elif bbox == (30, 30, 40, 40):
-        return _make_mock_bbox_page([], [], [SINGLE_RECT], page_height)
-    elif bbox == (70, 30, 80, 40):
-        return _make_mock_bbox_page([], [], [SINGLE_RECT_2], page_height)
-    elif bbox == (40, 40, 50, 50):
-        return _make_mock_bbox_page([SINGLE_LINE], [SINGLE_CURVE], [], page_height)
-    elif bbox == (60, 40, 70, 50):
-        return _make_mock_bbox_page([SINGLE_LINE_2], [SINGLE_CURVE_2], [], page_height)
-    return _make_mock_bbox_page([], [], [], page_height)
-
-
 def make_bbox(x0, top, x1, bottom):
-    return {"fill": False, "width": 100, "height": 100,
-            "x0": x0, "top": top, "x1": x1, "bottom": bottom}
+    return {"fill": False, "width": 100, "height": 100, "x0": x0, "top": top, "x1": x1,
+            "bottom": bottom}
 
 
 @pytest.fixture
 def extractor(num_pages, num_colours, is_full_table):
     extractor = ShapeKeyExtractor(MagicMock(), "test")
-    # Manually setting up the extractor params as some of the functions under
-    # test expect them to exist and its faster than reading from the config
-    # file again.
+    # Manually setting up the extractor params as some of the functions under test expect them to
+    # exist and its faster than reading from the config file again.
 
     if num_pages == 1:
         extractor.key_config_filename = SINGLE_CONFIG_FILE
         extractor.layout_params = KeyLayout(
-            KeyForm.FULL_LINES, 1,
-            1 if is_full_table else 2,
-            0, 0,
+            KeyForm.FULL_LINES, 1, 1 if is_full_table else 2, 0, 0,
             num_colours, ["Symbol", "Number", "Colour"])
 
     elif num_pages == 2:
         extractor.layout_params = KeyLayout(
-            KeyForm.FULL_LINES, 1,
-            1 if is_full_table else 2,
-            1 if is_full_table else 2,
+            KeyForm.FULL_LINES, 1, 1 if is_full_table else 2, 1 if is_full_table else 2,
             1, num_colours, ["Symbol", "Number", "Colour"])
         extractor.key_config_filename = MULTI_CONFIG_FILE
 
@@ -166,23 +124,15 @@ def page_mock(num_colours):
     page_mock = MagicMock()
 
     if num_colours == 1:
-        page_mock.rects = [
-            make_bbox(10, 10, 20, 20),
-            make_bbox(20, 20, 30, 30),
-            make_bbox(30, 30, 40, 40),
-            make_bbox(40, 40, 50, 50)
-        ]
+        page_mock.rects = [make_bbox(10, 10, 20, 20), make_bbox(20, 20, 30, 30),
+                           make_bbox(30, 30, 40, 40), make_bbox(40, 40, 50, 50)]
         page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_1
     elif num_colours == 2:
-        page_mock.rects = [
-            make_bbox(10, 10, 20, 20), make_bbox(90, 10, 100, 20),
-            make_bbox(20, 20, 30, 30), make_bbox(80, 20, 90, 30),
-            make_bbox(30, 30, 40, 40), make_bbox(70, 30, 80, 40),
-            make_bbox(40, 40, 50, 50), make_bbox(60, 40, 70, 50)
-        ]
+        page_mock.rects = [make_bbox(10, 10, 20, 20), make_bbox(90, 10, 100, 20),
+                           make_bbox(20, 20, 30, 30), make_bbox(80, 20, 90, 30),
+                           make_bbox(30, 30, 40, 40), make_bbox(70, 30, 80, 40),
+                           make_bbox(40, 40, 50, 50), make_bbox(60, 40, 70, 50)]
         page_mock.extract_table.return_value = EXAMPLE_KEY_TABLE_2
-
-    page_mock.within_bbox.side_effect = mock_within_bbox
     return page_mock
 
 
@@ -198,8 +148,8 @@ def page_mock(num_colours):
         EXAMPLE_KEY_TABLE_1[idx][2]]
        for idx in range(1, len(EXAMPLE_KEY_TABLE_1))], False),
      (1, 2, True, EXAMPLE_KEY_TABLE_COLOUR_2, True),
-     (2, 2, True, EXAMPLE_KEY_TABLE_COLOUR_2, True),
-     ])
+     (2, 2, True, EXAMPLE_KEY_TABLE_COLOUR_2, True)]
+)
 @patch("extractors.key_extractors.shape_key_extractor.bbox_to_ident")
 def test_extract_key_from_page_passes(
         bbox_to_ident_mock,
@@ -208,12 +158,10 @@ def test_extract_key_from_page_passes(
         expected_key_table,
         is_first_page):
     bbox_to_ident_mock.side_effect = bbox_fake_return_values
-    result, count = extractor._extract_key_from_page(
-        page_mock, is_first_page, 0)
+    result, count = extractor._extract_key_from_page(page_mock, is_first_page, 0)
 
     assert len(result) == len(expected_key_table)
-    symbols = ["a", "b", "c", "d", "e", "f", "g", "h"][:len(
-        expected_key_table)]
+    symbols = ["a", "b", "c", "d", "e", "f", "g", "h"][:len(expected_key_table)]
 
     for actual, expected, symbol in zip(result, expected_key_table, symbols):
         assert actual.identifier == expected[0], f"non matching identifiers for expected " \
@@ -226,8 +174,7 @@ def test_extract_key_from_page_too_many_idents():
     # Mock extractor
     extractor = ShapeKeyExtractor(MagicMock(), "test")
     extractor.key_config_filename = SINGLE_CONFIG_FILE
-    extractor.layout_params = KeyLayout(KeyForm.FULL_LINES,
-                                        1, 1, 0, 0, 1,
+    extractor.layout_params = KeyLayout(KeyForm.FULL_LINES, 1, 1, 0, 0, 1,
                                         ["Symbol", "Number", "Colour"])
     # Mock page
     page_mock = MagicMock()
@@ -255,23 +202,17 @@ def test_extract_key_passes(bbox_to_ident_mock, single_page):
         page_mock_2.rects = [
             make_bbox(90, 10, 100, 20), make_bbox(80, 20, 90, 30),
             make_bbox(70, 30, 80, 40), make_bbox(60, 30, 80, 50)]
-        page_mock_2.extract_table.return_value = (
-                EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
-        page_mock_2.within_bbox.side_effect = mock_within_bbox
+        page_mock_2.extract_table.return_value = (EXAMPLE_KEY_TABLE_1 + EXAMPLE_KEY_TABLE_1)
         pdf_mock.pages = [page_mock, page_mock_2]
 
     # Set up the expected table
-    expected_table = (EXAMPLE_KEY_TABLE_1[:-1]
-                      if single_page
-                      else [
+    expected_table = (EXAMPLE_KEY_TABLE_1[:-1] if single_page else [
         [SINGLE_LINE_STR, "310", "Black"],
         [SINGLE_CURVE_STR, "550", "Violet Very Dark"],
         [SINGLE_RECT_STR, "666", "Bright Red"],
         [SINGLE_LINE_STR_2, "666", "Bright Red"],
-        [SINGLE_CURVE_STR_2, "904",
-         "Parrot Green Very Dark"],
-        [SINGLE_RECT_STR_2, "310", "Black"]]
-                      )
+        [SINGLE_CURVE_STR_2, "904", "Parrot Green Very Dark"],
+        [SINGLE_RECT_STR_2, "310", "Black"]])
 
     symbols = ["a", "b", "c", "d", "e", "f", "g", "h"][:len(expected_table)]
 
@@ -288,16 +229,14 @@ def test_extract_key_passes(bbox_to_ident_mock, single_page):
 
     assert len(extractor.key) == len(expected_table)
 
-    for actual, expected, symbol in zip(extractor.key,
-                                        expected_table, symbols):
+    for actual, expected, symbol in zip(extractor.key, expected_table, symbols):
         assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
         assert actual.symbol == symbol
 
 
 @pytest.mark.parametrize(
-    "num_colours,expected_table",
-    [(2, EXAMPLE_KEY_TABLE_COLOUR_2)]
+    ("num_colours", "expected_table"), [(2, EXAMPLE_KEY_TABLE_COLOUR_2)]
 )
 @patch("extractors.key_extractors.shape_key_extractor.bbox_to_ident")
 def test_extract_key_two_colours(bbox_to_ident_mock, page_mock, expected_table):
@@ -313,8 +252,7 @@ def test_extract_key_two_colours(bbox_to_ident_mock, page_mock, expected_table):
 
     assert len(extractor.key) == len(expected_table)
 
-    for actual, expected, symbol in zip(extractor.key,
-                                        expected_table, symbols):
+    for actual, expected, symbol in zip(extractor.key, expected_table, symbols):
         assert actual.identifier == expected[0]
         assert actual.dmc_value == expected[1]
         assert actual.symbol == symbol

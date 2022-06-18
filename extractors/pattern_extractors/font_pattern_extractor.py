@@ -9,18 +9,19 @@ class FontPatternExtractor(PatternExtractor):
     """ A class for extracting from the pdf when it is in font mode.
 
     Parameters:
-        symbols(list[str]):     a list of every symbol that appears in the key
-                                    once the key is loaded
+        symbols(list[str]):     a list of every symbol that appears in the key once the key is
+            loaded
     """
 
     def __init__(self, pdf: pdfplumber.PDF, pattern_name: str):
         super().__init__(pdf, pattern_name)
         self.symbols = []
 
-    def get_rows(self,
-                 page_idx: int,
-                 withkey: bool = False,
-                 verbose: bool = False) -> list[list[str]]:
+    def get_rows(
+            self,
+            page_idx: int,
+            withkey: bool = False,
+            verbose: bool = False) -> list[list[str]]:
         """ Implements abstract method """
 
         result = self.pdf.pages[page_idx].extract_table(

@@ -1,17 +1,12 @@
 from PyQt6.QtGui import QIntValidator
-from PyQt6.QtWidgets import (
-    QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QVBoxLayout, QWidget)
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_view.modifications.general_limiters.limiter_direction import \
-    LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import \
-    LimiterMode
+from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 
 
-def create_value_widget(
-        direction: LimiterDirection, mode: LimiterMode) -> QWidget:
+def create_value_widget(direction: LimiterDirection, mode: LimiterMode) -> QWidget:
     if mode == LimiterMode.NO_SELECTOR:
         return QWidget()
 
@@ -69,8 +64,7 @@ class LimiterValueSelector(QVBoxLayout):
         self.apply_button = QPushButton(s.apply_button())
         self.explanation = QLabel(self.display_explanation())
         self.explanation.setWordWrap(True)
-        self.value_widget = create_value_widget(
-            self.selector_direction, self.selector_mode)
+        self.value_widget = create_value_widget(self.selector_direction, self.selector_mode)
 
         self.addWidget(self.explanation)
         self.addWidget(self.value_widget)
@@ -86,5 +80,4 @@ class LimiterValueSelector(QVBoxLayout):
         elif self.selector_mode == LimiterMode.BETWEEN:
             return s.limiter_between_desc(self.selector_direction.value)
 
-        raise ValueError(f"{self.selector_direction} with "
-                         f"{self.selector_mode} is not recognised")
+        raise ValueError(f"{self.selector_direction} with {self.selector_mode} is not recognised")
