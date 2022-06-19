@@ -156,7 +156,20 @@ def from_dingbats():
 def from_ancient_symbols():
     result = []
     add_characters(result, 0x10190, [2, 3, 6, 7, 10, 11])
-    print(" ".join(result))
+    return result
+
+
+def from_gothic():
+    result = []
+    add_characters(result, 0x10330, [0, 3, 10])
+    add_characters(result, 0x10340, [8, 9])
+    return result
+
+
+def from_phoenician():
+    result = []
+    add_characters(result, 0x10900, [0, 1, 4, 6, 7, 10, 12])
+    add_characters(result, 0x10910, [1, 2, 4, 10, 11])
     return result
 
 
@@ -176,6 +189,8 @@ def get_all_characters():
     char_list.extend(from_geometric_shapes())
     char_list.extend(from_dingbats())
     char_list.extend(from_ancient_symbols())
+    char_list.extend(from_gothic())
+    char_list.extend(from_phoenician())
 
     return char_list
 

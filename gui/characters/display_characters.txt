@@ -61,3 +61,10 @@ o p q r s t u v w x y z { | } ~
 # Ancient Symbols
 𐆒 𐆓 𐆖 𐆗 𐆚 𐆛
 
+# Gothic
+𐌰 𐌳 𐌺 𐍈 𐍉
+
+# Phoenician
+𐤀 𐤁 𐤄 𐤆 𐤇 𐤊 𐤌 𐤑 𐤒 𐤔 𐤚 𐤛
+
+
