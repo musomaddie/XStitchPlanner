@@ -82,6 +82,18 @@ def from_currency_symbols():
     result = []
     add_characters(result, 0x20A0, [0, 1, 4, 6, 9, 10, 13, 14])
     add_characters(result, 0x20B0, [1, 3, 4, 8, 9])
+    return result
+
+
+def from_arrows():
+    result = []
+    add_characters(result, 0x2190, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15])
+    add_characters(result, 0x21A0, [0, 1, 2, 3, 9, 10, 13, 15])
+    add_characters(result, 0x21B0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    add_characters(result, 0x21C0, [11, 12, 13, 15])
+    add_characters(result, 0x21D0, [0, 1, 2, 3, 4, 14, 15])
+    add_characters(result, 0x21E0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    add_characters(result, 0x21F0, [0, 1, 2, 13, 14, 15])
     print(" ".join(result))
     return result
 
@@ -109,6 +121,7 @@ def get_all_characters():
     char_list.extend(from_phonetic_extensions())
     char_list.extend(from_general_punctuation())
     char_list.extend(from_currency_symbols())
+    char_list.extend(from_arrows())
 
     return char_list
 
