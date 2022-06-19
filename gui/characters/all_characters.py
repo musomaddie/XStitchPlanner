@@ -173,6 +173,22 @@ def from_phoenician():
     return result
 
 
+def from_misc_symbols():
+    result = []
+    add_characters(result, 0x2600, [0, 1, 2, 3, 5, 6, 10, 11, 14])
+    add_characters(result, 0x2610, [6, 8])
+    add_characters(result, 0x2620, [1, 2, 5, 9, 10, 14, 15])
+    add_characters(result, 0x2630, [8, 9, 10, 12, 13, 14])
+    add_characters(result, 0x2640, [0, 1, 2])
+    add_characters(result, 0x2650, [4, 6, 8, 9, 15])
+    add_characters(result, 0x2660, [0, 1, 2, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15])
+    add_characters(result, 0x2670, [0, 2])
+    add_characters(result, 0x2690, [0, 2, 5, 6, 8, 9, 11, 12])
+    add_characters(result, 0x26A0, [0, 2, 3, 4, 5])
+    add_characters(result, 0x26B0, [1])
+    return result
+
+
 def get_all_characters():
     char_list = []
     char_list.extend(from_basic_latin())
@@ -191,6 +207,7 @@ def get_all_characters():
     char_list.extend(from_ancient_symbols())
     char_list.extend(from_gothic())
     char_list.extend(from_phoenician())
+    char_list.extend(from_misc_symbols())
 
     return char_list
 
