@@ -153,6 +153,13 @@ def from_dingbats():
     return result
 
 
+def from_ancient_symbols():
+    result = []
+    add_characters(result, 0x10190, [2, 3, 6, 7, 10, 11])
+    print(" ".join(result))
+    return result
+
+
 def get_all_characters():
     char_list = []
     char_list.extend(from_basic_latin())
@@ -168,6 +175,7 @@ def get_all_characters():
     char_list.extend(from_misc_tech())
     char_list.extend(from_geometric_shapes())
     char_list.extend(from_dingbats())
+    char_list.extend(from_ancient_symbols())
 
     return char_list
 
