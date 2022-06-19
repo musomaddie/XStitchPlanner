@@ -11,3 +11,7 @@ o p q r s t u v w x y z { | } ~
 
 # Latin Extend B
 Ƃ Ƌ Ə Ɣ ƕ Ɯ Ɵ Ƣ Ʀ Ʃ ǁ ǂ ȡ Ȣ ȴ ȵ ȸ ȹ
+
+# Greek and Coptic
+Ͱ Ͳ ͼ ͽ Δ Θ Π Σ Φ Ψ Ω α β δ ε λ
+ν ρ σ τ φ ψ ω ϐ ϖ Ϙ ϟ ϡ Ϣ ϧ Ϫ
