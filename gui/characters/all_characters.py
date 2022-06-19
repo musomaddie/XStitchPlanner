@@ -134,7 +134,22 @@ def from_geometric_shapes():
     add_characters(result, 0x25D0, [0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 14, 15])
     add_characters(result, 0x25E0, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15])
     add_characters(result, 0x25F0, [0, 1, 2, 3, 14])
-    print(" ".join(result))
+    return result
+
+
+def from_dingbats():
+    result = []
+    add_characters(result, 0x2700, [2, 4, 6, 7, 8, 9, 14, 15])
+    add_characters(result, 0x2710, [0, 1, 2, 3, 4, 6, 7, 9, 12, 13, 14])
+    add_characters(result, 0x2720, [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15])
+    add_characters(result, 0x2730, [0, 1, 8, 11, 14, 15])
+    add_characters(result, 0x2740, [0, 3, 4, 7, 8, 9])
+    add_characters(result, 0x2750, [6, 11, 12, 13, 14])
+    add_characters(result, 0x2760, [1, 2, 4, 5, 14, 15])
+    add_characters(result, 0x2770, [6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    add_characters(result, 0x2790, [4, 5, 7, 12])
+    add_characters(result, 0x27A0, [4])
+    add_characters(result, 0x27B0, [0, 2, 3, 5, 8, 12, 14, 15])
     return result
 
 
@@ -152,6 +167,7 @@ def get_all_characters():
     char_list.extend(from_arrows())
     char_list.extend(from_misc_tech())
     char_list.extend(from_geometric_shapes())
+    char_list.extend(from_dingbats())
 
     return char_list
 
