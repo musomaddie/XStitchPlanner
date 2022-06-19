@@ -9,7 +9,7 @@ from allpairspy import AllPairs
 from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
 from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import (
-    LimiterValueSelector, create_value_widget)
+    LimiterValueSelector, ValueWidget)
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters" \
            ".limiter_value_selector"
@@ -30,19 +30,18 @@ def assert_button(widget: QWidget, exp_button_str: str):
 
 
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
-def test_create_value_widget(direction):
+def test_value_widget(direction):
     current_cell_layout_mock = MagicMock()
     current_cell_layout_mock.get_current_value.return_value = 100
     # No selector
-    wid = create_value_widget(current_cell_layout_mock, direction, LimiterMode.NO_SELECTOR)
+    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.NO_SELECTOR)
     assert len(wid.children()) == 0
-    assert type(wid) == QWidget
 
     cur_str = ("Use current column" if direction == LimiterDirection.COLUMN
                else "Use current row")
 
     # Between
-    wid = create_value_widget(current_cell_layout_mock, direction, LimiterMode.BETWEEN)
+    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.BETWEEN)
     assert wid.layout().count() == 4
     assert type(wid.children()[0]) == QVBoxLayout
     assert_prompt(wid.children()[1], "Between:")
@@ -51,20 +50,20 @@ def test_create_value_widget(direction):
     assert_button(wid.children()[4], cur_str)
 
     # From
-    wid = create_value_widget(current_cell_layout_mock, direction, LimiterMode.FROM)
+    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.FROM)
     assert wid.layout().count() == 2
     assert_prompt(wid.children()[1], "From:")
     assert_button(wid.children()[2], cur_str)
 
     # To
-    wid = create_value_widget(current_cell_layout_mock, direction, LimiterMode.TO)
+    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.TO)
     assert wid.layout().count() == 2
     assert_prompt(wid.children()[1], "To:")
     assert_button(wid.children()[2], cur_str)
 
 
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
-@patch(f"{FILE_LOC}.create_value_widget")
+@patch(f"{FILE_LOC}.ValueWidget")
 def test_init_general(creator_mock, direction):
     current_cell_mock = MagicMock()
     creator_mock.return_value = QWidget()
@@ -88,7 +87,7 @@ def test_init_general(creator_mock, direction):
     ])
      ]
 )
-@patch(f"{FILE_LOC}.create_value_widget")
+@patch(f"{FILE_LOC}.ValueWidget")
 def test_init_explanation_text(creator_mock, direction, mode):
     current_cc_layout_mock = MagicMock()
     creator_mock.return_value = QWidget()
@@ -136,7 +135,7 @@ def test_use_current_value_button(direction, qtbot):
 
     current_cell_layout_mock = MagicMock()
     current_cell_layout_mock.get_current_value.side_effect = mock_get_cur_value_method
-    wid = create_value_widget(current_cell_layout_mock, direction, LimiterMode.FROM)
+    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.FROM)
     qtbot.addWidget(wid)
 
     qtbot.mouseClick(wid.children()[2].children()[2], Qt.MouseButton.LeftButton)
