@@ -25,3 +25,7 @@ o p q r s t u v w x y z { | } ~
 
 # Phonetic extensions
 ᴕ ᴥ ᵹ ᵻ
+
+# General punctuation
+‖ † ‡ • ※ ‼ ‽ ‿ ⁀ ⁁ ⁂ ⁅ ⁆ ⁇
+⁊ ⁌ ⁍ ⁐ ⁑ ⁒ ⁓ ⁖ ⁘ ⁙ ⁜

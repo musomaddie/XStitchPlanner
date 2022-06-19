@@ -67,6 +67,16 @@ def from_phonetic_extensions():
     add_characters(result, 0x1D10, [5])
     add_characters(result, 0x1D20, [5])
     add_characters(result, 0x1D70, [9, 11])
+    return result
+
+
+def from_general_punctuation():
+    result = []
+    add_characters(result, 0x2010, [6])
+    add_characters(result, 0x2020, [0, 1, 2])
+    add_characters(result, 0x2030, [11, 12, 13, 15])
+    add_characters(result, 0x2040, [0, 1, 2, 5, 6, 7, 10, 12, 13])
+    add_characters(result, 0x2050, [0, 1, 2, 3, 6, 8, 9, 12])
     print(" ".join(result))
     return result
 
@@ -92,6 +102,7 @@ def get_all_characters():
     char_list.extend(from_armenian())
     char_list.extend(from_georgian())
     char_list.extend(from_phonetic_extensions())
+    char_list.extend(from_general_punctuation())
 
     return char_list
 
