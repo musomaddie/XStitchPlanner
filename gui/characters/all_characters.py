@@ -126,6 +126,18 @@ def from_misc_tech():
     return result
 
 
+def from_geometric_shapes():
+    result = []
+    add_characters(result, 0x25A0, [2, 3, 8])
+    add_characters(result, 0x25B0, [1, 2, 3, 7, 13])
+    add_characters(result, 0x25C0, [2, 7, 8, 9, 10, 13, 14])
+    add_characters(result, 0x25D0, [0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 14, 15])
+    add_characters(result, 0x25E0, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    add_characters(result, 0x25F0, [0, 1, 2, 3, 14])
+    print(" ".join(result))
+    return result
+
+
 def get_all_characters():
     char_list = []
     char_list.extend(from_basic_latin())
@@ -139,6 +151,7 @@ def get_all_characters():
     char_list.extend(from_currency_symbols())
     char_list.extend(from_arrows())
     char_list.extend(from_misc_tech())
+    char_list.extend(from_geometric_shapes())
 
     return char_list
 
