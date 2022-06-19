@@ -47,6 +47,17 @@ def from_armenian():
     add_characters(result, 0x0560, [1])
     add_characters(result, 0x0570, [1, 9])
     add_characters(result, 0x0580, [3, 6, 13, 15])
+    return result
+
+
+def from_georgian():
+    result = []
+    add_characters(result, 0x10A0, [1, 3, 7, 9, 12])
+    add_characters(result, 0x10B0, [2, 5, 14, 15])
+    add_characters(result, 0x10C0, [4, 5])
+    add_characters(result, 0x10D0, [1, 10, 14])
+    add_characters(result, 0x10E0, [0, 10, 13])
+    add_characters(result, 0x10F0, [1, 5, 6, 8, 11])
     print(" ".join(result))
     return result
 
@@ -70,6 +81,7 @@ def get_all_characters():
     char_list.extend(from_latin_extended_b())
     char_list.extend(from_greek_and_coptic())
     char_list.extend(from_armenian())
+    char_list.extend(from_georgian())
 
     return char_list
 

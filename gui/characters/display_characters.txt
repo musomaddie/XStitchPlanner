@@ -18,3 +18,7 @@ o p q r s t u v w x y z { | } ~
 
 # Armenian
 Բ Թ Ծ Ձ Ճ Պ Ֆ ա ձ չ փ ֆ ֍ ֏
+
+# Georgian
+Ⴁ Ⴃ Ⴇ Ⴉ Ⴌ Ⴒ Ⴕ Ⴞ Ⴟ Ⴤ Ⴥ ბ ლ პ რ
+ც ჭ ჱ ჵ ჶ ჸ ჻
