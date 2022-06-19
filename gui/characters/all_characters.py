@@ -58,6 +58,15 @@ def from_georgian():
     add_characters(result, 0x10D0, [1, 10, 14])
     add_characters(result, 0x10E0, [0, 10, 13])
     add_characters(result, 0x10F0, [1, 5, 6, 8, 11])
+    # print(" ".join(result))
+    return result
+
+
+def from_phonetic_extensions():
+    result = []
+    add_characters(result, 0x1D10, [5])
+    add_characters(result, 0x1D20, [5])
+    add_characters(result, 0x1D70, [9, 11])
     print(" ".join(result))
     return result
 
@@ -82,6 +91,7 @@ def get_all_characters():
     char_list.extend(from_greek_and_coptic())
     char_list.extend(from_armenian())
     char_list.extend(from_georgian())
+    char_list.extend(from_phonetic_extensions())
 
     return char_list
 

@@ -22,3 +22,6 @@ o p q r s t u v w x y z { | } ~
 # Georgian
 Ⴁ Ⴃ Ⴇ Ⴉ Ⴌ Ⴒ Ⴕ Ⴞ Ⴟ Ⴤ Ⴥ ბ ლ პ რ
 ც ჭ ჱ ჵ ჶ ჸ ჻
+
+# Phonetic extensions
+ᴕ ᴥ ᵹ ᵻ
