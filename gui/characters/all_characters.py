@@ -24,7 +24,19 @@ def from_basic_latin_supplement_1():
     add_characters(result, 0x00C0, [6])
     add_characters(result, 0x00D0, [8, 14, 15])
     add_characters(result, 0x00F0, [7])
-    print("".join(result))
+    # print("".join(result))
+    return result
+
+
+def from_latin_extended_b():
+    result = []
+    add_characters(result, 0x0180, [2, 11, 15])
+    add_characters(result, 0x0190, [4, 5, 12, 15])
+    add_characters(result, 0x01A0, [2, 6, 9])
+    add_characters(result, 0x01C0, [1, 2])
+    add_characters(result, 0x0220, [1, 2])
+    add_characters(result, 0x0230, [4, 5, 8, 9])
+    print(" ".join(result))
     return result
 
 
@@ -32,6 +44,7 @@ def get_all_characters():
     char_list = []
     char_list.extend(from_basic_latin())
     char_list.extend(from_basic_latin_supplement_1())
+    char_list.extend(from_latin_extended_b())
 
     return char_list
 

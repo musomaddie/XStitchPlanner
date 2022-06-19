@@ -8,3 +8,6 @@ o p q r s t u v w x y z { | } ~
 
 # Latin Supplement 1
 £ ¤ ¥ ¦ § © « ¬ ® ± µ ¶ » Æ Ø Þ ß ÷
+
+# Latin Extend B
+Ƃ Ƌ Ə Ɣ ƕ Ɯ Ɵ Ƣ Ʀ Ʃ ǁ ǂ ȡ Ȣ ȴ ȵ ȸ ȹ
