@@ -24,7 +24,6 @@ def from_basic_latin_supplement_1():
     add_characters(result, 0x00C0, [6])
     add_characters(result, 0x00D0, [8, 14, 15])
     add_characters(result, 0x00F0, [7])
-    # print("".join(result))
     return result
 
 
@@ -58,7 +57,6 @@ def from_georgian():
     add_characters(result, 0x10D0, [1, 10, 14])
     add_characters(result, 0x10E0, [0, 10, 13])
     add_characters(result, 0x10F0, [1, 5, 6, 8, 11])
-    # print(" ".join(result))
     return result
 
 
@@ -77,6 +75,13 @@ def from_general_punctuation():
     add_characters(result, 0x2030, [11, 12, 13, 15])
     add_characters(result, 0x2040, [0, 1, 2, 5, 6, 7, 10, 12, 13])
     add_characters(result, 0x2050, [0, 1, 2, 3, 6, 8, 9, 12])
+    return result
+
+
+def from_currency_symbols():
+    result = []
+    add_characters(result, 0x20A0, [0, 1, 4, 6, 9, 10, 13, 14])
+    add_characters(result, 0x20B0, [1, 3, 4, 8, 9])
     print(" ".join(result))
     return result
 
@@ -103,6 +108,7 @@ def get_all_characters():
     char_list.extend(from_georgian())
     char_list.extend(from_phonetic_extensions())
     char_list.extend(from_general_punctuation())
+    char_list.extend(from_currency_symbols())
 
     return char_list
 
