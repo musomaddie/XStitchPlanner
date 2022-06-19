@@ -213,5 +213,4 @@ def get_all_characters():
 
 
 if __name__ == '__main__':
-    get_all_characters()
-    # [print(c) for c in get_all_characters()]
+    [print(c) for c in get_all_characters()]
