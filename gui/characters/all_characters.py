@@ -94,7 +94,6 @@ def from_arrows():
     add_characters(result, 0x21D0, [0, 1, 2, 3, 4, 14, 15])
     add_characters(result, 0x21E0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     add_characters(result, 0x21F0, [0, 1, 2, 13, 14, 15])
-    print(" ".join(result))
     return result
 
 
@@ -110,6 +109,23 @@ def from_greek_and_coptic():
     return result
 
 
+def from_misc_tech():
+    result = []
+    add_characters(result, 0x2300, [2, 7])
+    add_characters(result, 0x2310, [1, 2, 3, 4, 5, 6, 7, 8])
+    add_characters(result, 0x2320, [5, 6, 7, 11, 12, 13])
+    add_characters(result, 0x2330, [2, 6, 10, 13])
+    add_characters(result, 0x2340, [9, 11])
+    add_characters(result, 0x2350, [9, 10, 12, 13])
+    add_characters(result, 0x2370, [11, 14])
+    add_characters(result, 0x2380, [4, 6, 7, 8, 11, 12, 13])
+    add_characters(result, 0x2390, [1, 4, 6])
+    add_characters(result, 0x23C0, [1, 2, 3, 4, 5, 6, 15])
+    add_characters(result, 0x23D0, [4, 9])
+    add_characters(result, 0x23E0, [2, 3, 6])
+    return result
+
+
 def get_all_characters():
     char_list = []
     char_list.extend(from_basic_latin())
@@ -122,6 +138,7 @@ def get_all_characters():
     char_list.extend(from_general_punctuation())
     char_list.extend(from_currency_symbols())
     char_list.extend(from_arrows())
+    char_list.extend(from_misc_tech())
 
     return char_list
 
