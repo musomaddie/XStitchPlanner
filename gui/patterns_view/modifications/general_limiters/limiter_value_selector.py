@@ -6,7 +6,10 @@ from gui.patterns_view.modifications.general_limiters.limiter_direction import L
 from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 
 
-def create_value_widget(direction: LimiterDirection, mode: LimiterMode) -> QWidget:
+def create_value_widget(
+        current_cell_layout: 'CurrentCellLayout',
+        direction: LimiterDirection,
+        mode: LimiterMode) -> QWidget:
     if mode == LimiterMode.NO_SELECTOR:
         return QWidget()
 
@@ -17,8 +20,8 @@ def create_value_widget(direction: LimiterDirection, mode: LimiterMode) -> QWidg
 
     def create_button(line_edit: QLineEdit):
         button = QPushButton(s.limiter_use_current_cell_desc(direction))
-        # TODO: update this to work correctly
-        button.clicked.connect(lambda: line_edit.setText("100"))
+        button.clicked.connect(lambda: line_edit.setText(
+            str(current_cell_layout.get_current_value(direction) + 1)))
         return button
 
     def create_input_filler():
@@ -55,6 +58,7 @@ class LimiterValueSelector(QVBoxLayout):
 
     def __init__(
             self,
+            current_cell_layout: 'CurrentCellLayout',
             selector_direction: LimiterDirection,
             selector_mode: LimiterMode):
         super().__init__()
@@ -64,7 +68,8 @@ class LimiterValueSelector(QVBoxLayout):
         self.apply_button = QPushButton(s.apply_button())
         self.explanation = QLabel(self.display_explanation())
         self.explanation.setWordWrap(True)
-        self.value_widget = create_value_widget(self.selector_direction, self.selector_mode)
+        self.value_widget = create_value_widget(
+            current_cell_layout, self.selector_direction, self.selector_mode)
 
         self.addWidget(self.explanation)
         self.addWidget(self.value_widget)

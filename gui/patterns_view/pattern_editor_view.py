@@ -37,3 +37,6 @@ class PatternEditorView(QVBoxLayout):
 
         self.table_view = PatternDisplayView(model, self.title_bar.current_cell, self)
         self.addWidget(self.table_view)
+
+    def get_current_cell_layout(self):
+        return self.title_bar.get_current_cell_layout()

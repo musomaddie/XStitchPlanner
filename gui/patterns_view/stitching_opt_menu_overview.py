@@ -24,11 +24,14 @@ class StitchingOptMenuOverview(QVBoxLayout):
     # TODO: I think this will actually need to be a stacked layout (or have
     #  one SOMEWHERE) to control when everything is visible. Or maybe tabs??
 
-    def __init__(self, parent: 'PatternDisplayOverlay' = None):
+    def __init__(
+            self,
+            current_cell_layout: 'CurrentCellLayout',
+            parent: 'PatternDisplayOverlay' = None):
         super().__init__()
         self.parent = parent
 
-        self.column_overlay = LimiterOverlay(LimiterDirection.COLUMN)
+        self.column_overlay = LimiterOverlay(current_cell_layout, LimiterDirection.COLUMN)
         column_overlay_layout_widget = QWidget()
         column_overlay_layout_widget.setLayout(self.column_overlay)
         self.addWidget(column_overlay_layout_widget)

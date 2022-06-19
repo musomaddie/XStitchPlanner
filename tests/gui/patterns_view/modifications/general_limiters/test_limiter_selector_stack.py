@@ -1,4 +1,4 @@
-from unittest.mock import call, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
@@ -14,13 +14,14 @@ FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_selector_st
 @pytest.mark.parametrize("direction", [LimiterDirection.ROW, LimiterDirection.COLUMN])
 @patch(f"{FILE_LOC}.LimiterValueSelector")
 def test_init(selector_mock, direction):
+    current_cc_layout_mock = MagicMock()
     selector_mock.return_value = QVBoxLayout()
-    selector_stack = LimiterSelectorStack(direction)
+    selector_stack = LimiterSelectorStack(current_cc_layout_mock, direction)
 
-    expected_calls = [call(direction, LimiterMode.NO_SELECTOR),
-                      call(direction, LimiterMode.BETWEEN),
-                      call(direction, LimiterMode.FROM),
-                      call(direction, LimiterMode.TO)]
+    expected_calls = [call(current_cc_layout_mock, direction, LimiterMode.NO_SELECTOR),
+                      call(current_cc_layout_mock, direction, LimiterMode.BETWEEN),
+                      call(current_cc_layout_mock, direction, LimiterMode.FROM),
+                      call(current_cc_layout_mock, direction, LimiterMode.TO)]
 
     assert selector_mock.mock_calls == expected_calls
 

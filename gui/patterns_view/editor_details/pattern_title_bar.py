@@ -32,3 +32,6 @@ class PatternTitleBar(QHBoxLayout):
         current_cell_layout_widget = QWidget()
         current_cell_layout_widget.setLayout(self.current_cell)
         self.addWidget(current_cell_layout_widget)
+
+    def get_current_cell_layout(self):
+        return self.current_cell

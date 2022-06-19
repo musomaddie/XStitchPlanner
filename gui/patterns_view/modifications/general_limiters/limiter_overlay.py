@@ -30,13 +30,15 @@ class LimiterOverlay(QVBoxLayout):
 
     def __init__(
             self,
+            current_cell_layout: 'CurrentCellLayout',
             direction: LimiterDirection,
             parent: 'StitchingOptMenuOverview' = None):
         super().__init__()
         self.parent = parent
         self.direction = direction
+        self.current_cell_layout = current_cell_layout
 
-        self.value_selector_stack = LimiterSelectorStack(self.direction)
+        self.value_selector_stack = LimiterSelectorStack(current_cell_layout, self.direction)
         self.title = QLabel(s.limiter_title(self.direction))
         self.mode_selector_dropdown = LimiterDropDown(self.direction, self.value_selector_stack)
 
