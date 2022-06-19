@@ -15,3 +15,6 @@ o p q r s t u v w x y z { | } ~
 # Greek and Coptic
 Ͱ Ͳ ͼ ͽ Δ Θ Π Σ Φ Ψ Ω α β δ ε λ
 ν ρ σ τ φ ψ ω ϐ ϖ Ϙ ϟ ϡ Ϣ ϧ Ϫ
+
+# Armenian
+Բ Թ Ծ Ձ Ճ Պ Ֆ ա ձ չ փ ֆ ֍ ֏

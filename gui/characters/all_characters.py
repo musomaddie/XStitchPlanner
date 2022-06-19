@@ -39,6 +39,18 @@ def from_latin_extended_b():
     return result
 
 
+def from_armenian():
+    result = []
+    add_characters(result, 0x0530, [2, 9, 14])
+    add_characters(result, 0x0540, [1, 3, 10])
+    add_characters(result, 0x0550, [6])
+    add_characters(result, 0x0560, [1])
+    add_characters(result, 0x0570, [1, 9])
+    add_characters(result, 0x0580, [3, 6, 13, 15])
+    print(" ".join(result))
+    return result
+
+
 def from_greek_and_coptic():
     result = []
     add_characters(result, 0x0370, [0, 2, 12, 13])
@@ -48,7 +60,6 @@ def from_greek_and_coptic():
     add_characters(result, 0x03C0, [1, 3, 4, 6, 8, 9])
     add_characters(result, 0x03D0, [0, 6, 8, 15])
     add_characters(result, 0x03E0, [1, 2, 7, 10])
-    print(" ".join(result))
     return result
 
 
@@ -58,6 +69,7 @@ def get_all_characters():
     char_list.extend(from_basic_latin_supplement_1())
     char_list.extend(from_latin_extended_b())
     char_list.extend(from_greek_and_coptic())
+    char_list.extend(from_armenian())
 
     return char_list
 
