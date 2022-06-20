@@ -82,6 +82,7 @@ class LimiterValueSelector(QVBoxLayout):
         self.selector_mode = selector_mode
 
         self.apply_button = QPushButton(s.apply_button())
+        self.apply_button.pressed.connect(self.apply_data)
         self.explanation = QLabel(self.display_explanation())
         self.explanation.setWordWrap(True)
         self.value_widget = ValueWidget(
@@ -91,9 +92,20 @@ class LimiterValueSelector(QVBoxLayout):
         self.addWidget(self.value_widget)
         self.addWidget(self.apply_button)
 
-    # def apply_data(self):
-    #     # I need to get the data from the value widget which is going to be a pain in the butt
-    # # unless I make it it's own class
+    def apply_data(self):
+        if self.selector_mode == LimiterMode.NO_SELECTOR:
+            print("Clearing the current column limiters")
+            # TODO: implement this!!
+            return
+        # Get the first value
+        value_str = self.value_widget.supplied_values[0].text()
+        if self.selector_mode == LimiterMode.BETWEEN:
+            value_str_2 = self.value_widget.supplied_values[1].text()
+
+        # TODO: implementation details.
+        # What do I need to have for this to work??
+        #   Tabbed views: so that the original pattern and limited one are seperate
+        #   currently applied limits: so I can see what's already been applied / wipe it
 
     def display_explanation(self):
         if self.selector_mode == LimiterMode.NO_SELECTOR:

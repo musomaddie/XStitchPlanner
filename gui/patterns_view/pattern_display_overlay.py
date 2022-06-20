@@ -16,7 +16,7 @@ class PatternDisplayOverlay(QHBoxLayout):
    +-------------------------------------------------------------------+
    """
     pattern_title: str
-    parent: 'ViewHierarchy'
+    parent: 'PatternViewTab'
     editor: PatternEditorView
     model: 'PatternDisplayModel'
     opt_menu: StitchingOptMenuOverview

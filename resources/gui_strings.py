@@ -51,6 +51,10 @@ def limiter_use_current_cell_desc(direction: LimiterDirection) -> str:
     return f"Use current {direction.value}"
 
 
+def original_pattern() -> str:
+    return "Original Pattern"
+
+
 def pattern_selector_title() -> str:
     return "Select the pattern to view"
 
