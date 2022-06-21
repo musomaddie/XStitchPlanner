@@ -14,12 +14,13 @@ class ViewHierarchy(QStackedWidget):
     view_widget: QWidget
 
     def __init__(
-            self, toolbar_ref: 'PatternViewToolbar',
+            self,
+            toolbar_ref: 'PatternViewToolbar',
             parent: 'MainWindow' = None):
         super().__init__()
         self.parent = parent
         self.toolbar_ref = toolbar_ref
-        self.pattern_model = None
+        self.model = None
 
         self.selector_widget = QWidget()
         self.selector_widget.setLayout(PatternSelectorLayout(self))
@@ -31,8 +32,8 @@ class ViewHierarchy(QStackedWidget):
     def pattern_chosen(self, pattern_name):
         """ Loads the default display window for this pattern.
         """
-        self.pattern_model = PatternDisplayModel.load_from_pattern_file(pattern_name)
-        self.toolbar_ref.pattern_chosen(self.pattern_model)
-        self.view_widget = PatternViewTab(pattern_name, self.pattern_model, self)
+        self.model = PatternDisplayModel.load_from_pattern_file(pattern_name)
+        self.toolbar_ref.pattern_chosen(self.model)
+        self.view_widget = PatternViewTab(pattern_name, self.model, self)
         self.addWidget(self.view_widget)
         self.setCurrentWidget(self.view_widget)
