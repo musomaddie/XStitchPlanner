@@ -13,6 +13,10 @@ class PatternEditorView(QVBoxLayout):
     |                              TABLE_VIEW                           |
     |                                                                   |
     +-------------------------------------------------------------------+
+
+    Methods:
+        __init__(title, model, parent)
+        get_current_cell_layout()
     """
     parent: 'PatternDisplayOverlay'
     model: 'PatternDisplayModel'
