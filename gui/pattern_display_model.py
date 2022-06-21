@@ -16,6 +16,10 @@ class PatternDisplayModel(QAbstractTableModel):
         rowCount(index): number of rows
         columnCount(index): number of columns
         set_colour_mode(bool): updates the show_colours method
+        add_display(display): adds what is being used to display this, so it can be modified as
+            necessary
+        change_pattern_visible_gridlines(show_gridlines): changes if the gridlines are shown
+            when displaying the pattern loaded by this model.
 
     Static Methods:
         load_from_pattern_file(pattern_name)    PatternDisplayModel
@@ -24,12 +28,23 @@ class PatternDisplayModel(QAbstractTableModel):
 
     """
     data: list[list[PatternCell]]
+    display: 'PatternDisplayView'
     show_colours: bool
 
     def __init__(self, data: list[list[PatternCell]]):
         super().__init__()
         self._data = data
         self.show_colours = False
+        self.display = None
+
+    def add_display(self, display: 'PatternDisplayView') -> None:
+        self.display = display
+
+    def change_pattern_visible_gridlines(self, show_gridlines: bool) -> None:
+        self.display.setShowGrid(show_gridlines)
+
+    def columnCount(self, parent: QModelIndex = ...) -> int:
+        return len(self._data[0])
 
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
         if role == Qt.ItemDataRole.BackgroundRole and self.show_colours:
@@ -39,9 +54,6 @@ class PatternDisplayModel(QAbstractTableModel):
 
     def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self._data)
-
-    def columnCount(self, parent: QModelIndex = ...) -> int:
-        return len(self._data[0])
 
     def set_colour_mode(self, mode: bool):
         """Changes whether the data is shown in colour"""
@@ -72,9 +84,11 @@ class PatternDisplayModel(QAbstractTableModel):
             for row_count, row in enumerate(f.readlines()):
                 this_row = []
                 for col_count, letter in enumerate(row.rstrip()):
-                    this_row.append(PatternCell(letter,
-                                                key[letter].dmc_value,
-                                                (row_count, col_count),
-                                                key[letter].hex_colour))
+                    this_row.append(
+                        PatternCell(
+                            letter,
+                            key[letter].dmc_value,
+                            (row_count, col_count),
+                            key[letter].hex_colour))
                 all_rows.append(this_row)
             return PatternDisplayModel(all_rows)

@@ -20,6 +20,7 @@ class PatternDisplayView(QTableView):
         self.model = model
 
         self.setModel(self.model)
+        self.model.add_display(self)
 
         # Using ResizeMode.Fixed to control the size of the cells as using a more dynamic resize
         # caused the program to take a long time loading

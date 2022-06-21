@@ -39,5 +39,10 @@ class PatternViewToolBar(QToolBar):
 
     def pattern_chosen(self, model: PatternDisplayModel) -> None:
         self.model = model
-        self.colour_on.triggered.connect(lambda: model.set_colour_mode(True))
-        self.colour_off.triggered.connect(lambda: model.set_colour_mode(False))
+        self.colour_on.triggered.connect(lambda: self.change_colour_mode(True))
+        self.colour_off.triggered.connect(lambda: self.change_colour_mode(False))
+
+    def change_colour_mode(self, show_colour: bool) -> None:
+        """ Used to toggle the change in actions"""
+        self.model.set_colour_mode(show_colour)
+        self.model.change_pattern_visible_gridlines(not show_colour)

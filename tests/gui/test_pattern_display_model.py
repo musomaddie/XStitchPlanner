@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 import pytest
 from PyQt6.QtCore import Qt
@@ -64,6 +64,8 @@ def test_load_pattern_from_file_fnf():
 
 def test_init(model):
     assert model._data == TESTING_DATA_3_2
+    assert model.display is None
+    assert not model.show_colours
 
 
 def test_rowCount(model):
@@ -80,6 +82,20 @@ def test_set_colour_mode(model):
     assert model.show_colours
     model.set_colour_mode(False)
     assert not model.show_colours
+
+
+def test_add_display(model):
+    display_mock = MagicMock()
+    model.add_display(display_mock)
+    assert model.display == display_mock
+
+
+@pytest.mark.parametrize("show_gridlines", [True, False])
+def test_change_pattern_visible_gridlines(show_gridlines, model):
+    display_mock = MagicMock()
+    model.add_display(display_mock)
+    model.change_pattern_visible_gridlines(show_gridlines)
+    assert display_mock.mock_calls == [call.setShowGrid(show_gridlines)]
 
 
 @pytest.mark.parametrize(("r", "col"), [(0, 0), (1, 0)])

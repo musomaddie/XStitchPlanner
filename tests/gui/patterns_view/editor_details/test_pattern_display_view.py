@@ -11,5 +11,6 @@ def test_init_view():
     test_widget = PatternDisplayView(model, MagicMock())
 
     assert test_widget.model == model
+    assert test_widget.model.display == test_widget
 
     assert test_widget.horizontalHeader().font().pointSize() == 8

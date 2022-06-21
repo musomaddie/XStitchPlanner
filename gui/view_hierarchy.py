@@ -33,7 +33,7 @@ class ViewHierarchy(QStackedWidget):
         """ Loads the default display window for this pattern.
         """
         self.model = PatternDisplayModel.load_from_pattern_file(pattern_name)
-        self.toolbar_ref.pattern_chosen(self.model)
         self.view_widget = PatternViewTab(pattern_name, self.model, self)
+        self.toolbar_ref.pattern_chosen(self.model)
         self.addWidget(self.view_widget)
         self.setCurrentWidget(self.view_widget)
