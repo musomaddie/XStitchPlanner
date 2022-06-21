@@ -104,7 +104,7 @@ class LimiterValueSelector(QVBoxLayout):
 
         # TODO: implementation details.
         # What do I need to have for this to work??
-        #   Tabbed views: so that the original pattern and limited one are seperate
+        #   Tabbed views: so that the original pattern and limited one are seperate (DONE)
         #   currently applied limits: so I can see what's already been applied / wipe it
 
     def display_explanation(self):

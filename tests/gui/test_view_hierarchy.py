@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from PyQt6.QtWidgets import QVBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from gui.view_hierarchy import ViewHierarchy
 
@@ -23,10 +23,10 @@ def test_init(layout_child_mock):
 
 @patch(f"{FILE_LOC}.PatternSelectorLayout")
 @patch(f"{FILE_LOC}.PatternDisplayModel.load_from_pattern_file")
-@patch(f"{FILE_LOC}.PatternDisplayOverlay")
+@patch(f"{FILE_LOC}.PatternViewTab")
 def test_pattern_chosen(view_child_mock, model_mock, layout_child_mock):
     layout_child_mock.return_value = QVBoxLayout()
-    view_child_mock.return_value = QVBoxLayout()
+    view_child_mock.return_value = QWidget()
     toolbar_ref = MagicMock()
 
     test_widget = ViewHierarchy(toolbar_ref)
