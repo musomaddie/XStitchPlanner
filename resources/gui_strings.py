@@ -23,6 +23,26 @@ def limit_prompt(mode: LimiterMode) -> str:
     return f"{mode.value.title()}:"
 
 
+def limiter_applied_label_none() -> str:
+    return "None"
+
+
+def limiter_applied_label_between(v1: int, v2: int) -> str:
+    return f"Between {v1 + 1} and {v2 + 1}"
+
+
+def limiter_applied_label_from_or_to(mode: LimiterMode, v: int) -> str:
+    return f"{mode.value.title()}: {v + 1}"
+
+
+def limiter_applied_already_exists(mode: LimiterMode, values: list[int]) -> str:
+    return f"Modification with {mode} -> {' '.join([str(v) for v in values])} already exists"
+
+
+def limiter_currently_applied_title() -> str:
+    return "Limits Currently Applied:"
+
+
 def limiter_from_desc(direction: LimiterDirection) -> str:
     if direction == LimiterDirection.COLUMN:
         return "Only shows the pattern right (inclusive) of the provided column value"
