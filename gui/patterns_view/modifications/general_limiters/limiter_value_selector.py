@@ -2,8 +2,8 @@ from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 class ValueWidget(QWidget):
@@ -47,8 +47,9 @@ class ValueWidget(QWidget):
 
     def create_button(self, line_edit: QLineEdit):
         button = QPushButton(s.limiter_use_current_cell_desc(self.direction))
-        button.clicked.connect(lambda: line_edit.setText(
-            str(self.current_cell_layout.get_current_value(self.direction) + 1)))
+        button.clicked.connect(
+            lambda: line_edit.setText(
+                str(self.current_cell_layout.get_current_value(self.direction) + 1)))
         self.set_current_value_buttons.append(button)
         return button
 
@@ -82,7 +83,7 @@ class LimiterValueSelector(QVBoxLayout):
         self.selector_mode = selector_mode
 
         self.apply_button = QPushButton(s.apply_button())
-        self.apply_button.pressed.connect(self.apply_data)
+        self.apply_button.pressed.connect(self.apply_limit)
         self.explanation = QLabel(self.display_explanation())
         self.explanation.setWordWrap(True)
         self.value_widget = ValueWidget(
@@ -92,20 +93,14 @@ class LimiterValueSelector(QVBoxLayout):
         self.addWidget(self.value_widget)
         self.addWidget(self.apply_button)
 
-    def apply_data(self):
+    def apply_limit(self):
         if self.selector_mode == LimiterMode.NO_SELECTOR:
             print("Clearing the current column limiters")
-            # TODO: implement this!!
             return
         # Get the first value
-        value_str = self.value_widget.supplied_values[0].text()
+        value_str = int(self.value_widget.supplied_values[0].text())
         if self.selector_mode == LimiterMode.BETWEEN:
-            value_str_2 = self.value_widget.supplied_values[1].text()
-
-        # TODO: implementation details.
-        # What do I need to have for this to work??
-        #   Tabbed views: so that the original pattern and limited one are seperate (DONE)
-        #   currently applied limits: so I can see what's already been applied / wipe it
+            value_str_2 = int(self.value_widget.supplied_values[1].text())
 
     def display_explanation(self):
         if self.selector_mode == LimiterMode.NO_SELECTOR:

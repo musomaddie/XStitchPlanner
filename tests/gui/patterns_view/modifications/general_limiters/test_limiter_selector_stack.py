@@ -3,10 +3,10 @@ from unittest.mock import MagicMock, call, patch
 import pytest
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_selector_stack"
 

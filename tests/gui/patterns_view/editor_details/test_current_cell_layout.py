@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget
 
 from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayout
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 
 class Idx:

@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QLabel, QVBoxLayout
 
 import resources.gui_strings as s
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 class Modification:

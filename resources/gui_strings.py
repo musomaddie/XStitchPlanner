@@ -3,8 +3,8 @@
 Try and keep in alphabetical order
 
 """
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 def apply_button() -> str:

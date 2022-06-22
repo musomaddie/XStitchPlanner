@@ -5,8 +5,8 @@ from PyQt6.QtWidgets import QLabel, QWidget
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import \
     (
     LimiterCurrentlyApplied, Modification)
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 @pytest.mark.parametrize(

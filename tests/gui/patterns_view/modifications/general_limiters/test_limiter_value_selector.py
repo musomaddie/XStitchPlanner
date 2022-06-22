@@ -6,10 +6,10 @@ from PyQt6.QtWidgets import (
     QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
 from allpairspy import AllPairs
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import (
     LimiterValueSelector, ValueWidget)
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters" \
            ".limiter_value_selector"
@@ -81,10 +81,11 @@ def test_init_general(creator_mock, direction):
 
 @pytest.mark.parametrize(
     ("direction", "mode"),
-    [values for values in AllPairs([
-        [LimiterDirection.COLUMN, LimiterDirection.ROW],
-        [LimiterMode.NO_SELECTOR, LimiterMode.BETWEEN, LimiterMode.TO, LimiterMode.FROM]
-    ])
+    [values for values in AllPairs(
+        [
+            [LimiterDirection.COLUMN, LimiterDirection.ROW],
+            [LimiterMode.NO_SELECTOR, LimiterMode.BETWEEN, LimiterMode.TO, LimiterMode.FROM]
+        ])
      ]
 )
 @patch(f"{FILE_LOC}.ValueWidget")

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 
 class StitchingOptMenuOverview(QVBoxLayout):

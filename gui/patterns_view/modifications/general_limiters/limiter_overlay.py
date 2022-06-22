@@ -3,10 +3,10 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 import resources.gui_strings as s
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import \
     LimiterCurrentlyApplied
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 
 class LimiterOverlay(QVBoxLayout):

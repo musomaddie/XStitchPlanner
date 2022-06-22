@@ -2,9 +2,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
