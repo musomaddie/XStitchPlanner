@@ -1,9 +1,10 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
+from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import \
+    LimiterCurrentlyApplied
 from gui.patterns_view.modifications.general_limiters.limiter_direction import LimiterDirection
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
-from gui.patterns_view.modifications.general_limiters.limiter_mode import LimiterMode
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
 
@@ -21,13 +22,14 @@ class LimiterOverlay(QVBoxLayout):
    +---------------+
    | mode selector |
    +---------------+
-   |    options    |
+   | value selector|
+   |     stack     |
    +---------------+
     """
     parent: 'StitchingOptMenuOverview'
-    title: QLabel
-    mode: LimiterMode
     direction: LimiterDirection
+    title: QLabel
+    currently_applied: LimiterCurrentlyApplied
     mode_selector_dropdown: LimiterDropDown
     value_selector_stack: LimiterSelectorStack
 
@@ -43,8 +45,12 @@ class LimiterOverlay(QVBoxLayout):
 
         self.value_selector_stack = LimiterSelectorStack(current_cell_layout, self.direction)
         self.title = QLabel(s.limiter_title(self.direction))
+        self.currently_applied = LimiterCurrentlyApplied(direction, self)
         self.mode_selector_dropdown = LimiterDropDown(self.direction, self.value_selector_stack)
 
         self.addWidget(self.title)
+        currently_applied_layout_widget = QWidget()
+        currently_applied_layout_widget.setLayout(self.currently_applied)
+        self.addWidget(currently_applied_layout_widget)
         self.addWidget(self.mode_selector_dropdown)
         self.addWidget(self.value_selector_stack)
