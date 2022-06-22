@@ -41,6 +41,7 @@ class PatternDisplayModel(QAbstractTableModel):
         self.display = display
 
     def change_pattern_visible_gridlines(self, show_gridlines: bool) -> None:
+        # TODO: make this togglable in the settings bar too!
         self.display.setShowGrid(show_gridlines)
 
     def columnCount(self, parent: QModelIndex = ...) -> int:

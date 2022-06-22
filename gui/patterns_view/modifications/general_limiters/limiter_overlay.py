@@ -10,6 +10,9 @@ from gui.patterns_view.modifications.general_limiters.limiter_selector_stack imp
 
 class LimiterOverlay(QVBoxLayout):
     """ A layout containing the necessary elements to limit the pattern display by
+
+    # TODO: make overall list of currently applied in the stitching menu opt in addition to here
+    so that all the changes can be viewed as one.
    +---------------+
    |     title     |
    +---------------+

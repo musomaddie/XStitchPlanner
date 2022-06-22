@@ -9,6 +9,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
     #  assigning of colours to replace the "and the ....." text
     """ Menu containing buttons that interaction with the pattern
 
+    TODO: make undo / back button
    +---------------+
    |    LIMIT BY   |
    |    COLUMNS    |
