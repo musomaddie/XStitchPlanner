@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
@@ -10,11 +10,9 @@ FILE_LOC = "gui.view_hierarchy"
 @patch(f"{FILE_LOC}.PatternSelectorLayout")
 def test_init(layout_child_mock):
     layout_child_mock.return_value = QVBoxLayout()
-    toolbar_ref = MagicMock()
-    test_widget = ViewHierarchy(toolbar_ref)
+    test_widget = ViewHierarchy()
 
     assert test_widget.layout().count() == 2
-
     layout_child_mock.assert_called_once_with(test_widget)
     # assert test_widget.currentIndex() == 0
     # Changed to reflect the temp hard coded call
@@ -23,13 +21,12 @@ def test_init(layout_child_mock):
 
 @patch(f"{FILE_LOC}.PatternSelectorLayout")
 @patch(f"{FILE_LOC}.PatternDisplayModel.load_from_pattern_file")
-@patch(f"{FILE_LOC}.PatternViewTab")
+@patch(f"{FILE_LOC}.PatternViewTabList")
 def test_pattern_chosen(view_child_mock, model_mock, layout_child_mock):
     layout_child_mock.return_value = QVBoxLayout()
     view_child_mock.return_value = QWidget()
-    toolbar_ref = MagicMock()
 
-    test_widget = ViewHierarchy(toolbar_ref)
+    test_widget = ViewHierarchy()
 
     test_widget.pattern_chosen("Testing")
     assert view_child_mock.called == 1

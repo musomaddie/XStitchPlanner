@@ -2,12 +2,10 @@ from PyQt6.QtWidgets import QTabWidget, QWidget
 
 import resources.gui_strings as s
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
+from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
 
 
-# TODO: add tests!!
-
-
-class PatternViewTab(QTabWidget):
+class PatternViewTabList(QTabWidget):
     parent: 'ViewHierarchy'
     original_layout: PatternDisplayOverlay
 
@@ -19,7 +17,7 @@ class PatternViewTab(QTabWidget):
         super().__init__()
 
         self.parent = parent
-        self.original_layout = PatternDisplayOverlay(pattern_name, pattern_model, self)
+        self.original_layout = PatternViewTabContents(pattern_name, pattern_model, self)
         og_layout_widget = QWidget()
         og_layout_widget.setLayout(self.original_layout)
         self.setTabPosition(QTabWidget.TabPosition.North)

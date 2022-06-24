@@ -3,7 +3,6 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 import resources.gui_strings as s
-from gui.pattern_view_toolbar import PatternViewToolBar
 from gui.view_hierarchy import ViewHierarchy
 
 
@@ -14,7 +13,6 @@ class MainWindow(QMainWindow):
 
     Parameters:
         view_hierarchy: the view hierarchy which is shown
-        toolbar: the toolbar for the pattern view
 
     Methods:
         __init__    MainWindow
@@ -22,11 +20,9 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.toolbar = PatternViewToolBar(self)
-        self.view_hierarchy = ViewHierarchy(self.toolbar, self)
+        self.view_hierarchy = ViewHierarchy(self)
 
         self.setCentralWidget(self.view_hierarchy)
-        self.addToolBar(self.toolbar)
         self.setWindowTitle(s.program_title())
 
 
