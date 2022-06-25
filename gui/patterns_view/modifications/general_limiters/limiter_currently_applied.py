@@ -98,7 +98,6 @@ class LimiterCurrentlyApplied(QVBoxLayout):
 
         new_model = self.applier.apply_limit(this_mod)
 
-        # TODO: only call this when desired
         self.create_new_pattern_tab(new_model, mod_list)
 
     def create_new_pattern_tab(
@@ -108,8 +107,4 @@ class LimiterCurrentlyApplied(QVBoxLayout):
         self.parent.create_new_pattern_tab(new_model, modifications)
 
         # TODO: improve this
-        #   1) Automatically switch to new tab (DONE)
-        #   2) Move the applied limits to this tab instead of the current one: will need to be
-        #   separate). (DONE)
-        #   3) (next commit): don't assign another tab after first one unless asked and make sure
-        #   it's all the modifiers being passed not just the next one.
+        #   don't assign another tab after first one unless asked
