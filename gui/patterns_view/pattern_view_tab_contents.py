@@ -14,7 +14,7 @@ class PatternViewTabContents(QVBoxLayout):
             self,
             pattern_name: str,
             model: 'PatternDisplayModel',
-            current_mod: 'Modification',
+            current_mod: list['Modification'],
             parent: 'PatternViewTabList' = None):
         super().__init__()
         self.parent = parent
@@ -30,5 +30,5 @@ class PatternViewTabContents(QVBoxLayout):
             self,
             pattern_name: str,
             new_model: list[list[PatternCell]],
-            modification: 'Modification') -> None:
-        self.parent.create_new_tab(pattern_name, new_model, modification)
+            modifications: list['Modification']) -> None:
+        self.parent.create_new_tab(pattern_name, new_model, modifications)

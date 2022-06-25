@@ -9,7 +9,7 @@ from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 # TODO: move to own class!
 class Modification:
-    """ A custom class to store the identifier for each modification.
+    """ A custom class to store the identifier for each modifications.
     Methods:
          __init__(mode, values)
          __hash__() -> hash: required for dictionary
@@ -31,7 +31,12 @@ class Modification:
     def __eq__(self, other: 'Modification') -> bool:
         return self.mode == other.mode and self.values == other.values
 
+    def __repr__(self):
+        return f"{self.mode.value} ({' '.join([str(v) for v in self.values])})"
+
     def generate_label_str(self):
+        # TODO: be nice to see these values reflected from the original pattern size (or not at
+        #  all tbh).
         if self.mode == LimiterMode.NO_SELECTOR:
             return s.limiter_applied_label_none()
         if self.mode == LimiterMode.BETWEEN:
@@ -61,17 +66,17 @@ class LimiterCurrentlyApplied(QVBoxLayout):
             self,
             model: 'PatternDisplayModel',
             direction: LimiterDirection,
-            current_mod: Modification,
+            current_mods: list[Modification],
             parent: 'LimiterOverlay' = None):
         super().__init__()
         self.parent = parent
         self.direction = direction
         self.addWidget(QLabel(s.limiter_currently_applied_title()))
 
-        # If the current_mod is None we need to set up for the no selector
-        self.applier = LimitApplier(direction, model._data, current_mod)
-        self.current_mods = {current_mod: QLabel(current_mod.generate_label_str())}
-        self.addWidget(self.current_mods[current_mod])
+        self.applier = LimitApplier(direction, model._data, current_mods)
+        self.current_mods = {current_mod: QLabel(current_mod.generate_label_str())
+                             for current_mod in current_mods}
+        [self.addWidget(self.current_mods[current_mod]) for current_mod in current_mods]
 
     def add_modification(self, mode: LimiterMode, values: list[int]):
         """ Adds a label representing the given mode to the dictionary. """
@@ -83,16 +88,24 @@ class LimiterCurrentlyApplied(QVBoxLayout):
             #  warning?
             raise ValueError(s.limiter_applied_already_exists(mode, values))
 
+        mod_list = []
+        if (len(self.current_mods) == 1
+                and LimiterMode.NO_SELECTOR in [v.mode for v in self.current_mods.keys()]):
+            mod_list.append(this_mod)
+        else:
+            [mod_list.append(m) for m in self.current_mods.keys()]
+            mod_list.append(this_mod)
+
         new_model = self.applier.apply_limit(this_mod)
 
         # TODO: only call this when desired
-        self.create_new_pattern_tab(new_model, this_mod)
+        self.create_new_pattern_tab(new_model, mod_list)
 
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modification: Modification) -> None:
-        self.parent.create_new_pattern_tab(new_model, modification)
+            modifications: list[Modification]) -> None:
+        self.parent.create_new_pattern_tab(new_model, modifications)
 
         # TODO: improve this
         #   1) Automatically switch to new tab (DONE)

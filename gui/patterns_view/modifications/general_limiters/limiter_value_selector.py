@@ -101,9 +101,9 @@ class LimiterValueSelector(QVBoxLayout):
             print("Clearing the current column limiters")
             return
         # Get the first value
-        values = [int(self.value_widget.supplied_values[0].text())]
+        values = [max(0, int(self.value_widget.supplied_values[0].text()) - 1)]
         if self.selector_mode == LimiterMode.BETWEEN:
-            values.append([int(self.value_widget.supplied_values[1].text())])
+            values.append(max(0, int(self.value_widget.supplied_values[1].text()) - 1))
         self.applier.add_modification(self.selector_mode, values)
 
     def display_explanation(self):

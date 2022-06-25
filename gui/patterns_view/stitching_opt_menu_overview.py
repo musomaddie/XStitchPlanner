@@ -30,13 +30,13 @@ class StitchingOptMenuOverview(QVBoxLayout):
             self,
             current_cell_layout: 'CurrentCellLayout',
             model: 'PatternDisplayModel',
-            current_mod: 'Modification',
+            current_mods: list['Modification'],
             parent):
         super().__init__()
         self.parent = parent
 
         self.column_overlay = LimiterOverlay(
-            current_cell_layout, LimiterDirection.COLUMN, current_mod, model, self)
+            current_cell_layout, LimiterDirection.COLUMN, current_mods, model, self)
         column_overlay_layout_widget = QWidget()
         column_overlay_layout_widget.setLayout(self.column_overlay)
         self.addWidget(column_overlay_layout_widget)
@@ -44,5 +44,5 @@ class StitchingOptMenuOverview(QVBoxLayout):
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modification: 'Modification') -> None:
-        self.parent.create_new_pattern_tab(new_model, modification)
+            modifications: list['Modification']) -> None:
+        self.parent.create_new_pattern_tab(new_model, modifications)

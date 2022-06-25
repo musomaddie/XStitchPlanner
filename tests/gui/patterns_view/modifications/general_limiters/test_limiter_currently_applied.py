@@ -2,10 +2,9 @@
 from unittest.mock import ANY, MagicMock, call, patch
 
 import pytest
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QLabel, QWidget
 
-from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import \
-    (
+from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import (
     LimiterCurrentlyApplied, Modification)
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
@@ -70,7 +69,7 @@ def test_mod_eq():
 def test_init(direction):
     model_mock = MagicMock()
     cur_app = LimiterCurrentlyApplied(
-        model_mock, direction, Modification(LimiterMode.NO_SELECTOR, []))
+        model_mock, direction, [Modification(LimiterMode.NO_SELECTOR, [])])
     assert cur_app.direction == direction
     assert cur_app.parent is None
     assert len(cur_app.current_mods) == 1
@@ -91,7 +90,7 @@ def test_init(direction):
 @patch(f"{FILE_LOC}.LimitApplier")
 def test_add_modification(applier_mock, mode, values):
     parent_mock = MagicMock()
-    original_mod = Modification(LimiterMode.NO_SELECTOR, [])
+    original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
         MagicMock(), LimiterDirection.COLUMN, original_mod, parent_mock)
     created_mod = Modification(mode, values)
@@ -99,23 +98,28 @@ def test_add_modification(applier_mock, mode, values):
 
     assert applier_mock.mock_calls == [call(ANY, ANY, original_mod),
                                        call().apply_limit(created_mod)]
-    assert parent_mock.mock_calls == [call.create_new_pattern_tab(ANY, created_mod)]
+    assert parent_mock.mock_calls == [call.create_new_pattern_tab(ANY, [created_mod])]
 
 
 @patch(f"{FILE_LOC}.LimitApplier")
 def test_add_modification_multiple(applier_mock):
     parent_mock = MagicMock()
-    original_mod = Modification(LimiterMode.NO_SELECTOR, [])
+    original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
         MagicMock(), LimiterDirection.COLUMN, original_mod, parent_mock)
 
-    cur_app.add_modification(LimiterMode.FROM, [2])
-    cur_app.add_modification(LimiterMode.TO, [5])
     created_mod_1 = Modification(LimiterMode.FROM, [2])
     created_mod_2 = Modification(LimiterMode.TO, [5])
+    cur_app.add_modification(LimiterMode.FROM, [2])
+    # Manually updating  the cur_mods list as the full create_new_pattern_tab is not called only
+    # mocked
+    cur_app.current_mods = {created_mod_1: QLabel(created_mod_1.generate_label_str())}
+    cur_app.add_modification(LimiterMode.TO, [5])
 
     assert applier_mock.mock_calls == [call(ANY, ANY, original_mod),
                                        call().apply_limit(created_mod_1),
                                        call().apply_limit(created_mod_2)]
-    assert parent_mock.mock_calls == [call.create_new_pattern_tab(ANY, created_mod_1),
-                                      call.create_new_pattern_tab(ANY, created_mod_2)]
+    assert parent_mock.mock_calls == [
+        call.create_new_pattern_tab(ANY, [created_mod_1]),
+        call.create_new_pattern_tab(ANY, [created_mod_1, created_mod_2])]
+    # call.create_new_pattern_tab(ANY, [created_mod_1, created_mod_2])]

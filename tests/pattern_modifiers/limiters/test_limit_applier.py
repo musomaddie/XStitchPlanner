@@ -47,12 +47,12 @@ def applier_larger_pattern(direction, og_mod):
          [PatternCell("D", "", (0, 2), ""), PatternCell("D", "", (1, 2), ""),
           PatternCell("D", "", (2, 2), ""), PatternCell("D", "", (3, 2), "")],
          [PatternCell("D", "", (0, 3), ""), PatternCell("A", "", (1, 3), ""),
-          PatternCell("B", "", (2, 3), ""), PatternCell("D", "", (3, 3), "")]], og_mod)
+          PatternCell("B", "", (2, 3), ""), PatternCell("D", "", (3, 3), "")]], [og_mod])
 
 
 @pytest.fixture()
 def applier(pattern, og_mod, direction):
-    return LimitApplier(direction, pattern, og_mod)
+    return LimitApplier(direction, pattern, [og_mod])
 
 
 @pytest.mark.parametrize("direction", list(LimiterDirection))

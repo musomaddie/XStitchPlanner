@@ -26,7 +26,7 @@ class PatternDisplayOverlay(QHBoxLayout):
             self,
             pattern_name: str,
             model: 'PatternDisplayModel',
-            current_mod: 'Modification',
+            current_mods: list['Modification'],
             parent: 'PatternViewTabContents' = None):
         super().__init__()
 
@@ -39,7 +39,7 @@ class PatternDisplayOverlay(QHBoxLayout):
         self.addWidget(editor_layout_widget)
 
         self.opt_menu = StitchingOptMenuOverview(
-            self.editor.get_current_cell_layout(), self.model, current_mod, self)
+            self.editor.get_current_cell_layout(), self.model, current_mods, self)
         opt_menu_layout_widget = QWidget()
         opt_menu_layout_widget.setLayout(self.opt_menu)
         # TODO: make the width a bit more dynamic
@@ -51,5 +51,5 @@ class PatternDisplayOverlay(QHBoxLayout):
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modification: 'Modification') -> None:
-        self.parent.create_new_pattern_tab(self.pattern_title, new_model, modification)
+            modifications: list['Modification']) -> None:
+        self.parent.create_new_pattern_tab(self.pattern_title, new_model, modifications)

@@ -22,7 +22,7 @@ class PatternViewTabList(QTabWidget):
 
         self.parent = parent
         self.original_layout = PatternViewTabContents(
-            pattern_name, pattern_model, Modification(LimiterMode.NO_SELECTOR, []), self)
+            pattern_name, pattern_model, [Modification(LimiterMode.NO_SELECTOR, [])], self)
         self.tab_list = []
 
         og_layout_widget = QWidget()
@@ -34,9 +34,9 @@ class PatternViewTabList(QTabWidget):
             self,
             pattern_name: str,
             pattern_model_data: list[list[PatternCell]],
-            modification: 'Modification') -> None:
+            modifications: list['Modification']) -> None:
         pattern_model = PatternDisplayModel(pattern_model_data)
-        new_layout = PatternViewTabContents(pattern_name, pattern_model, modification, self)
+        new_layout = PatternViewTabContents(pattern_name, pattern_model, modifications, self)
         self.tab_list.append(new_layout)
 
         new_layout_widget = QWidget()

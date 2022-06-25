@@ -20,14 +20,14 @@ class LimitApplier:
             self,
             direction: LimiterDirection,
             pattern: list[list[PatternCell]],
-            original_mod: 'Modification'):
+            original_mods: list['Modification']):
         self.direction = direction
         self.original_pattern = copy.deepcopy(pattern)
         self.pattern_current_state = copy.deepcopy(pattern)
-        self.currently_applied = [original_mod]
+        self.currently_applied = original_mods
 
     def apply_limit(self, modification: 'Modification') -> list[list[PatternCell]]:
-        """ Applies the given modification to the pattern"""
+        """ Applies the given modifications to the pattern"""
         if modification.mode == LimiterMode.NO_SELECTOR:
             self.apply_no_selections(modification)
         elif modification.mode == LimiterMode.FROM:

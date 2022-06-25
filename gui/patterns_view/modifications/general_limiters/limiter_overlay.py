@@ -38,7 +38,7 @@ class LimiterOverlay(QVBoxLayout):
             self,
             current_cell_layout: 'CurrentCellLayout',
             direction: LimiterDirection,
-            current_mod: 'Modification',
+            current_mods: list['Modification'],
             model: 'PatternDisplayModel',
             parent: 'StitchingOptMenuOverview' = None):
         super().__init__()
@@ -47,7 +47,7 @@ class LimiterOverlay(QVBoxLayout):
         self.current_cell_layout = current_cell_layout
 
         self.title = QLabel(s.limiter_title(self.direction))
-        self.currently_applied = LimiterCurrentlyApplied(model, direction, current_mod, self)
+        self.currently_applied = LimiterCurrentlyApplied(model, direction, current_mods, self)
         self.value_selector_stack = LimiterSelectorStack(
             self.currently_applied, current_cell_layout, self.direction)
         self.mode_selector_dropdown = LimiterDropDown(self.direction, self.value_selector_stack)
@@ -62,5 +62,5 @@ class LimiterOverlay(QVBoxLayout):
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modification: 'Modification') -> None:
-        self.parent.create_new_pattern_tab(new_model, modification)
+            modifications: list['Modification']) -> None:
+        self.parent.create_new_pattern_tab(new_model, modifications)
