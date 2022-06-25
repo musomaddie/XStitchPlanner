@@ -69,6 +69,7 @@ class LimiterValueSelector(QVBoxLayout):
     """
     selector_mode: LimiterMode
     selector_direction: LimiterDirection
+    applier: 'LimiterCurrentlyApplied'
     apply_button: QPushButton
     explanation: QLabel
     value_widget: QWidget
@@ -76,11 +77,13 @@ class LimiterValueSelector(QVBoxLayout):
     def __init__(
             self,
             current_cell_layout: 'CurrentCellLayout',
+            applier: 'LimiterCurentlyApplied',
             selector_direction: LimiterDirection,
             selector_mode: LimiterMode):
         super().__init__()
         self.selector_direction = selector_direction
         self.selector_mode = selector_mode
+        self.applier = applier
 
         self.apply_button = QPushButton(s.apply_button())
         self.apply_button.pressed.connect(self.apply_limit)
@@ -98,9 +101,10 @@ class LimiterValueSelector(QVBoxLayout):
             print("Clearing the current column limiters")
             return
         # Get the first value
-        value_str = int(self.value_widget.supplied_values[0].text())
+        values = [int(self.value_widget.supplied_values[0].text())]
         if self.selector_mode == LimiterMode.BETWEEN:
-            value_str_2 = int(self.value_widget.supplied_values[1].text())
+            values.append([int(self.value_widget.supplied_values[1].text())])
+        self.applier.add_modification(self.selector_mode, values)
 
     def display_explanation(self):
         if self.selector_mode == LimiterMode.NO_SELECTOR:

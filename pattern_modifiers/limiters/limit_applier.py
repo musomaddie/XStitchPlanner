@@ -14,6 +14,8 @@ class LimitApplier:
     pattern_current_state: list[list[PatternCell]]
     currently_applied: list['Modification']
 
+    # TODO: try and add loading screen for when this is thinking (but put in GUI)
+
     def __init__(
             self,
             direction: LimiterDirection,

@@ -1,13 +1,17 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget
 
 import resources.gui_strings as s
-from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
+from gui.pattern_display_model import PatternDisplayModel
+from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
+from pattern_cell import PatternCell
+from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
 class PatternViewTabList(QTabWidget):
     parent: 'ViewHierarchy'
-    original_layout: PatternDisplayOverlay
+    original_layout: PatternViewTabContents
+    tab_list: list[PatternViewTabContents]  # Doesn't contain original layout
 
     def __init__(
             self,
@@ -17,8 +21,25 @@ class PatternViewTabList(QTabWidget):
         super().__init__()
 
         self.parent = parent
-        self.original_layout = PatternViewTabContents(pattern_name, pattern_model, self)
+        self.original_layout = PatternViewTabContents(
+            pattern_name, pattern_model, Modification(LimiterMode.NO_SELECTOR, []), self)
+        self.tab_list = []
+
         og_layout_widget = QWidget()
         og_layout_widget.setLayout(self.original_layout)
         self.setTabPosition(QTabWidget.TabPosition.North)
-        self.addTab(og_layout_widget, s.original_pattern())
+        self.addTab(og_layout_widget, s.original_pattern(pattern_name))
+
+    def create_new_tab(
+            self,
+            pattern_name: str,
+            pattern_model_data: list[list[PatternCell]],
+            modification: 'Modification') -> None:
+        pattern_model = PatternDisplayModel(pattern_model_data)
+        new_layout = PatternViewTabContents(pattern_name, pattern_model, modification, self)
+        self.tab_list.append(new_layout)
+
+        new_layout_widget = QWidget()
+        new_layout_widget.setLayout(new_layout)
+        self.addTab(new_layout_widget, f"{pattern_name} ({len(self.tab_list)})")
+        self.setCurrentIndex(len(self.tab_list))

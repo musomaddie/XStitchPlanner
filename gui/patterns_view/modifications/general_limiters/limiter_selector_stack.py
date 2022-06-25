@@ -15,6 +15,7 @@ class LimiterSelectorStack(QStackedWidget):
 
     def __init__(
             self,
+            applier: 'LimiterCurrentlyApplied',
             current_cell_layout: 'reader',
             limiter_direction: LimiterDirection,
             parent: 'LimiterOverlay' = None):
@@ -26,25 +27,25 @@ class LimiterSelectorStack(QStackedWidget):
         no_selector_layout_widget = QWidget()
         no_selector_layout_widget.setLayout(
             LimiterValueSelector(
-                current_cell_layout, self.limiter_direction, LimiterMode.NO_SELECTOR))
+                current_cell_layout, applier, self.limiter_direction, LimiterMode.NO_SELECTOR))
         self.addWidget(no_selector_layout_widget)
 
         between_layout_widget = QWidget()
         between_layout_widget.setLayout(
             LimiterValueSelector(
-                current_cell_layout, self.limiter_direction, LimiterMode.BETWEEN))
+                current_cell_layout, applier, self.limiter_direction, LimiterMode.BETWEEN))
         self.addWidget(between_layout_widget)
 
         from_layout_widget = QWidget()
         from_layout_widget.setLayout(
             LimiterValueSelector(
-                current_cell_layout, self.limiter_direction, LimiterMode.FROM))
+                current_cell_layout, applier, self.limiter_direction, LimiterMode.FROM))
         self.addWidget(from_layout_widget)
 
         to_layout_widget = QWidget()
         to_layout_widget.setLayout(
             LimiterValueSelector(
-                current_cell_layout, self.limiter_direction, LimiterMode.TO))
+                current_cell_layout, applier, self.limiter_direction, LimiterMode.TO))
         self.addWidget(to_layout_widget)
 
         self.selection_dictionary = {

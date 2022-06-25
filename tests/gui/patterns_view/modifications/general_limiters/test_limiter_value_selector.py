@@ -29,10 +29,16 @@ def assert_button(widget: QWidget, exp_button_str: str):
     assert widget.children()[2].text() == exp_button_str
 
 
+def setup_mocks(creator_mock):
+    m = MagicMock()
+    m.get_current_value.return_value = 100
+    creator_mock.return_value = QWidget()
+    return MagicMock(), m
+
+
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
 def test_value_widget(direction):
-    current_cell_layout_mock = MagicMock()
-    current_cell_layout_mock.get_current_value.return_value = 100
+    applier_mocks, current_cell_layout_mock = setup_mocks(MagicMock())
     # No selector
     wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.NO_SELECTOR)
     assert len(wid.children()) == 0
@@ -64,14 +70,14 @@ def test_value_widget(direction):
 
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
 @patch(f"{FILE_LOC}.ValueWidget")
-def test_init_general(creator_mock, direction):
-    current_cell_mock = MagicMock()
-    creator_mock.return_value = QWidget()
-    selector = LimiterValueSelector(current_cell_mock, direction, LimiterMode.NO_SELECTOR)
+def test_init_general(value_mock, direction):
+    applier_mock, current_cell_mock = setup_mocks(value_mock)
+    selector = LimiterValueSelector(
+        current_cell_mock, applier_mock, direction, LimiterMode.NO_SELECTOR)
     test_widget = QWidget()
     test_widget.setLayout(selector)
 
-    creator_mock.assert_called_once_with(current_cell_mock, direction, LimiterMode.NO_SELECTOR)
+    value_mock.assert_called_once_with(current_cell_mock, direction, LimiterMode.NO_SELECTOR)
     assert selector.layout().count() == 3
     assert type(test_widget.children()[1]) == QLabel
     assert type(test_widget.children()[2]) == QWidget
@@ -89,10 +95,9 @@ def test_init_general(creator_mock, direction):
      ]
 )
 @patch(f"{FILE_LOC}.ValueWidget")
-def test_init_explanation_text(creator_mock, direction, mode):
-    current_cc_layout_mock = MagicMock()
-    creator_mock.return_value = QWidget()
-    selector = LimiterValueSelector(current_cc_layout_mock, direction, mode)
+def test_init_explanation_text(value_mock, direction, mode):
+    applier_mock, current_cc_layout_mock = setup_mocks(value_mock)
+    selector = LimiterValueSelector(current_cc_layout_mock, applier_mock, direction, mode)
     test_widget = QWidget()
     test_widget.setLayout(selector)
 
