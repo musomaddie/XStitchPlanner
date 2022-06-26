@@ -22,6 +22,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
     """
     parent: 'PatternDisplayOverlay'
     column_overlay: LimiterOverlay
+    row_overlay: LimiterOverlay
 
     # TODO: I think this will actually need to be a stacked layout (or have one SOMEWHERE) to
     #  control when everything is visible. Or maybe tabs??
@@ -30,19 +31,38 @@ class StitchingOptMenuOverview(QVBoxLayout):
             self,
             current_cell_layout: 'CurrentCellLayout',
             model: 'PatternDisplayModel',
-            current_mods: list['Modification'],
-            parent):
+            current_mods: dict[LimiterDirection, list['Modification']],
+            parent: 'PatternDisplayOverlay'):
         super().__init__()
         self.parent = parent
 
         self.column_overlay = LimiterOverlay(
-            current_cell_layout, LimiterDirection.COLUMN, current_mods, model, self)
+            current_cell_layout,
+            LimiterDirection.COLUMN,
+            current_mods[LimiterDirection.COLUMN],
+            model,
+            self)
         column_overlay_layout_widget = QWidget()
         column_overlay_layout_widget.setLayout(self.column_overlay)
         self.addWidget(column_overlay_layout_widget)
 
+        self.row_overlay = LimiterOverlay(
+            current_cell_layout,
+            LimiterDirection.ROW,
+            current_mods[LimiterDirection.ROW],
+            model,
+            self)
+        row_overlay_layout_widget = QWidget()
+        row_overlay_layout_widget.setLayout(self.row_overlay)
+        self.addWidget(row_overlay_layout_widget)
+
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modifications: list['Modification']) -> None:
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
         self.parent.create_new_pattern_tab(new_model, modifications)
+
+    def get_modifiers_for_direction(self, direction: LimiterDirection) -> list['Modification']:
+        if direction == LimiterDirection.COLUMN:
+            return self.column_overlay.get_all_modifiers()
+        return self.row_overlay.get_all_modifiers()

@@ -3,6 +3,7 @@ from unittest.mock import ANY, MagicMock, call, patch
 
 import pytest
 from PyQt6.QtWidgets import QLabel, QWidget
+from allpairspy import AllPairs
 
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import (
     LimiterCurrentlyApplied, Modification)
@@ -64,6 +65,17 @@ def test_mod_eq():
     assert Modification(LimiterMode.TO, [3]) == Modification(LimiterMode.TO, [3])
 
 
+@pytest.mark.parametrize(
+    ("mod", "expected_string"),
+    [(Modification(LimiterMode.NO_SELECTOR, []), "NO ()"),
+     (Modification(LimiterMode.BETWEEN, [2, 3]), "BETWEEN (2, 3)"),
+     (Modification(LimiterMode.FROM, [1]), "FROM (1)"),
+     (Modification(LimiterMode.TO, [6]), "TO (6)")]
+)
+def test_repr(mod, expected_string):
+    assert mod.__repr__() == expected_string
+
+
 # Layout
 @pytest.mark.parametrize("direction", list(LimiterDirection))
 def test_init(direction):
@@ -79,6 +91,23 @@ def test_init(direction):
     test_widget = QWidget()
     test_widget.setLayout(cur_app)
     assert test_widget.children()[1].text() == "Limits Currently Applied:"
+
+
+@pytest.mark.parametrize(
+    ("direction", "current_mods"),
+    [values for values in AllPairs(
+        [list(LimiterDirection),
+         [[Modification(LimiterMode.NO_SELECTOR, [])],
+          [Modification(LimiterMode.FROM, [2]), Modification(LimiterMode.TO, [3])],
+          [Modification(LimiterMode.BETWEEN, [3, 4]),
+           Modification(LimiterMode.TO, [2]),
+           Modification(LimiterMode.FROM, [6])]]
+         ])]
+)
+def test_get_all_modifiers(direction, current_mods):
+    model_mock = MagicMock()
+    cur_app = LimiterCurrentlyApplied(model_mock, direction, current_mods)
+    assert cur_app.get_all_modifiers() == current_mods
 
 
 @pytest.mark.parametrize(

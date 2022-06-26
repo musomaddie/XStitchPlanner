@@ -5,6 +5,7 @@ from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
 from pattern_cell import PatternCell
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
@@ -22,7 +23,9 @@ class PatternViewTabList(QTabWidget):
 
         self.parent = parent
         self.original_layout = PatternViewTabContents(
-            pattern_name, pattern_model, [Modification(LimiterMode.NO_SELECTOR, [])], self)
+            pattern_name, pattern_model,
+            {direction: [Modification(LimiterMode.NO_SELECTOR, [])]
+             for direction in list(LimiterDirection)}, self)
         self.tab_list = []
 
         og_layout_widget = QWidget()
@@ -34,7 +37,7 @@ class PatternViewTabList(QTabWidget):
             self,
             pattern_name: str,
             pattern_model_data: list[list[PatternCell]],
-            modifications: list['Modification']) -> None:
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
         pattern_model = PatternDisplayModel(pattern_model_data)
         new_layout = PatternViewTabContents(pattern_name, pattern_model, modifications, self)
         self.tab_list.append(new_layout)

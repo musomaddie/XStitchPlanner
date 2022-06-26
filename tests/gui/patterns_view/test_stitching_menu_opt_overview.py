@@ -10,7 +10,8 @@ FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview"
 
 def setup_mocks(overlay_mock):
     overlay_mock.return_value = QVBoxLayout()
-    return MagicMock(), MagicMock(), MagicMock()
+    return MagicMock(), MagicMock(), {LimiterDirection.COLUMN: [MagicMock()],
+                                      LimiterDirection.ROW: [MagicMock()]}
 
 
 @patch(f"{FILE_LOC}.LimiterOverlay")
@@ -20,10 +21,21 @@ def test_init(overlay_mock):
     opt_menu = StitchingOptMenuOverview(current_cc_layout_mock, model_mock, mod_mock, None)
     test_widget.setLayout(opt_menu)
 
-    overlay_mock.assert_called_once_with(
-        current_cc_layout_mock, LimiterDirection.COLUMN, mod_mock, model_mock, opt_menu)
+    overlay_mock.assert_has_calls(
+        [
+            call(
+                current_cc_layout_mock,
+                LimiterDirection.COLUMN,
+                mod_mock[LimiterDirection.COLUMN],
+                model_mock, opt_menu),
+            call(
+                current_cc_layout_mock,
+                LimiterDirection.ROW,
+                mod_mock[LimiterDirection.ROW],
+                model_mock, opt_menu)
+        ])
 
-    assert test_widget.layout().count() == 1
+    assert test_widget.layout().count() == 2
 
 
 @patch(f"{FILE_LOC}.LimiterOverlay")

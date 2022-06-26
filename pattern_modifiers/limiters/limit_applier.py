@@ -64,8 +64,9 @@ class LimitApplier:
 
     def _update_cur_applied_helper(self, m: 'Modification') -> None:
         # If the only item is that there's no values attached remove it
+        print(self.currently_applied)
         if (len(self.currently_applied) == 1
-                and self.currently_applied[0].mode == LimiterMode.NO_SELECTOR):
+                and LimiterMode.NO_SELECTOR in [v.mode for v in self.currently_applied]):
             self.currently_applied = []
 
         self.currently_applied.append(m)

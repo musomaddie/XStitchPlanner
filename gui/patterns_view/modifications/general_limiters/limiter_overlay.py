@@ -59,8 +59,18 @@ class LimiterOverlay(QVBoxLayout):
         self.addWidget(self.mode_selector_dropdown)
         self.addWidget(self.value_selector_stack)
 
+    def get_all_modifiers(self) -> list['Modification']:
+        return self.currently_applied.get_all_modifiers()
+
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
             modifications: list['Modification']) -> None:
-        self.parent.create_new_pattern_tab(new_model, modifications)
+        mod_dict = {self.direction: modifications}
+        if self.direction == LimiterDirection.ROW:
+            mod_dict[LimiterDirection.COLUMN] = self.parent.get_modifiers_for_direction(
+                LimiterDirection.COLUMN)
+        else:
+            mod_dict[LimiterDirection.ROW] = self.parent.get_modifiers_for_direction(
+                LimiterDirection.ROW)
+        self.parent.create_new_pattern_tab(new_model, mod_dict)

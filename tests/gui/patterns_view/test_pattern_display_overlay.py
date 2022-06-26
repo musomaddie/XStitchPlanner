@@ -39,3 +39,5 @@ def test_init(stitching_opt_mock, editor_view_mock):
         get_cc_layout, table_model_mock, mod_mock, overlay)
     opt_menu_layout_widg = test_widget.childAt(0, 1)
     assert opt_menu_layout_widg.maximumSize().width() == 300
+
+# TODO: add test for create_new_pattern_tab

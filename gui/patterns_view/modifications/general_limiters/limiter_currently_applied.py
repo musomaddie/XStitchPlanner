@@ -32,7 +32,7 @@ class Modification:
         return self.mode == other.mode and self.values == other.values
 
     def __repr__(self):
-        return f"{self.mode.value} ({' '.join([str(v) for v in self.values])})"
+        return f"{self.mode.value.upper()} ({', '.join([str(v) for v in self.values])})"
 
     def generate_label_str(self):
         # TODO: be nice to see these values reflected from the original pattern size (or not at
@@ -77,6 +77,9 @@ class LimiterCurrentlyApplied(QVBoxLayout):
         self.current_mods = {current_mod: QLabel(current_mod.generate_label_str())
                              for current_mod in current_mods}
         [self.addWidget(self.current_mods[current_mod]) for current_mod in current_mods]
+
+    def get_all_modifiers(self) -> list[Modification]:
+        return list(self.current_mods.keys())
 
     def add_modification(self, mode: LimiterMode, values: list[int]):
         """ Adds a label representing the given mode to the dictionary. """

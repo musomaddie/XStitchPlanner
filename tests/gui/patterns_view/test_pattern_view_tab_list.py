@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, call, patch
 from PyQt6.QtWidgets import QHBoxLayout, QTabWidget
 
 from gui.patterns_view.pattern_view_tab_list import PatternViewTabList
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 FILE_LOC = "gui.patterns_view.pattern_view_tab_list"
 
@@ -14,7 +15,12 @@ def test_init(mod_mock, tab_mock):
     model_mock = MagicMock()
 
     view_tab = PatternViewTabList("Testing", model_mock)
-    tab_mock.assert_called_once_with("Testing", model_mock, [mod_mock.return_value], view_tab)
+    tab_mock.assert_called_once_with(
+        "Testing",
+        model_mock,
+        {LimiterDirection.ROW: [mod_mock.return_value],
+         LimiterDirection.COLUMN: [mod_mock.return_value]},
+        view_tab)
 
     assert view_tab.tabPosition() == QTabWidget.TabPosition.North
     assert view_tab.currentIndex() == 0
@@ -31,12 +37,20 @@ def test_create_new_tab(display_model_mock, mod_mock, tab_mock):
     model_mock = MagicMock()
 
     view_tab_list = PatternViewTabList("Testing", model_mock)
-    view_tab_list.create_new_tab("TESTING", model_data_mock, [new_mod_mock])
+    view_tab_list.create_new_tab(
+        "TESTING", model_data_mock,
+        {LimiterDirection.ROW: [new_mod_mock], LimiterDirection.COLUMN: [new_mod_mock]})
 
     display_model_mock.assert_called_once_with(model_data_mock)
     assert tab_mock.mock_calls == [
-        call("Testing", model_mock, [mod_mock.return_value], view_tab_list),
-        call("TESTING", display_model_mock.return_value, [new_mod_mock], view_tab_list)]
+        call(
+            "Testing", model_mock,
+            {LimiterDirection.ROW: [mod_mock.return_value], LimiterDirection.COLUMN: [
+                mod_mock.return_value]}, view_tab_list),
+        call(
+            "TESTING", display_model_mock.return_value,
+            {LimiterDirection.ROW: [new_mod_mock], LimiterDirection.COLUMN: [new_mod_mock]},
+            view_tab_list)]
 
     assert len(view_tab_list.tab_list) == 1
     assert view_tab_list.currentIndex() == 1

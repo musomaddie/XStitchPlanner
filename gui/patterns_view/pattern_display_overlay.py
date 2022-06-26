@@ -5,6 +5,7 @@ from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.pattern_editor_view import PatternEditorView
 from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
 from pattern_cell import PatternCell
+from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 
 class PatternDisplayOverlay(QHBoxLayout):
@@ -26,7 +27,7 @@ class PatternDisplayOverlay(QHBoxLayout):
             self,
             pattern_name: str,
             model: 'PatternDisplayModel',
-            current_mods: list['Modification'],
+            current_mods: dict[LimiterDirection, list['Modification']],
             parent: 'PatternViewTabContents' = None):
         super().__init__()
 
@@ -44,12 +45,14 @@ class PatternDisplayOverlay(QHBoxLayout):
         opt_menu_layout_widget.setLayout(self.opt_menu)
         # TODO: make the width a bit more dynamic
         # TODO: make this hide / show with a button (animations?)
+        # TODO: update this to include the actual window size: getting the height of this widget
+        #  is wrong -> drastically so
         opt_menu_layout_widget.setMaximumSize(
-            QSize(300, opt_menu_layout_widget.size().height()))
+            QSize(300, opt_menu_layout_widget.maximumSize().height()))
         self.addWidget(opt_menu_layout_widget)
 
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modifications: list['Modification']) -> None:
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
         self.parent.create_new_pattern_tab(self.pattern_title, new_model, modifications)
