@@ -1,29 +1,26 @@
 from unittest.mock import MagicMock, call, patch
 
-from PyQt6.QtWidgets import QTableView, QVBoxLayout, QWidget
-
-from gui.patterns_view.editor_details.pattern_title_bar import PatternTitleBar
 from gui.patterns_view.pattern_editor_view import PatternEditorView
 
-FILE_LOC = "gui.patterns_view.pattern_editor_view."
+FILE_LOC = "gui.patterns_view.pattern_editor_view"
 
 
-@patch(f"{FILE_LOC}PatternDisplayView")
-@patch(f"{FILE_LOC}PatternTitleBar")
-@patch("gui.patterns_view.editor_details.pattern_title_bar.CurrentCellLayout")
-def test_init(cc_mock, title_bar_mock, mock_display):
-    mock_display.return_value = QTableView()
+@patch(f"{FILE_LOC}.PatternTitleBar")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.PatternEditorView.addWidget")
+@patch(f"{FILE_LOC}.PatternDisplayView")
+def test_init(display_view_mock, add_widget_mock, widget_mock, title_bar_mock):
+    title = "Testing"
     model_mock = MagicMock()
-    cc_mock.return_value = QVBoxLayout()
-    title_bar_mock.return_value = PatternTitleBar("TESTING", model_mock)
-    mock_model = MagicMock()
-    mock_cell = MagicMock()
+    editor_view = PatternEditorView(title, model_mock)
 
-    test_widget = QWidget()
-    editor_view = PatternEditorView("Testing", mock_model, mock_cell)
-    test_widget.setLayout(editor_view)
+    title_bar_mock.assert_called_once_with(title, model_mock, editor_view)
+    widget_mock.assert_has_calls([call(), call().setLayout(title_bar_mock.return_value)])
+    add_widget_mock.assert_has_calls(
+        [call(widget_mock.return_value), call(display_view_mock.return_value)])
+    display_view_mock.assert_called_once_with(
+        model_mock, title_bar_mock().current_cell, editor_view)
 
-    assert test_widget.layout().count() == 2
-    assert editor_view.model == mock_model
-    assert title_bar_mock.mock_calls == [call("Testing", mock_model, editor_view)]
-    assert mock_display.mock_calls == [call(mock_model, cc_mock.return_value, editor_view)]
+    assert editor_view.model == model_mock
+    assert editor_view.title_bar == title_bar_mock.return_value
+    assert editor_view.table_view == display_view_mock.return_value

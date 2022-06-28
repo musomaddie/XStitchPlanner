@@ -1,49 +1,60 @@
 from unittest.mock import MagicMock, call, patch
 
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
-
 from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview"
 
 
-def setup_mocks(overlay_mock):
-    overlay_mock.return_value = QVBoxLayout()
-    return MagicMock(), MagicMock(), {LimiterDirection.COLUMN: [MagicMock()],
-                                      LimiterDirection.ROW: [MagicMock()]}
-
-
 @patch(f"{FILE_LOC}.LimiterOverlay")
-def test_init(overlay_mock):
-    current_cc_layout_mock, mod_mock, model_mock = setup_mocks(overlay_mock)
-    test_widget = QWidget()
-    opt_menu = StitchingOptMenuOverview(current_cc_layout_mock, model_mock, mod_mock, None)
-    test_widget.setLayout(opt_menu)
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
+def test_init(add_widget_mock, widget_mock, overlay_mock):
+    cc_layout_mock, model_mock = MagicMock(), MagicMock()
+    col_mock, row_mock = MagicMock(), MagicMock()
+    current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
+    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock)
 
     overlay_mock.assert_has_calls(
-        [
-            call(
-                current_cc_layout_mock,
-                LimiterDirection.COLUMN,
-                mod_mock[LimiterDirection.COLUMN],
-                model_mock, opt_menu),
-            call(
-                current_cc_layout_mock,
-                LimiterDirection.ROW,
-                mod_mock[LimiterDirection.ROW],
-                model_mock, opt_menu)
-        ])
+        [call(cc_layout_mock, LimiterDirection.COLUMN, col_mock, model_mock, opt_menu),
+         call(cc_layout_mock, LimiterDirection.ROW, row_mock, model_mock, opt_menu)])
+    widget_mock.assert_has_calls(
+        [call(), call().setLayout(overlay_mock.return_value),
+         call(), call().setLayout(overlay_mock.return_value)])
+    add_widget_mock.assert_has_calls(
+        [call(widget_mock.return_value), call(widget_mock.return_value)])
 
-    assert test_widget.layout().count() == 2
+    assert opt_menu.column_overlay == overlay_mock.return_value
+    assert opt_menu.row_overlay == overlay_mock.return_value
 
 
 @patch(f"{FILE_LOC}.LimiterOverlay")
-def test_create_new_pattern_tab(overlay_mock):
-    cc_mock, mod_mock, model_mock = setup_mocks(overlay_mock)
-    parent_mock = MagicMock()
-    opt_menu = StitchingOptMenuOverview(cc_mock, model_mock, mod_mock, parent_mock)
-
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
+def test_create_new_pattern_tab(add_widget_mock, widget_mock, overlay_mock):
+    cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
+    col_mock, row_mock = MagicMock(), MagicMock()
     new_model_mock, new_mod_mock = MagicMock(), MagicMock()
+    current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
+
+    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock, parent_mock)
     opt_menu.create_new_pattern_tab(new_model_mock, new_mod_mock)
-    assert parent_mock.mock_calls == [call.create_new_pattern_tab(new_model_mock, new_mod_mock)]
+
+    parent_mock.assert_has_calls([call.create_new_pattern_tab(new_model_mock, new_mod_mock)])
+
+
+@patch(f"{FILE_LOC}.LimiterOverlay")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
+def test_get_modifiers_for_direction(add_widget_mock, widget_mock, overlay_mock):
+    cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
+    col_mock, row_mock = MagicMock(), MagicMock()
+    current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
+
+    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock, parent_mock)
+
+    opt_menu.get_modifiers_for_direction(LimiterDirection.COLUMN)
+    opt_menu.column_overlay.assert_has_calls([call.get_all_modifiers()])
+
+    opt_menu.get_modifiers_for_direction(LimiterDirection.ROW)
+    opt_menu.row_overlay.assert_has_calls([call.get_all_modifiers()])

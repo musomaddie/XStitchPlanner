@@ -2,7 +2,7 @@
 from unittest.mock import ANY, MagicMock, call, patch
 
 import pytest
-from PyQt6.QtWidgets import QLabel, QWidget
+from PyQt6.QtWidgets import QLabel
 from allpairspy import AllPairs
 
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import (
@@ -78,19 +78,22 @@ def test_repr(mod, expected_string):
 
 # Layout
 @pytest.mark.parametrize("direction", list(LimiterDirection))
-def test_init(direction):
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
+@patch(f"{FILE_LOC}.LimitApplier")
+def test_init(limiter_applier_mock, add_widget_mock, qlabel_mock, direction):
     model_mock = MagicMock()
-    cur_app = LimiterCurrentlyApplied(
-        model_mock, direction, [Modification(LimiterMode.NO_SELECTOR, [])])
-    assert cur_app.direction == direction
-    assert cur_app.parent is None
-    assert len(cur_app.current_mods) == 1
-    assert list(cur_app.current_mods.keys())[0].mode == LimiterMode.NO_SELECTOR
-    assert cur_app.count() == 2
+    current_mods = [Modification(LimiterMode.NO_SELECTOR, [])]
 
-    test_widget = QWidget()
-    test_widget.setLayout(cur_app)
-    assert test_widget.children()[1].text() == "Limits Currently Applied:"
+    cur_applied = LimiterCurrentlyApplied(model_mock, direction, current_mods)
+
+    qlabel_mock.assert_has_calls([call("Limits Currently Applied:"), call("None")])
+    limiter_applier_mock.assert_called_once_with(direction, model_mock._data, current_mods)
+    add_widget_mock.assert_has_calls(
+        [call(qlabel_mock.return_value), call(qlabel_mock.return_value)])
+
+    assert cur_applied.applier == limiter_applier_mock.return_value
+    assert cur_applied.current_mods == {current_mods[0]: qlabel_mock.return_value}
 
 
 @pytest.mark.parametrize(
@@ -104,7 +107,10 @@ def test_init(direction):
            Modification(LimiterMode.FROM, [6])]]
          ])]
 )
-def test_get_all_modifiers(direction, current_mods):
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
+@patch(f"{FILE_LOC}.LimitApplier")
+def test_get_all_modifiers(applier_mock, add_widget_mock, qlabel_mock, direction, current_mods):
     model_mock = MagicMock()
     cur_app = LimiterCurrentlyApplied(model_mock, direction, current_mods)
     assert cur_app.get_all_modifiers() == current_mods
@@ -116,8 +122,10 @@ def test_get_all_modifiers(direction, current_mods):
      (LimiterMode.FROM, [100]),
      (LimiterMode.TO, [100])]
 )
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
 @patch(f"{FILE_LOC}.LimitApplier")
-def test_add_modification(applier_mock, mode, values):
+def test_add_modification(applier_mock, add_widget_mock, qlabel_mock, mode, values):
     parent_mock = MagicMock()
     original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
@@ -130,8 +138,10 @@ def test_add_modification(applier_mock, mode, values):
     assert parent_mock.mock_calls == [call.create_new_pattern_tab(ANY, [created_mod])]
 
 
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
 @patch(f"{FILE_LOC}.LimitApplier")
-def test_add_modification_multiple(applier_mock):
+def test_add_modification_multiple(applier_mock, add_widget_mock, qlabel_mock):
     parent_mock = MagicMock()
     original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
@@ -151,4 +161,22 @@ def test_add_modification_multiple(applier_mock):
     assert parent_mock.mock_calls == [
         call.create_new_pattern_tab(ANY, [created_mod_1]),
         call.create_new_pattern_tab(ANY, [created_mod_1, created_mod_2])]
-    # call.create_new_pattern_tab(ANY, [created_mod_1, created_mod_2])]
+
+
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
+@patch(f"{FILE_LOC}.LimitApplier")
+def test_multiple_mods_init(applier_mock, add_widget_mock, qlabel_mock):
+    model_mock = MagicMock()
+    current_mods = [Modification(LimiterMode.TO, [6]),
+                    Modification(LimiterMode.FROM, [2])]
+
+    cur_applied = LimiterCurrentlyApplied(model_mock, LimiterDirection.COLUMN, current_mods)
+    applier_mock.assert_called_once_with(LimiterDirection.COLUMN, model_mock._data, current_mods)
+    add_widget_mock.assert_has_calls(
+        [call(qlabel_mock.return_value),
+         call(qlabel_mock.return_value),
+         call(qlabel_mock.return_value)]
+    )
+    assert cur_applied.current_mods == {current_mods[0]: qlabel_mock.return_value,
+                                        current_mods[1]: qlabel_mock.return_value}

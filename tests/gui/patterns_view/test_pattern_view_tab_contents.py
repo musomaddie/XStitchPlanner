@@ -15,23 +15,31 @@ def setup_mocks(toolbar_mock, display_mock):
 
 @patch(f"{FILE_LOC}.PatternDisplayOverlay")
 @patch(f"{FILE_LOC}.PatternViewToolBar")
-def test_init(toolbar_mock, display_mock):
-    parent_mock, mod_mock, model_mock = setup_mocks(toolbar_mock, display_mock)
-    contents = PatternViewTabContents("TESTING", model_mock, mod_mock)
-    assert contents.layout().count() == 2
+@patch(f"{FILE_LOC}.PatternViewTabContents.addWidget")
+@patch(f"{FILE_LOC}.QWidget")
+def test_init(widget_mock, add_widget_mock, toolbar_mock, overlay_mock):
+    model_mock, mod_mock = MagicMock(), MagicMock()
+    name = "Testing"
+    contents = PatternViewTabContents(name, model_mock, mod_mock)
 
-    assert display_mock.mock_calls == [call("TESTING", model_mock, mod_mock, contents)]
-    assert toolbar_mock.mock_calls == [call(model_mock, display_mock.return_value)]
+    overlay_mock.assert_called_once_with(name, model_mock, mod_mock, contents)
+    toolbar_mock.assert_called_once_with(model_mock, overlay_mock.return_value)
+    add_widget_mock.assert_has_calls(
+        [call(toolbar_mock.return_value), call(widget_mock.return_value)])
+    widget_mock.assert_has_calls([call(), call().setLayout(overlay_mock.return_value)])
+
+    assert contents.display_overlay == overlay_mock.return_value
+    assert contents.toolbar == toolbar_mock.return_value
 
 
 @patch(f"{FILE_LOC}.PatternDisplayOverlay")
 @patch(f"{FILE_LOC}.PatternViewToolBar")
-def test_create_new_pattern_tab(toolbar_mock, display_mock):
-    parent_mock, mod_mock, model_mock = setup_mocks(toolbar_mock, display_mock)
-    contents = PatternViewTabContents("TESTING", model_mock, mod_mock, parent_mock)
+@patch(f"{FILE_LOC}.PatternViewTabContents.addWidget")
+@patch(f"{FILE_LOC}.QWidget")
+def test_create_new_pattern_tab(widget_mock, add_widget_mock, toolbar_mock, overlay_mock):
+    model_mock, mod_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
+    contents = PatternViewTabContents("Testing", model_mock, mod_mock, parent_mock)
+    new_model, modification = MagicMock(), MagicMock()
 
-    new_model_mock = MagicMock()
-    new_mod_mock = MagicMock()
-    contents.create_new_pattern_tab("TESTING", new_model_mock, new_mod_mock)
-
-    assert parent_mock.mock_calls == [call.create_new_tab("TESTING", new_model_mock, new_mod_mock)]
+    contents.create_new_pattern_tab("Testing", new_model, modification)
+    parent_mock.assert_has_calls([call.create_new_tab("Testing", new_model, modification)])

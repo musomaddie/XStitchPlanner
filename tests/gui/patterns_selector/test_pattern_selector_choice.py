@@ -1,9 +1,8 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, call, patch
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QPushButton, QWidget
+from PyQt6.QtWidgets import QWidget
 
-import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
@@ -26,38 +25,34 @@ FILE_LOC = "gui.patterns_selector.pattern_selector_choice."
 
 
 @patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
-def test_pattern_selector_choice_layout_init(psdl_mock):
-    psdl_mock.return_value = ChildMock()
-    test_widget = QWidget()
-    test_widget.setLayout(PatternSelectorChoiceLayout())
+@patch(f"{FILE_LOC}PatternSelectorChoiceLayout.addWidget")
+@patch(f"{FILE_LOC}QPushButton")
+def test_pattern_selector_choice_layout_init(
+        push_button_mock, add_widget_mock, dropdown_mock):
+    choice_layout = PatternSelectorChoiceLayout()
 
-    assert test_widget.layout().count() == 2
+    push_button_mock.assert_called_once_with("Select this pattern")
+    add_widget_mock.assert_has_calls(
+        [call(dropdown_mock.return_value), call(push_button_mock.return_value)])
 
-    # Testing the button
-    button = test_widget.layout().submit_button
-    assert type(button) == QPushButton
-    assert button.text() == s.pattern_selector_select()
-
-    assert psdl_mock.call_count == 1
-
-
-@patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
-def test_choose_pattern(psdl_mock):
-    psdl_mock.return_value = ChildMock()
-    parent_mock = ParentMock()
-    test_widget = QWidget()
-    test_widget.setLayout(PatternSelectorChoiceLayout(parent_mock))
-
-    assert not parent_mock.called
-
-    test_widget.layout().choose_pattern()
-
-    assert parent_mock.called
+    assert choice_layout.combo_box == dropdown_mock.return_value
+    assert choice_layout.submit_button == push_button_mock.return_value
 
 
 @patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
-def test_choose_pattern_called_on_button_pressed(psdl_mock, qtbot):
-    psdl_mock.return_value = ChildMock()
+@patch(f"{FILE_LOC}PatternSelectorChoiceLayout.addWidget")
+@patch(f"{FILE_LOC}QPushButton")
+def test_choose_pattern(push_button_mock, add_widget_mock, dropdown_mock):
+    parent_mock = MagicMock()
+    choice_layout = PatternSelectorChoiceLayout(parent_mock)
+
+    choice_layout.choose_pattern()
+    parent_mock.assert_has_calls(dropdown_mock.selected_pattern.return_value)
+
+
+@patch(f"{FILE_LOC}PatternSelectorDropDownWidget")
+def test_choose_pattern_called_on_button_pressed(dropdown_mock, qtbot):
+    dropdown_mock.return_value = ChildMock()
     parent_mock = ParentMock()
     test_widget = QWidget()
     test_widget.setLayout(PatternSelectorChoiceLayout(parent_mock))

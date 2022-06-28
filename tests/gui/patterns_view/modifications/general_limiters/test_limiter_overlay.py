@@ -55,9 +55,7 @@ def test_get_all_modifiers(
     current_cc_mock, model_mock, current_mod_mock = MagicMock(), MagicMock(), MagicMock()
     overlay = LimiterOverlay(current_cc_mock, direction, current_mod_mock, model_mock)
 
-    # TODO: I think this is actually better than asserting count and children stuff in most cases
-    #  so go through and update everything.
-    # Alse move this to INIT!
+    # Also move this to INIT!
     set_layout_mock.assert_called_once_with(applied_mock())
     add_widget_mock.assert_has_calls(
         [

@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, call, patch
 
 import pytest
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QVBoxLayout
 
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
@@ -11,35 +11,39 @@ from pattern_modifiers.limiters.limiter_mode import LimiterMode
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_selector_stack"
 
 
-def setup_mocks(selector_mock):
-    selector_mock.return_value = QVBoxLayout()
-    return MagicMock(), MagicMock()
-
-
 @pytest.mark.parametrize("direction", list(LimiterDirection))
 @patch(f"{FILE_LOC}.LimiterValueSelector")
-def test_init(selector_mock, direction):
-    current_cc_layout_mock, applier_mock = setup_mocks(selector_mock)
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.LimiterSelectorStack.addWidget")
+def test_init(add_widget_mock, widget_mock, selector_mock, direction):
+    current_cc_layout_mock, applier_mock = MagicMock(), MagicMock()
+
     selector_stack = LimiterSelectorStack(applier_mock, current_cc_layout_mock, direction)
 
-    expected_calls = [
-        call(current_cc_layout_mock, applier_mock, direction, LimiterMode.NO_SELECTOR),
-        call(current_cc_layout_mock, applier_mock, direction, LimiterMode.BETWEEN),
-        call(current_cc_layout_mock, applier_mock, direction, LimiterMode.FROM),
-        call(current_cc_layout_mock, applier_mock, direction, LimiterMode.TO)]
+    selector_mock.assert_has_calls(
+        [call(current_cc_layout_mock, applier_mock, direction, mode) for mode in list(LimiterMode)])
+    widget_mock.assert_has_calls(
+        [call(), call().setLayout(selector_mock.return_value),
+         call(), call().setLayout(selector_mock.return_value),
+         call(), call().setLayout(selector_mock.return_value),
+         call(), call().setLayout(selector_mock.return_value)])
 
-    assert selector_mock.mock_calls == expected_calls
+    add_widget_mock.assert_has_calls([call(widget_mock.return_value) for _ in range(3)])
 
+    assert selector_stack.current_cell_layout == current_cc_layout_mock
+    assert selector_stack.limiter_direction == direction
     assert len(selector_stack.selection_dictionary) == 4
+    for mode in list(LimiterMode):
+        assert mode in selector_stack.selection_dictionary
     for value in selector_stack.selection_dictionary.values():
-        assert type(value) == QWidget
-
-    assert selector_stack.layout().count() == 4
+        assert value == widget_mock.return_value
 
 
 @patch(f"{FILE_LOC}.LimiterValueSelector")
 def test_change_selector(selector_mock):
-    current_cc_layout_mock, applier_mock = setup_mocks(selector_mock)
+    selector_mock.return_value = QVBoxLayout()
+    current_cc_layout_mock, applier_mock = MagicMock(), MagicMock()
+
     selector_stack = LimiterSelectorStack(
         applier_mock, current_cc_layout_mock, LimiterDirection.ROW)
 

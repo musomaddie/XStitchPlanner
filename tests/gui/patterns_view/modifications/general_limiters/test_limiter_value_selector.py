@@ -1,10 +1,12 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, call, patch
 
 import pytest
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import (
-    QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget)
+    QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget)
 from allpairspy import AllPairs
+from calleee import InstanceOf
 
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import (
     LimiterValueSelector, ValueWidget)
@@ -36,53 +38,157 @@ def setup_mocks(creator_mock):
     return MagicMock(), m
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
-def test_value_widget(direction):
-    applier_mocks, current_cell_layout_mock = setup_mocks(MagicMock())
-    # No selector
-    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.NO_SELECTOR)
-    assert len(wid.children()) == 0
+@pytest.mark.parametrize("direction", list(LimiterDirection))
+def test_value_widget_init_no_selector(direction):
+    cc_mock = MagicMock()
+    value_wid = ValueWidget(cc_mock, direction, LimiterMode.NO_SELECTOR)
 
-    cur_str = ("Use current column" if direction == LimiterDirection.COLUMN
-               else "Use current row")
+    assert value_wid.current_cell_layout == cc_mock
+    assert value_wid.direction == direction
+    assert value_wid.mode == LimiterMode.NO_SELECTOR
+    assert value_wid.supplied_values == []
+    assert value_wid.set_current_value_buttons == []
 
-    # Between
-    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.BETWEEN)
-    assert wid.layout().count() == 4
-    assert type(wid.children()[0]) == QVBoxLayout
-    assert_prompt(wid.children()[1], "Between:")
-    assert_button(wid.children()[2], cur_str)
-    assert_prompt(wid.children()[3], "&")
-    assert_button(wid.children()[4], cur_str)
 
-    # From
-    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.FROM)
-    assert wid.layout().count() == 2
-    assert_prompt(wid.children()[1], "From:")
-    assert_button(wid.children()[2], cur_str)
+@pytest.mark.parametrize("direction", list(LimiterDirection))
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.QVBoxLayout")
+@patch(f"{FILE_LOC}.QLineEdit")
+@patch(f"{FILE_LOC}.QPushButton")
+@patch(f"{FILE_LOC}.QHBoxLayout")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.ValueWidget.setLayout")
+def test_value_widget_init_from(
+        set_layout_mock, widget_mock, hbox_layout_mock, button_mock,
+        line_edit_mock, vbox_layout_mock, label_mock, direction):
+    cc_mock = MagicMock()
+    value_wid = ValueWidget(cc_mock, direction, LimiterMode.FROM)
 
-    # To
-    wid = ValueWidget(current_cell_layout_mock, direction, LimiterMode.TO)
-    assert wid.layout().count() == 2
-    assert_prompt(wid.children()[1], "To:")
-    assert_button(wid.children()[2], cur_str)
+    label_mock.assert_called_once_with("From:")
+    vbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(label_mock.return_value),
+         call().addWidget(widget_mock.return_value)])
+    line_edit_mock.assert_has_calls(
+        [call(), call().setValidator(InstanceOf(QIntValidator))])
+    button_mock_string = ("Use current column"
+                          if direction == LimiterDirection.COLUMN
+                          else "Use current row")
+    button_mock.assert_has_calls([call(button_mock_string), call().clicked.connect(ANY)])
+    hbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(line_edit_mock.return_value),
+         call().addWidget(button_mock.return_value)])
+    widget_mock.assert_has_calls([call(), call().setLayout(hbox_layout_mock.return_value)])
+    set_layout_mock.assert_called_once_with(vbox_layout_mock.return_value)
+
+    assert value_wid.current_cell_layout == cc_mock
+    assert value_wid.direction == direction
+    assert value_wid.mode == LimiterMode.FROM
+    assert value_wid.supplied_values == [line_edit_mock.return_value]
+    assert value_wid.set_current_value_buttons == [button_mock.return_value]
+
+
+@pytest.mark.parametrize("direction", list(LimiterDirection))
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.QVBoxLayout")
+@patch(f"{FILE_LOC}.QLineEdit")
+@patch(f"{FILE_LOC}.QPushButton")
+@patch(f"{FILE_LOC}.QHBoxLayout")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.ValueWidget.setLayout")
+def test_value_widget_init_to(
+        set_layout_mock, widget_mock, hbox_layout_mock, button_mock,
+        line_edit_mock, vbox_layout_mock, label_mock, direction):
+    cc_mock = MagicMock()
+    value_wid = ValueWidget(cc_mock, direction, LimiterMode.TO)
+
+    label_mock.assert_called_once_with("To:")
+    vbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(label_mock.return_value),
+         call().addWidget(widget_mock.return_value)])
+    line_edit_mock.assert_has_calls(
+        [call(), call().setValidator(InstanceOf(QIntValidator))])
+    button_mock_string = ("Use current column"
+                          if direction == LimiterDirection.COLUMN
+                          else "Use current row")
+    button_mock.assert_has_calls([call(button_mock_string), call().clicked.connect(ANY)])
+    hbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(line_edit_mock.return_value),
+         call().addWidget(button_mock.return_value)])
+    widget_mock.assert_has_calls([call(), call().setLayout(hbox_layout_mock.return_value)])
+    set_layout_mock.assert_called_once_with(vbox_layout_mock.return_value)
+
+    assert value_wid.current_cell_layout == cc_mock
+    assert value_wid.direction == direction
+    assert value_wid.mode == LimiterMode.TO
+    assert value_wid.supplied_values == [line_edit_mock.return_value]
+    assert value_wid.set_current_value_buttons == [button_mock.return_value]
+
+
+@pytest.mark.parametrize("direction", list(LimiterDirection))
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.QVBoxLayout")
+@patch(f"{FILE_LOC}.QLineEdit")
+@patch(f"{FILE_LOC}.QPushButton")
+@patch(f"{FILE_LOC}.QHBoxLayout")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.ValueWidget.setLayout")
+def test_value_widget_init_between(
+        set_layout_mock, widget_mock, hbox_layout_mock, button_mock,
+        line_edit_mock, vbox_layout_mock, label_mock, direction):
+    cc_mock = MagicMock()
+    value_wid = ValueWidget(cc_mock, direction, LimiterMode.BETWEEN)
+
+    label_mock.assert_has_calls([call("Between:"), call("&")])
+    vbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(label_mock.return_value), call().addWidget(widget_mock.return_value),
+         call().addWidget(label_mock.return_value), call().addWidget(widget_mock.return_value)])
+    line_edit_mock.assert_has_calls(
+        [call(), call().setValidator(InstanceOf(QIntValidator)),
+         call(), call().setValidator(InstanceOf(QIntValidator))])
+    button_mock_string = ("Use current column"
+                          if direction == LimiterDirection.COLUMN
+                          else "Use current row")
+    button_mock.assert_has_calls(
+        [call(button_mock_string), call().clicked.connect(ANY),
+         call(button_mock_string), call().clicked.connect(ANY)])
+    hbox_layout_mock.assert_has_calls(
+        [call(),
+         call().addWidget(line_edit_mock.return_value),
+         call().addWidget(button_mock.return_value),
+         call(),
+         call().addWidget(line_edit_mock.return_value),
+         call().addWidget(button_mock.return_value)])
+    widget_mock.assert_has_calls(
+        [call(), call().setLayout(hbox_layout_mock.return_value),
+         call(), call().setLayout(hbox_layout_mock.return_value)])
+    set_layout_mock.assert_called_once_with(vbox_layout_mock.return_value)
 
 
 @pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
 @patch(f"{FILE_LOC}.ValueWidget")
-def test_init_general(value_mock, direction):
-    applier_mock, current_cell_mock = setup_mocks(value_mock)
+@patch(f"{FILE_LOC}.QPushButton")
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.LimiterValueSelector.addWidget")
+def test_init_general(add_widget_mock, label_mock, button_mock, value_mock, direction):
+    cc_layout_mock, applier_mock = MagicMock(), MagicMock()
     selector = LimiterValueSelector(
-        current_cell_mock, applier_mock, direction, LimiterMode.NO_SELECTOR)
-    test_widget = QWidget()
-    test_widget.setLayout(selector)
-
-    value_mock.assert_called_once_with(current_cell_mock, direction, LimiterMode.NO_SELECTOR)
-    assert selector.layout().count() == 3
-    assert type(test_widget.children()[1]) == QLabel
-    assert type(test_widget.children()[2]) == QWidget
-    assert type(test_widget.children()[3]) == QPushButton
-    assert test_widget.children()[3].text() == "Apply!"
+        cc_layout_mock, applier_mock, direction, LimiterMode.NO_SELECTOR)
+    # TODO parameterize for all modes
+    value_mock.assert_called_once_with(cc_layout_mock, direction, LimiterMode.NO_SELECTOR)
+    button_mock.assert_has_calls([call("Apply!"), call().pressed.connect(ANY)])
+    label_text = ("Removes any currently applied column limits"
+                  if direction == LimiterDirection.COLUMN
+                  else "Removes any currently applied row limits")
+    label_mock.assert_has_calls([call(label_text), call().setWordWrap(True)])
+    add_widget_mock.assert_has_calls(
+        [call(label_mock.return_value),
+         call(value_mock.return_value),
+         call(button_mock.return_value)])
 
 
 @pytest.mark.parametrize(

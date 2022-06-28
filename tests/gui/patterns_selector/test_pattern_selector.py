@@ -1,8 +1,9 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, call, patch
 
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget
+from calleee import InstanceOf
 
-import resources.gui_strings as s
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 
 FILE_LOC = "gui.patterns_selector.pattern_selector"
@@ -17,29 +18,32 @@ class ParentMock:
 
 
 @patch(f"{FILE_LOC}.PatternSelectorChoiceLayout")
-def test_init(child_mock):
-    child_mock.return_value = QHBoxLayout()
-    test_widget = QWidget()
-    test_widget.setLayout(PatternSelectorLayout())
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.PatternSelectorLayout.addWidget")
+@patch(f"{FILE_LOC}.QWidget.setLayout")
+def test_init(set_layout_mock, add_widget_mock, qlabel_mock, child_mock):
+    selector_layout = PatternSelectorLayout()
 
-    assert test_widget.layout().count() == 2
+    assert selector_layout.title == qlabel_mock.return_value
+    assert selector_layout.selector == child_mock.return_value
 
-    # Testing the label
-    actual_label = test_widget.layout().title
-    assert type(actual_label) == QLabel
-    assert actual_label.text() == s.pattern_selector_title()
-
-    assert child_mock.call_count == 1
+    child_mock.assert_called_once_with(selector_layout)
+    qlabel_mock.assert_has_calls(
+        [call("Select the pattern to view"), call().setAlignment(Qt.AlignmentFlag.AlignCenter)])
+    add_widget_mock.assert_has_calls(
+        [call(qlabel_mock.return_value), call(InstanceOf(QWidget))])
+    set_layout_mock.assert_called_once_with(child_mock.return_value)
 
 
 @patch(f"{FILE_LOC}.PatternSelectorChoiceLayout")
-def test_pattern_chosen(child_mock):
-    child_mock.return_value = QHBoxLayout()
-    parent_mock = ParentMock()
-    test_widget = QWidget()
-    test_widget.setLayout(PatternSelectorLayout(parent_mock))
-
+@patch(f"{FILE_LOC}.QLabel")
+@patch(f"{FILE_LOC}.PatternSelectorLayout.addWidget")
+@patch(f"{FILE_LOC}.QWidget.setLayout")
+def test_pattern_chosen(set_layout_mock, add_widget_mock, qlabel_mock, child_mock):
+    parent_mock = MagicMock()
+    selector_layout = PatternSelectorLayout(parent_mock)
     assert not parent_mock.called
 
-    test_widget.layout().pattern_chosen(None)
-    assert parent_mock.called
+    pattern_name = "TESTING"
+    selector_layout.pattern_chosen(pattern_name)
+    parent_mock.assert_has_calls([call.pattern_chosen(pattern_name)])

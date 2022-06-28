@@ -21,6 +21,9 @@ class PatternViewTabList(QTabWidget):
             parent: 'ViewHierarchy' = None):
         super().__init__()
 
+        # TODO: If I save the pattern_name here then I won't need to take it in for creating the
+        #  next tab
+
         self.parent = parent
         self.original_layout = PatternViewTabContents(
             pattern_name, pattern_model,
