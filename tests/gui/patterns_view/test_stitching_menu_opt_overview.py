@@ -9,7 +9,8 @@ FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview"
 @patch(f"{FILE_LOC}.LimiterOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
-def test_init(add_widget_mock, widget_mock, overlay_mock):
+@patch(f"{FILE_LOC}.SaveButton")
+def test_init(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock = MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
@@ -23,6 +24,7 @@ def test_init(add_widget_mock, widget_mock, overlay_mock):
          call(), call().setLayout(overlay_mock.return_value)])
     add_widget_mock.assert_has_calls(
         [call(widget_mock.return_value), call(widget_mock.return_value)])
+    save_button_mock.assert_called_once_with(opt_menu)
 
     assert opt_menu.column_overlay == overlay_mock.return_value
     assert opt_menu.row_overlay == overlay_mock.return_value
@@ -31,7 +33,8 @@ def test_init(add_widget_mock, widget_mock, overlay_mock):
 @patch(f"{FILE_LOC}.LimiterOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
-def test_create_new_pattern_tab(add_widget_mock, widget_mock, overlay_mock):
+@patch(f"{FILE_LOC}.SaveButton")
+def test_create_new_pattern_tab(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     new_model_mock, new_mod_mock = MagicMock(), MagicMock()
@@ -46,7 +49,8 @@ def test_create_new_pattern_tab(add_widget_mock, widget_mock, overlay_mock):
 @patch(f"{FILE_LOC}.LimiterOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
-def test_get_modifiers_for_direction(add_widget_mock, widget_mock, overlay_mock):
+@patch(f"{FILE_LOC}.SaveButton")
+def test_get_modifiers_for_direction(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}

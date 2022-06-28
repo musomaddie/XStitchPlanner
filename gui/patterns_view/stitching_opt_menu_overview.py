@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
+from gui.patterns_view.modifications.save_button import SaveButton
 from pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
@@ -23,6 +24,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
     parent: 'PatternDisplayOverlay'
     column_overlay: LimiterOverlay
     row_overlay: LimiterOverlay
+    save_button: SaveButton
 
     def __init__(
             self,
@@ -52,6 +54,9 @@ class StitchingOptMenuOverview(QVBoxLayout):
         row_overlay_layout_widget = QWidget()
         row_overlay_layout_widget.setLayout(self.row_overlay)
         self.addWidget(row_overlay_layout_widget)
+
+        save_button = SaveButton(self)
+        self.addWidget(save_button)
 
     def create_new_pattern_tab(
             self,
