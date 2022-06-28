@@ -29,7 +29,6 @@ class PatternViewTabContents(QVBoxLayout):
 
     def create_new_pattern_tab(
             self,
-            pattern_name: str,  # TODO: I don't think I need to include this if I save from init
             new_model: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
-        self.parent.create_new_tab(pattern_name, new_model, modifications)
+        self.parent.create_new_tab(new_model, modifications)

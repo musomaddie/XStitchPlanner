@@ -70,4 +70,4 @@ def test_create_new_pattern_tab(
     overlay.create_new_pattern_tab(new_model_mock, modification_mock)
 
     parent_mock.assert_has_calls(
-        [call.create_new_pattern_tab("Testing", new_model_mock, modification_mock)])
+        [call.create_new_pattern_tab(new_model_mock, modification_mock)])

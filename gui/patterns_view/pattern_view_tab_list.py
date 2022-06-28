@@ -11,6 +11,7 @@ from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 class PatternViewTabList(QTabWidget):
     parent: 'ViewHierarchy'
+    pattern_name: str
     original_layout: PatternViewTabContents
     tab_list: list[PatternViewTabContents]  # Doesn't contain original layout
 
@@ -25,6 +26,7 @@ class PatternViewTabList(QTabWidget):
         #  next tab
 
         self.parent = parent
+        self.pattern_name = pattern_name
         self.original_layout = PatternViewTabContents(
             pattern_name, pattern_model,
             {direction: [Modification(LimiterMode.NO_SELECTOR, [])]
@@ -38,14 +40,13 @@ class PatternViewTabList(QTabWidget):
 
     def create_new_tab(
             self,
-            pattern_name: str,
             pattern_model_data: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
         pattern_model = PatternDisplayModel(pattern_model_data)
-        new_layout = PatternViewTabContents(pattern_name, pattern_model, modifications, self)
+        new_layout = PatternViewTabContents(self.pattern_name, pattern_model, modifications, self)
         self.tab_list.append(new_layout)
 
         new_layout_widget = QWidget()
         new_layout_widget.setLayout(new_layout)
-        self.addTab(new_layout_widget, f"{pattern_name} ({len(self.tab_list)})")
+        self.addTab(new_layout_widget, f"{self.pattern_name} ({len(self.tab_list)})")
         self.setCurrentIndex(len(self.tab_list))

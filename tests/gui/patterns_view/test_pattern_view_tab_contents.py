@@ -41,5 +41,5 @@ def test_create_new_pattern_tab(widget_mock, add_widget_mock, toolbar_mock, over
     contents = PatternViewTabContents("Testing", model_mock, mod_mock, parent_mock)
     new_model, modification = MagicMock(), MagicMock()
 
-    contents.create_new_pattern_tab("Testing", new_model, modification)
-    parent_mock.assert_has_calls([call.create_new_tab("Testing", new_model, modification)])
+    contents.create_new_pattern_tab(new_model, modification)
+    parent_mock.assert_has_calls([call.create_new_tab(new_model, modification)])

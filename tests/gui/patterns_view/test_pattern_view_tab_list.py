@@ -53,7 +53,7 @@ def test_create_new_tab(
     model_mock = MagicMock()
 
     view_tab_list = PatternViewTabList("Testing", model_mock)
-    view_tab_list.create_new_tab("TESTING", model_data_mock, new_mod_mock)
+    view_tab_list.create_new_tab(model_data_mock, new_mod_mock)
 
     display_model_mock.assert_called_once_with(model_data_mock)
     contents_mock.assert_has_calls(
@@ -61,14 +61,14 @@ def test_create_new_tab(
             "Testing", model_mock, {LimiterDirection.ROW: [mod_mock.return_value],
                                     LimiterDirection.COLUMN: [mod_mock.return_value]},
             view_tab_list),
-            call("TESTING", display_model_mock.return_value, new_mod_mock, view_tab_list)])
+            call("Testing", display_model_mock.return_value, new_mod_mock, view_tab_list)])
 
     widget_mock.assert_has_calls(
         [call(), call().setLayout(contents_mock.return_value),
          call(), call().setLayout(contents_mock.return_value)])
     add_tab_mock.assert_has_calls(
         [call(widget_mock.return_value, "Testing (Original)"),
-         call(widget_mock.return_value, "TESTING (1)")])
+         call(widget_mock.return_value, "Testing (1)")])
     set_cur_index_mock.assert_called_once_with(1)
 
     assert len(view_tab_list.tab_list) == 1

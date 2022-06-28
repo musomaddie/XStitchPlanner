@@ -55,4 +55,4 @@ class PatternDisplayOverlay(QHBoxLayout):
             self,
             new_model: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
-        self.parent.create_new_pattern_tab(self.pattern_title, new_model, modifications)
+        self.parent.create_new_pattern_tab(new_model, modifications)
