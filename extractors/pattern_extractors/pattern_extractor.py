@@ -5,7 +5,7 @@ from pdfplumber import PDF
 
 import resources.strings as s
 from extractors.extractor import Extractor, PatternFormatError
-from utils import verbose_print
+from utils import save_pattern, verbose_print
 
 
 class PatternExtractor(Extractor):
@@ -165,12 +165,14 @@ class PatternExtractor(Extractor):
         if False in [len(row) == page_width for row in rows]:
             raise PatternFormatError(s.pattern_uneven_width(pi_p))
         if not (height_check_1 or height_check_2):
-            raise PatternFormatError(s.pattern_uneven_height(
-                pi_p, page_height, expected_page_height, height - cur_y))
+            raise PatternFormatError(
+                s.pattern_uneven_height(
+                    pi_p, page_height, expected_page_height, height - cur_y))
         if cur_width > width or cur_height > height:
             raise PatternFormatError(
-                s.pattern_size_too_big(pi_p, page_width, page_height,
-                                       cur_width, cur_height, width, height))
+                s.pattern_size_too_big(
+                    pi_p, page_width, page_height,
+                    cur_width, cur_height, width, height))
 
         verbose_print(
             s.pattern_extracting_page(pi_p, page_width, page_height, cur_width, cur_height),
@@ -203,5 +205,4 @@ class PatternExtractor(Extractor):
         if len(self.pattern) == 0:
             raise ValueError(s.empty_on_save("pattern"))
 
-        with open(self.pattern_filename, "w", encoding="utf-8") as f:
-            print(*["".join(row) for row in self.pattern], sep="\n", file=f)
+        save_pattern(self.pattern_filename.split("/")[1], self.pattern)

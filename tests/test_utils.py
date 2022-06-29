@@ -1,3 +1,4 @@
+import os
 from unittest.mock import MagicMock
 
 import pytest
@@ -7,6 +8,7 @@ import utils
 from floss_thread import Thread
 
 BOUNDING_BOX = [0, 0, 10, 10]
+PATTERN_SAVE_FN = "tests/resources/test_save_pattern.pat"
 
 
 class MockPage:
@@ -14,6 +16,12 @@ class MockPage:
         self.curves = curves
         self.lines = lines
         self.rects = rects
+
+
+@pytest.fixture
+def remove_file():
+    yield
+    os.remove(PATTERN_SAVE_FN)
 
 
 def make_page_mock_for_bbox(lines, curves, rects):
@@ -134,6 +142,21 @@ def test_make_thread_non_database(capsys):
 
     assert created_thread == Thread(dmc, ident, symbol, "Black", "0")
     assert out == s.warning_dmc_not_found(dmc) + "\n"
+
+
+""" save_pattern """
+
+
+def test_save_pattern(remove_file):
+    passed_pattern = [["@", "!", "@"], ["!", "@", "@"], ["@", "!", "@"]]
+    expected_lines = ["@!@\n", "!@@\n", "@!@\n"]
+
+    utils.save_pattern("test_save_pattern", passed_pattern, "tests/resources/")
+
+    # call save pattern
+    with open(PATTERN_SAVE_FN, "r") as f:
+        for actual, expected in zip(f.readlines(), expected_lines):
+            assert actual == expected
 
 
 """ read_key """

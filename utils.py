@@ -174,6 +174,22 @@ def read_key(filename: str) -> list[Thread]:
         return [Thread(row[0], row[1], row[2], row[3], row[4]) for row in reader]
 
 
+def save_pattern(
+        filename: str,
+        pattern: list[list[str]],
+        path: str = None) -> None:
+    """Saves the given pattern to the given filename.
+
+    Args:
+        filename: the filename to save the pattern in. (Excluding the path)
+        pattern: the pattern details to save
+        path: (optional) only pass if the saved file should not be saved in patterns/
+    """
+    fn = f"{path}{filename}.pat" if path else f"patterns/{filename}.pat"
+    with open(fn, "w", encoding="utf-8") as f:
+        print(*["".join(row) for row in pattern], sep="\n", file=f)
+
+
 def verbose_print(message: str, verbose: bool = True) -> None:
     """ Prints the given message if verbose is set to true.
 

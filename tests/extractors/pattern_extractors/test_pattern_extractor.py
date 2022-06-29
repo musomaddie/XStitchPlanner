@@ -4,8 +4,7 @@ import pytest
 
 import resources.strings as s
 from extractors.extractor import PatternFormatError
-from extractors.pattern_extractors.font_pattern_extractor import \
-    FontPatternExtractor
+from extractors.pattern_extractors.font_pattern_extractor import FontPatternExtractor
 
 EXAMPLE_ROWS_BASIC = [
     ["10", "11", "12", "13", "14", "15", "16", "17", "18", "19"],
@@ -64,8 +63,9 @@ def test_extract_pattern_from_this_page(
 def test_extract_pattern_from_this_page_invalid(
         extractor, cur_x, cur_y, expected_ph, height, width, rows, expected_error_message):
     with pytest.raises(PatternFormatError) as e:
-        extractor._extract_from_this_page(0, rows, cur_x, cur_y, expected_ph, height, width, 0,
-                                          False)
+        extractor._extract_from_this_page(
+            0, rows, cur_x, cur_y, expected_ph, height, width, 0,
+            False)
     assert str(e.value) == expected_error_message
 
 
