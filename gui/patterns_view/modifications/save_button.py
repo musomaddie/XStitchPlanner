@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QPushButton
+from PyQt6.QtWidgets import QLabel, QPushButton
 
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
@@ -26,6 +26,7 @@ class SaveButton(QPushButton):
         self.applied_modifications = applied_modifications
         self.model = model
         self.setText("Save these modifications")
+        self.clicked.connect(self.save_pattern_variant)
 
     def _make_filename(self):
         row_mods_string = ""
@@ -45,4 +46,10 @@ class SaveButton(QPushButton):
         can use the file name to get the relevant extractors. Symbols used should not differ
         from the original pattern.
         """
-        save_pattern(self._make_filename(), self.model._data)
+        fn = self._make_filename()
+        save_pattern(fn, [[cell.display_symbol for cell in row] for row in self.model._data])
+
+        # Display that we have saved it
+        success_label = QLabel(f"Successfully saved pattern as {fn}")
+        success_label.setWordWrap(True)
+        self.parent.addWidget(success_label)

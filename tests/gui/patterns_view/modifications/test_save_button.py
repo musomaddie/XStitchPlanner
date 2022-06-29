@@ -1,8 +1,9 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
 from gui.patterns_view.modifications.save_button import SaveButton
+from pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 from pattern_modifiers.limiters.modification import Modification
@@ -38,15 +39,25 @@ def test_make_filename(set_text_mock, modifications, expected_filename):
 
 @patch(f"{FILE_LOC}.SaveButton.setText")
 @patch(f"{FILE_LOC}.save_pattern")
-def test_save_pattern_variant(save_pattern_mock, set_text_mock):
+@patch(f"{FILE_LOC}.QLabel")
+def test_save_pattern_variant(label_mock, save_pattern_mock, set_text_mock):
     model_mock = MagicMock()
-    model_mock._data = [["a", "a", "b"], ["b", "b", "a"], ["a", "b", "a"]]
+    parent_mock = MagicMock()
+    pa = PatternCell("a", "310", (0, 0), "a")
+    pb = PatternCell("b", "550", (0, 0), "b")
+    # model_mock._data = [["a", "a", "b"], ["b", "b", "a"], ["a", "b", "a"]]
+    model_mock._data = [[pa, pa, pb], [pb, pb, pa], [pa, pb, pa]]
     save_button = SaveButton(
         "Testing",
         model_mock,
         {LimiterDirection.ROW: [Modification(LimiterMode.NO_SELECTOR, [])],
-         LimiterDirection.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]}
+         LimiterDirection.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]},
+        parent_mock
     )
     save_button.save_pattern_variant()
 
-    save_pattern_mock.assert_called_once_with("Testing-row--col--variant", model_mock._data)
+    save_pattern_mock.assert_called_once_with(
+        "Testing-row--col--variant", [["a", "a", "b"], ["b", "b", "a"], ["a", "b", "a"]])
+
+    label_mock.assert_called_once_with("Successfully saved pattern as Testing-row--col--variant")
+    parent_mock.assert_has_calls([call.addWidget(label_mock.return_value)])
