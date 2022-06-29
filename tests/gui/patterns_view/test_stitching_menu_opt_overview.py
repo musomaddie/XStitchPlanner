@@ -14,7 +14,7 @@ def test_init(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock = MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
-    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock)
+    opt_menu = StitchingOptMenuOverview("", cc_layout_mock, model_mock, current_mods_mock)
 
     overlay_mock.assert_has_calls(
         [call(cc_layout_mock, LimiterDirection.COLUMN, col_mock, model_mock, opt_menu),
@@ -24,7 +24,10 @@ def test_init(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
          call(), call().setLayout(overlay_mock.return_value)])
     add_widget_mock.assert_has_calls(
         [call(widget_mock.return_value), call(widget_mock.return_value)])
-    save_button_mock.assert_called_once_with(opt_menu)
+    save_button_mock.assert_called_once_with(
+        "", model_mock,
+        {LimiterDirection.COLUMN: overlay_mock().get_all_modifiers(),
+         LimiterDirection.ROW: overlay_mock().get_all_modifiers()}, opt_menu)
 
     assert opt_menu.column_overlay == overlay_mock.return_value
     assert opt_menu.row_overlay == overlay_mock.return_value
@@ -40,7 +43,8 @@ def test_create_new_pattern_tab(save_button_mock, add_widget_mock, widget_mock, 
     new_model_mock, new_mod_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
 
-    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock, parent_mock)
+    opt_menu = StitchingOptMenuOverview(
+        "Testing", cc_layout_mock, model_mock, current_mods_mock, parent_mock)
     opt_menu.create_new_pattern_tab(new_model_mock, new_mod_mock)
 
     parent_mock.assert_has_calls([call.create_new_pattern_tab(new_model_mock, new_mod_mock)])
@@ -55,7 +59,8 @@ def test_get_modifiers_for_direction(save_button_mock, add_widget_mock, widget_m
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
 
-    opt_menu = StitchingOptMenuOverview(cc_layout_mock, model_mock, current_mods_mock, parent_mock)
+    opt_menu = StitchingOptMenuOverview(
+        "Testing", cc_layout_mock, model_mock, current_mods_mock, parent_mock)
 
     opt_menu.get_modifiers_for_direction(LimiterDirection.COLUMN)
     opt_menu.column_overlay.assert_has_calls([call.get_all_modifiers()])

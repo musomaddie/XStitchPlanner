@@ -28,6 +28,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
 
     def __init__(
             self,
+            pattern_name: str,
             current_cell_layout: 'CurrentCellLayout',
             model: 'PatternDisplayModel',
             current_mods: dict[LimiterDirection, list['Modification']],
@@ -55,7 +56,10 @@ class StitchingOptMenuOverview(QVBoxLayout):
         row_overlay_layout_widget.setLayout(self.row_overlay)
         self.addWidget(row_overlay_layout_widget)
 
-        save_button = SaveButton(self)
+        save_button = SaveButton(
+            pattern_name, model,
+            {LimiterDirection.COLUMN: self.column_overlay.get_all_modifiers(),
+             LimiterDirection.ROW: self.row_overlay.get_all_modifiers()}, self)
         self.addWidget(save_button)
 
     def create_new_pattern_tab(

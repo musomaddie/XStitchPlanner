@@ -40,7 +40,7 @@ class PatternDisplayOverlay(QHBoxLayout):
         self.addWidget(editor_layout_widget)
 
         self.opt_menu = StitchingOptMenuOverview(
-            self.editor.get_current_cell_layout(), self.model, current_mods, self)
+            pattern_name, self.editor.get_current_cell_layout(), self.model, current_mods, self)
         opt_menu_layout_widget = QWidget()
         opt_menu_layout_widget.setLayout(self.opt_menu)
         # TODO: make the width a bit more dynamic

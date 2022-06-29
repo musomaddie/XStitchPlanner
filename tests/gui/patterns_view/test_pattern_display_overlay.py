@@ -41,7 +41,10 @@ def test_init(add_widget_mock, widget_mock, size_mock, stitching_opt_mock, edito
     editor_view_mock.assert_has_calls(
         [call(pattern_name, model_mock, overlay), call().get_current_cell_layout()])
     stitching_opt_mock.assert_called_once_with(
-        editor_view_mock().get_current_cell_layout.return_value, model_mock, current_mods, overlay)
+        pattern_name,
+        editor_view_mock().get_current_cell_layout.return_value,
+        model_mock,
+        current_mods, overlay)
     widget_mock.assert_has_calls(
         [call(), call().setLayout(editor_view_mock.return_value),
          call(), call().setLayout(stitching_opt_mock.return_value),
