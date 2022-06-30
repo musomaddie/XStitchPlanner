@@ -78,6 +78,8 @@ class PatternDisplayModel(QAbstractTableModel):
                 selector
         """
 
+        # TODO: handle patterns with saved configurations without duplicating the pattern name (?)
+
         key = {k.symbol: k for k in read_key(f"patterns/{pattern_name}.key")}
 
         all_rows = []

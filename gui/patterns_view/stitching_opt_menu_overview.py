@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
+from gui.patterns_view.modifications.load_overlay import LoadOverlay
 from gui.patterns_view.modifications.save_button import SaveButton
 from pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
@@ -13,15 +14,19 @@ class StitchingOptMenuOverview(QVBoxLayout):
 
     TODO: make undo / back button
    +---------------+
+   |    LOAD       |
+   +---------------+
    |    LIMIT BY   |
    |    COLUMNS    |
    +---------------+
-   |               |
-   |               |
-   |               |
+   |    LIMIT BY   |
+   |    ROWS       |
+   +---------------+
+   |   SAVE        |
    +---------------+
     """
     parent: 'PatternDisplayOverlay'
+    load_overlay: LoadOverlay
     column_overlay: LimiterOverlay
     row_overlay: LimiterOverlay
     save_button: SaveButton
@@ -35,6 +40,11 @@ class StitchingOptMenuOverview(QVBoxLayout):
             parent: 'PatternDisplayOverlay' = None):
         super().__init__()
         self.parent = parent
+
+        self.load_overlay = LoadOverlay(self)
+        load_overlay_layout_widget = QWidget()
+        load_overlay_layout_widget.setLayout(self.load_overlay)
+        self.addWidget(load_overlay_layout_widget)
 
         self.column_overlay = LimiterOverlay(
             current_cell_layout,

@@ -71,6 +71,10 @@ def limiter_use_current_cell_desc(direction: LimiterDirection) -> str:
     return f"Use current {direction.value}"
 
 
+def load_variants_show_desc() -> str:
+    return "Show Saved Variants"
+
+
 def original_pattern(name: str) -> str:
     return f"{name} (Original)"
 

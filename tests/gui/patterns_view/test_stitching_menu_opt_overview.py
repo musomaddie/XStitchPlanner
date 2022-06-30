@@ -10,27 +10,31 @@ FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview"
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
 @patch(f"{FILE_LOC}.SaveButton")
-def test_init(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
+@patch(f"{FILE_LOC}.LoadOverlay")
+def test_init(
+        load_overlay_mock, save_button_mock, add_widget_mock, widget_mock, limiter_overlay_mock):
     cc_layout_mock, model_mock = MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
     opt_menu = StitchingOptMenuOverview("", cc_layout_mock, model_mock, current_mods_mock)
 
-    overlay_mock.assert_has_calls(
+    load_overlay_mock.assert_called_once_with(opt_menu)
+    limiter_overlay_mock.assert_has_calls(
         [call(cc_layout_mock, LimiterDirection.COLUMN, col_mock, model_mock, opt_menu),
          call(cc_layout_mock, LimiterDirection.ROW, row_mock, model_mock, opt_menu)])
     widget_mock.assert_has_calls(
-        [call(), call().setLayout(overlay_mock.return_value),
-         call(), call().setLayout(overlay_mock.return_value)])
+        [call(), call().setLayout(load_overlay_mock.return_value),
+         call(), call().setLayout(limiter_overlay_mock.return_value),
+         call(), call().setLayout(limiter_overlay_mock.return_value)])
     add_widget_mock.assert_has_calls(
         [call(widget_mock.return_value), call(widget_mock.return_value)])
     save_button_mock.assert_called_once_with(
         "", model_mock,
-        {LimiterDirection.COLUMN: overlay_mock().get_all_modifiers(),
-         LimiterDirection.ROW: overlay_mock().get_all_modifiers()}, opt_menu)
+        {LimiterDirection.COLUMN: limiter_overlay_mock().get_all_modifiers(),
+         LimiterDirection.ROW: limiter_overlay_mock().get_all_modifiers()}, opt_menu)
 
-    assert opt_menu.column_overlay == overlay_mock.return_value
-    assert opt_menu.row_overlay == overlay_mock.return_value
+    assert opt_menu.column_overlay == limiter_overlay_mock.return_value
+    assert opt_menu.row_overlay == limiter_overlay_mock.return_value
 
 
 @patch(f"{FILE_LOC}.LimiterOverlay")
