@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import isfile
+from os.path import isfile, join
 
 from PyQt6.QtWidgets import QComboBox
 
@@ -36,7 +36,9 @@ class VariantsLoadDropDown(QComboBox):
         Returns:
             dict[str, str]: a dictionary with the display string mapped to the actual pattern name.
         """
-        return {self.make_label_text(fn): fn for fn in self.find_all_variants_filenames()}
+        return {self.make_label_text(fn): fn
+                for fn in self.find_all_variants_filenames()
+                if fn != f"{self.original_pattern_name}-row--col--variant"}
 
     @staticmethod
     def make_label_text(variant_filename: str) -> str:
@@ -82,7 +84,7 @@ class VariantsLoadDropDown(QComboBox):
         Returns:
             a list of strings where every string is the .pat file with the variant
         """
-        all_files = [f for f in listdir("patterns/") if isfile()]
+        all_files = [f for f in listdir("patterns/") if isfile(join("patterns/", f))]
         return [f.split(".")[0] for f in all_files
                 if f.startswith(self.original_pattern_name) and f.endswith(".pat")
                 and f != f"{self.original_pattern_name}.pat"

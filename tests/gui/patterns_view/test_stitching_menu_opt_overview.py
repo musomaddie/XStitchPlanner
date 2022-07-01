@@ -37,11 +37,13 @@ def test_init(
     assert opt_menu.row_overlay == limiter_overlay_mock.return_value
 
 
+@patch(f"{FILE_LOC}.LoadOverlay")
 @patch(f"{FILE_LOC}.LimiterOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
 @patch(f"{FILE_LOC}.SaveButton")
-def test_create_new_pattern_tab(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
+def test_create_new_pattern_tab(
+        load_overlay_mock, save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     new_model_mock, new_mod_mock = MagicMock(), MagicMock()
@@ -54,11 +56,13 @@ def test_create_new_pattern_tab(save_button_mock, add_widget_mock, widget_mock, 
     parent_mock.assert_has_calls([call.create_new_pattern_tab(new_model_mock, new_mod_mock)])
 
 
+@patch(f"{FILE_LOC}.LoadOverlay")
 @patch(f"{FILE_LOC}.LimiterOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
 @patch(f"{FILE_LOC}.SaveButton")
-def test_get_modifiers_for_direction(save_button_mock, add_widget_mock, widget_mock, overlay_mock):
+def test_get_modifiers_for_direction(
+        load_overlay_mock, save_button_mock, add_widget_mock, widget_mock, overlay_mock):
     cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
