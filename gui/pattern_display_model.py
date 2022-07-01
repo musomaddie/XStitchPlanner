@@ -4,7 +4,7 @@ from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt6.QtGui import QColor
 
 from pattern_cell import PatternCell
-from utils import read_key
+from utils import load_from_pattern_file
 
 
 class PatternDisplayModel(QAbstractTableModel):
@@ -77,21 +77,5 @@ class PatternDisplayModel(QAbstractTableModel):
                 should never be reached as it MUST have a .pat file to be selected from the pattern
                 selector
         """
-
-        # TODO: handle patterns with saved configurations without duplicating the pattern name (?)
-
-        key = {k.symbol: k for k in read_key(f"patterns/{pattern_name}.key")}
-
-        all_rows = []
-        with open(f"patterns/{pattern_name}.pat") as f:
-            for row_count, row in enumerate(f.readlines()):
-                this_row = []
-                for col_count, letter in enumerate(row.rstrip()):
-                    this_row.append(
-                        PatternCell(
-                            letter,
-                            key[letter].dmc_value,
-                            (row_count, col_count),
-                            key[letter].hex_colour))
-                all_rows.append(this_row)
-            return PatternDisplayModel(all_rows)
+        patterns_rows = load_from_pattern_file(pattern_name, pattern_name)
+        return PatternDisplayModel(patterns_rows)

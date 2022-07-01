@@ -1,4 +1,5 @@
 import os
+from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
@@ -9,6 +10,7 @@ from floss_thread import Thread
 
 BOUNDING_BOX = [0, 0, 10, 10]
 PATTERN_SAVE_FN = "tests/resources/test_save_pattern.pat"
+FILE_LOC = "utils"
 
 
 class MockPage:
@@ -120,6 +122,25 @@ def test_load_dmc_data_simple():
     assert len(result) == 10
     for num, key in enumerate(result.keys()):
         assert str(num + 1) == key
+
+
+""" load pattern from file """
+
+
+def test_load_pattern_from_file():
+    read_key_mock = MagicMock(
+        return_value=[Thread("310", "a", "a", "Black", "000000"),
+                      Thread("550", "b", "b", "Purple", "800080"),
+                      Thread("666", "c", "c", "Red", "ff0000")])
+    open_mock = mock.mock_open(read_data="aab\nbbc\ncca\n")
+    with mock.patch(f"{FILE_LOC}.open", open_mock):
+        with mock.patch(f"{FILE_LOC}.read_key", read_key_mock):
+            result = utils.load_from_pattern_file("TESTING", "TESTING")
+    assert len(result) == 3
+    for actual, expected in zip(result, [["a", "a", "b"], ["b", "b", "c"], ["c", "c", "a"]]):
+        assert len(actual) == len(expected)
+        for a, e in zip(actual, expected):
+            assert a.display_symbol == e
 
 
 """ make thread """

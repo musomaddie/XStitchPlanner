@@ -1,5 +1,4 @@
-from unittest import mock
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 from PyQt6.QtCore import Qt
@@ -43,18 +42,14 @@ def model():
 
 
 # Model tests!
-def test_load_pattern_from_file():
-    read_key_mock = MagicMock(return_value=TESTING_DATA_3_THREAD_DICT)
-    open_mock = mock.mock_open(read_data=TESTING_DATA_3_3_STR)
-    with mock.patch(f"{FILE_LOC}.open", open_mock):
-        with mock.patch(f"{FILE_LOC}.read_key", read_key_mock):
-            result = PatternDisplayModel.load_from_pattern_file("TESTING")
+@patch(f"{FILE_LOC}.load_from_pattern_file")
+def test_load_pattern_from_file(load_from_pattern_file_mock):
+    load_from_pattern_file_mock.return_value = TESTING_DATA_3_3
+    result = PatternDisplayModel.load_from_pattern_file("TESTING")
+
+    assert load_from_pattern_file_mock.called_once_with("TESTING", "TESTING")
     assert type(result) == PatternDisplayModel
-    assert len(result._data) == 3
-    for actual, expected in zip(result._data, TESTING_DATA_3_3):
-        assert len(actual) == len(expected)
-        for a, e in zip(actual, expected):
-            assert a.display_symbol == e
+    assert result._data == TESTING_DATA_3_3
 
 
 def test_load_pattern_from_file_fnf():

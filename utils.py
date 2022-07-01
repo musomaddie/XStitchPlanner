@@ -10,6 +10,7 @@ from pdfplumber.page import Page
 
 import resources.strings as s
 from floss_thread import Thread
+from pattern_cell import PatternCell
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"
@@ -130,6 +131,37 @@ def load_dmc_data(filename: str = "resources/dmc_data.csv") -> dict[str: dict[st
         for row in reader:
             resulting_dict[row["Floss#"]] = {DESC_KEY: row["Description"], HEX_KEY: row["Hex"]}
     return resulting_dict
+
+
+def load_from_pattern_file(key_filename: str, pat_filename: str) -> list[list[PatternCell]]:
+    """ Loads a pattern from the given filename
+
+    Args:
+        key_filename: the filename (without the extension or folder) of the key file
+        pat_filename: the filename (without the extension or folder) of the pattern file
+
+    Returns:
+        list[list[PatternCell]]: the data found inside the pattern as pattern cells so that
+            information from the key is attached to the cell.
+
+    Raises:
+        FileNotFoundError: if the key file or pattern file cannot be found.
+    """
+    key = {k.symbol: k for k in read_key(f"patterns/{key_filename}.key")}
+
+    all_rows = []
+    with open(f"patterns/{pat_filename}.pat") as f:
+        for row_count, row in enumerate(f.readlines()):
+            this_row = []
+            for col_count, letter in enumerate(row.rstrip()):
+                this_row.append(
+                    PatternCell(
+                        letter,
+                        key[letter].dmc_value,
+                        (row_count, col_count),
+                        key[letter].hex_colour))
+            all_rows.append(this_row)
+    return all_rows
 
 
 def make_thread(dmc_value: str, ident: str, symbol: str) -> Thread:
