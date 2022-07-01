@@ -41,7 +41,7 @@ class StitchingOptMenuOverview(QVBoxLayout):
         super().__init__()
         self.parent = parent
 
-        self.load_overlay = LoadOverlay(self)
+        self.load_overlay = LoadOverlay(pattern_name, self)
         load_overlay_layout_widget = QWidget()
         load_overlay_layout_widget.setLayout(self.load_overlay)
         self.addWidget(load_overlay_layout_widget)

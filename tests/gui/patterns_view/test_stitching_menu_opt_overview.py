@@ -16,9 +16,9 @@ def test_init(
     cc_layout_mock, model_mock = MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
-    opt_menu = StitchingOptMenuOverview("", cc_layout_mock, model_mock, current_mods_mock)
+    opt_menu = StitchingOptMenuOverview("Testing", cc_layout_mock, model_mock, current_mods_mock)
 
-    load_overlay_mock.assert_called_once_with(opt_menu)
+    load_overlay_mock.assert_called_once_with("Testing", opt_menu)
     limiter_overlay_mock.assert_has_calls(
         [call(cc_layout_mock, LimiterDirection.COLUMN, col_mock, model_mock, opt_menu),
          call(cc_layout_mock, LimiterDirection.ROW, row_mock, model_mock, opt_menu)])
@@ -29,7 +29,7 @@ def test_init(
     add_widget_mock.assert_has_calls(
         [call(widget_mock.return_value), call(widget_mock.return_value)])
     save_button_mock.assert_called_once_with(
-        "", model_mock,
+        "Testing", model_mock,
         {LimiterDirection.COLUMN: limiter_overlay_mock().get_all_modifiers(),
          LimiterDirection.ROW: limiter_overlay_mock().get_all_modifiers()}, opt_menu)
 
