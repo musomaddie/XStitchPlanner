@@ -3,6 +3,9 @@ from os.path import isfile, join
 
 from PyQt6.QtWidgets import QComboBox
 
+from pattern_cell import PatternCell
+from utils import load_from_pattern_file
+
 
 class VariantsLoadDropDown(QComboBox):
     """ Responsible for the dropdown box containing the list of variants that can be loaded for
@@ -28,6 +31,11 @@ class VariantsLoadDropDown(QComboBox):
         self.original_pattern_name = pattern_name
         self.all_variants = self.list_all_variants()
         self.addItems([desc for desc in self.all_variants.keys()])
+
+    def get_pattern_model_from_selected_file(self) -> list[list[PatternCell]]:
+        """ Returns the pattern model that's found in the file of the selected variant """
+        return load_from_pattern_file(
+            self.original_pattern_name, self.all_variants[self.currentText()])
 
     def list_all_variants(self) -> dict[str, str]:
         """

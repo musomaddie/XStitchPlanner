@@ -80,3 +80,19 @@ def test_list_all_variants(find_all_vars_fn_mock, make_label_text_mock, add_item
     assert len(resulting_dict) == 2
     assert "1" in resulting_dict
     assert "2" in resulting_dict
+
+
+@patch(f"{FILE_LOC}.VariantsLoadDropDown.addItems")
+@patch(f"{FILE_LOC}.VariantsLoadDropDown.list_all_variants")
+@patch(f"{FILE_LOC}.load_from_pattern_file")
+@patch(f"{FILE_LOC}.VariantsLoadDropDown.currentText")
+def test_get_pattern_model_from_selected_file(
+        current_text_mock, load_from_pattern_file_mock, list_all_mock, add_items_mock):
+    list_all_mock.return_value = {"From row 5": "testing-row-from[5]-col--variant"}
+    current_text_mock.return_value = "From row 5"
+
+    variants_dropdown = VariantsLoadDropDown("testing")
+    variants_dropdown.get_pattern_model_from_selected_file()
+
+    load_from_pattern_file_mock.assert_called_once_with(
+        "testing", "testing-row-from[5]-col--variant")
