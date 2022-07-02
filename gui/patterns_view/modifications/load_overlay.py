@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QHBoxLayout, QPushButton
 
 import resources.gui_strings as s
 from gui.patterns_view.modifications.variants_load_dropdown import VariantsLoadDropDown
@@ -16,7 +16,7 @@ class LoadOverlay(QHBoxLayout):
         __init__()
     """
     parent: 'StitchingOptMenuOverview'
-    variants_dropdown: QComboBox
+    variants_dropdown: VariantsLoadDropDown
     load_impl_button: QPushButton
 
     # TODO: don't show if no pattern modifiers saved!
@@ -29,3 +29,9 @@ class LoadOverlay(QHBoxLayout):
         self.addWidget(self.variants_dropdown)
         self.load_impl_button = QPushButton(s.load_variant())
         self.addWidget(self.load_impl_button)
+        self.load_impl_button.pressed.connect(self.load_variant)
+
+    def load_variant(self) -> None:
+        """ Loads the selected variant into a new tab. """
+        self.parent.create_new_pattern_variant_tab(
+            self.variants_dropdown.get_pattern_model_from_selected_variant())

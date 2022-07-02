@@ -51,8 +51,19 @@ class PatternDisplayOverlay(QHBoxLayout):
             QSize(300, opt_menu_layout_widget.maximumSize().height()))
         self.addWidget(opt_menu_layout_widget)
 
+    # TODO: as a random thought maybe instead I could just pass a method reference to the call
+    #  that actually does the useful thing all through the constructors and use that directly
+    #  where required
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        """ Creates and displays a new tab with the current pattern modifications """
         self.parent.create_new_pattern_tab(new_model, modifications)
+
+    def create_new_pattern_variant_tab(
+            self,
+            new_model_data: list[list[PatternCell]],
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        """ Creates and displays a new tab with the selected pattern variant """
+        self.parent.create_new_pattern_variant_tab(new_model_data, modifications)

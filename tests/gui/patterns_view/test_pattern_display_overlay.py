@@ -74,3 +74,20 @@ def test_create_new_pattern_tab(
 
     parent_mock.assert_has_calls(
         [call.create_new_pattern_tab(new_model_mock, modification_mock)])
+
+
+@patch(f"{FILE_LOC}.PatternEditorView")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview")
+@patch(f"{FILE_LOC}.QSize")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.PatternDisplayOverlay.addWidget")
+def test_create_new_pattern_tab(
+        add_widget_mock, widget_mock, size_mock, stitching_opt_mock, editor_mock):
+    parent_mock = MagicMock()
+    overlay = PatternDisplayOverlay("Testing", MagicMock(), MagicMock(), parent_mock)
+    new_model_mock = MagicMock()
+    modification_mock = MagicMock()
+    overlay.create_new_pattern_variant_tab(new_model_mock, modification_mock)
+
+    parent_mock.assert_has_calls(
+        [call.create_new_pattern_variant_tab(new_model_mock, modification_mock)])

@@ -75,3 +75,34 @@ def test_get_modifiers_for_direction(
 
     opt_menu.get_modifiers_for_direction(LimiterDirection.ROW)
     opt_menu.row_overlay.assert_has_calls([call.get_all_modifiers()])
+
+
+@patch(f"{FILE_LOC}.LoadOverlay")
+@patch(f"{FILE_LOC}.LimiterOverlay")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
+@patch(f"{FILE_LOC}.SaveButton")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.get_modifiers_for_direction")
+def test_create_new_pattern_tab(
+        get_mods_direction_mock,
+        load_overlay_mock,
+        save_button_mock,
+        add_widget_mock,
+        widget_mock,
+        overlay_mock):
+    cc_layout_mock, model_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()
+    col_mock, row_mock = MagicMock(), MagicMock()
+    new_model_mock = MagicMock()
+    current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
+
+    opt_menu = StitchingOptMenuOverview(
+        "Testing", cc_layout_mock, model_mock, current_mods_mock, parent_mock)
+    opt_menu.create_new_pattern_variant_tab(new_model_mock)
+
+    get_mods_direction_mock.assert_has_calls(
+        [call(LimiterDirection.ROW), call(LimiterDirection.COLUMN)])
+    parent_mock.assert_has_calls(
+        [call.create_new_pattern_variant_tab(
+            new_model_mock, {LimiterDirection.ROW: get_mods_direction_mock.return_value,
+                             LimiterDirection.COLUMN: get_mods_direction_mock.return_value})
+        ])

@@ -31,4 +31,10 @@ class PatternViewTabContents(QVBoxLayout):
             self,
             new_model: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
-        self.parent.create_new_tab(new_model, modifications)
+        self.parent.create_new_tab_with_modifications(new_model, modifications)
+
+    def create_new_pattern_variant_tab(
+            self,
+            new_model_data: list[list[PatternCell]],
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        self.parent.create_new_tab_with_variant(new_model_data, modifications)

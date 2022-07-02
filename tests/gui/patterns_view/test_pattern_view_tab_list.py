@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import ANY, MagicMock, call, patch
 
 from PyQt6.QtWidgets import QTabWidget
 
@@ -31,6 +31,9 @@ def test_init(add_tab_mock, set_tab_pos_mock, widget_mock, mod_mock, contents_mo
 
     assert view_tab.original_layout == contents_mock.return_value
     assert len(view_tab.tab_list) == 0
+    assert len(view_tab.tab_counts) == 2
+    assert view_tab.tab_counts["modifications"] == 0
+    assert view_tab.tab_counts["variants"] == 0
 
 
 @patch(f"{FILE_LOC}.PatternViewTabContents")
@@ -40,7 +43,7 @@ def test_init(add_tab_mock, set_tab_pos_mock, widget_mock, mod_mock, contents_mo
 @patch(f"{FILE_LOC}.PatternViewTabList.setTabPosition")
 @patch(f"{FILE_LOC}.PatternViewTabList.addTab")
 @patch(f"{FILE_LOC}.PatternViewTabList.setCurrentIndex")
-def test_create_new_tab(
+def test_create_new_tab_with_modifications(
         set_cur_index_mock,
         add_tab_mock,
         set_tab_pos_mock,
@@ -53,7 +56,7 @@ def test_create_new_tab(
     model_mock = MagicMock()
 
     view_tab_list = PatternViewTabList("Testing", model_mock)
-    view_tab_list.create_new_tab(model_data_mock, new_mod_mock)
+    view_tab_list.create_new_tab_with_modifications(model_data_mock, new_mod_mock)
 
     display_model_mock.assert_called_once_with(model_data_mock)
     contents_mock.assert_has_calls(
@@ -73,3 +76,45 @@ def test_create_new_tab(
 
     assert len(view_tab_list.tab_list) == 1
     assert view_tab_list.tab_list[0] == contents_mock.return_value
+    assert view_tab_list.tab_counts["modifications"] == 1
+    assert view_tab_list.tab_counts["variants"] == 0
+
+
+@patch(f"{FILE_LOC}.Modification")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.PatternViewTabList.setTabPosition")
+@patch(f"{FILE_LOC}.PatternViewTabList.addTab")
+@patch(f"{FILE_LOC}.PatternDisplayModel")
+@patch(f"{FILE_LOC}.PatternViewTabContents")
+@patch(f"{FILE_LOC}.PatternViewTabList.setCurrentIndex")
+def test_create_new_tab_with_variant(
+        set_current_index_mock,
+        contents_mock,
+        display_model_mock,
+        add_tab_mock,
+        set_tab_pos_mock,
+        widget_mock,
+        mod_mock):
+    model_data_mock = MagicMock()
+    new_model_data_mock = MagicMock()
+    new_mods_mock = MagicMock()
+
+    view_tab_list = PatternViewTabList("Testing", model_data_mock)
+    view_tab_list.create_new_tab_with_variant(new_model_data_mock, new_mods_mock)
+
+    display_model_mock.assert_called_once_with(new_model_data_mock)
+    contents_mock.assert_has_calls(
+        [call("Testing", model_data_mock, ANY, view_tab_list),
+         call("Testing", display_model_mock.return_value, new_mods_mock, view_tab_list)])
+    widget_mock.assert_has_calls(
+        [call(), call().setLayout(contents_mock.return_value),
+         call(), call().setLayout(contents_mock.return_value)])
+    add_tab_mock.assert_has_calls(
+        [call(widget_mock.return_value, "Testing (Original)"),
+         call(widget_mock.return_value, "Testing variant #1")])
+    set_current_index_mock.assert_called_once_with(1)
+
+    assert len(view_tab_list.tab_list) == 1
+    assert view_tab_list.tab_list[0] == contents_mock.return_value
+    assert view_tab_list.tab_counts["modifications"] == 0
+    assert view_tab_list.tab_counts["variants"] == 1

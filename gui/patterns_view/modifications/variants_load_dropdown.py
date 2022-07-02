@@ -32,7 +32,7 @@ class VariantsLoadDropDown(QComboBox):
         self.all_variants = self.list_all_variants()
         self.addItems([desc for desc in self.all_variants.keys()])
 
-    def get_pattern_model_from_selected_file(self) -> list[list[PatternCell]]:
+    def get_pattern_model_from_selected_variant(self) -> list[list[PatternCell]]:
         """ Returns the pattern model that's found in the file of the selected variant """
         return load_from_pattern_file(
             self.original_pattern_name, self.all_variants[self.currentText()])

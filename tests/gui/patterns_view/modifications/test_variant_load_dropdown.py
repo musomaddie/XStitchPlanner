@@ -92,7 +92,7 @@ def test_get_pattern_model_from_selected_file(
     current_text_mock.return_value = "From row 5"
 
     variants_dropdown = VariantsLoadDropDown("testing")
-    variants_dropdown.get_pattern_model_from_selected_file()
+    variants_dropdown.get_pattern_model_from_selected_variant()
 
     load_from_pattern_file_mock.assert_called_once_with(
         "testing", "testing-row-from[5]-col--variant")

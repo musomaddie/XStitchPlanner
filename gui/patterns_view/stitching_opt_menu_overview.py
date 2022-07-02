@@ -76,9 +76,18 @@ class StitchingOptMenuOverview(QVBoxLayout):
             self,
             new_model: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        """ Creates and displays a new tab with the current pattern modifications """
         self.parent.create_new_pattern_tab(new_model, modifications)
 
+    def create_new_pattern_variant_tab(self, new_model_data: list[list[PatternCell]]) -> None:
+        """ Creates and displays a new tab with the selected pattern variant """
+        self.parent.create_new_pattern_variant_tab(
+            new_model_data,
+            {LimiterDirection.ROW: self.get_modifiers_for_direction(LimiterDirection.ROW),
+             LimiterDirection.COLUMN: self.get_modifiers_for_direction(LimiterDirection.COLUMN)})
+
     def get_modifiers_for_direction(self, direction: LimiterDirection) -> list['Modification']:
+        """ Fetches all the current modifications for the given direction"""
         if direction == LimiterDirection.COLUMN:
             return self.column_overlay.get_all_modifiers()
         return self.row_overlay.get_all_modifiers()

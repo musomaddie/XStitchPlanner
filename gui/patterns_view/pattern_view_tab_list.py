@@ -14,6 +14,7 @@ class PatternViewTabList(QTabWidget):
     pattern_name: str
     original_layout: PatternViewTabContents
     tab_list: list[PatternViewTabContents]  # Doesn't contain original layout
+    tab_counts: dict[str, int]
 
     def __init__(
             self,
@@ -32,21 +33,42 @@ class PatternViewTabList(QTabWidget):
             {direction: [Modification(LimiterMode.NO_SELECTOR, [])]
              for direction in list(LimiterDirection)}, self)
         self.tab_list = []
+        self.tab_counts = {"modifications": 0, "variants": 0}
 
         og_layout_widget = QWidget()
         og_layout_widget.setLayout(self.original_layout)
         self.setTabPosition(QTabWidget.TabPosition.North)
         self.addTab(og_layout_widget, s.original_pattern(pattern_name))
 
-    def create_new_tab(
+    def create_new_tab_with_modifications(
             self,
             pattern_model_data: list[list[PatternCell]],
             modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        """ Creates and displays a new tab containing the passed modifications """
         pattern_model = PatternDisplayModel(pattern_model_data)
         new_layout = PatternViewTabContents(self.pattern_name, pattern_model, modifications, self)
         self.tab_list.append(new_layout)
+        self.tab_counts["modifications"] += 1
 
         new_layout_widget = QWidget()
         new_layout_widget.setLayout(new_layout)
-        self.addTab(new_layout_widget, f"{self.pattern_name} ({len(self.tab_list)})")
+        self.addTab(new_layout_widget, f"{self.pattern_name} ({self.tab_counts['modifications']})")
+        self.setCurrentIndex(len(self.tab_list))
+
+    def create_new_tab_with_variant(
+            self,
+            new_model_data: list[list[PatternCell]],
+            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+        """ Creates and displays a new tab containing the variant whose data has been passed """
+        new_pattern_model = PatternDisplayModel(new_model_data)
+        new_layout = PatternViewTabContents(
+            self.pattern_name, new_pattern_model, modifications, self)
+        self.tab_list.append(new_layout)
+        self.tab_counts["variants"] += 1
+
+        new_layout_widget = QWidget()
+        new_layout_widget.setLayout(new_layout)
+        self.addTab(
+            new_layout_widget,
+            f"{self.pattern_name} variant #{self.tab_counts['variants']}")
         self.setCurrentIndex(len(self.tab_list))
