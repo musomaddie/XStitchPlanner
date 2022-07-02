@@ -6,7 +6,7 @@ from gui.patterns_view.modifications.general_limiters.limiter_currently_applied 
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 

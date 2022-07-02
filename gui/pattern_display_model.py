@@ -3,7 +3,7 @@ import typing
 from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt6.QtGui import QColor
 
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from utils import load_from_pattern_file
 
 

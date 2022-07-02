@@ -10,7 +10,7 @@ from pdfplumber.page import Page
 
 import resources.strings as s
 from floss_thread import Thread
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"

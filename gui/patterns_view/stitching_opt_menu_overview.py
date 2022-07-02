@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
 from gui.patterns_view.modifications.load_overlay import LoadOverlay
 from gui.patterns_view.modifications.save_button import SaveButton
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 

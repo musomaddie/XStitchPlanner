@@ -6,7 +6,7 @@ from PyQt6.QtGui import QColor
 
 from floss_thread import Thread
 from gui.pattern_display_model import PatternDisplayModel
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 
 FILE_LOC = "gui.pattern_display_model"
 

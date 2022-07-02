@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QLabel, QVBoxLayout
 
 import resources.gui_strings as s
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limit_applier import LimitApplier
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode

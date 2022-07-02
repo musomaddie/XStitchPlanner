@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, call, patch
 import pytest
 
 from gui.patterns_view.modifications.save_button import SaveButton
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 from pattern_modifiers.limiters.modification import Modification

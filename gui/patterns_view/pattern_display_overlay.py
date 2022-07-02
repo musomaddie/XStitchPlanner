@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QWidget
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.pattern_editor_view import PatternEditorView
 from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 
 

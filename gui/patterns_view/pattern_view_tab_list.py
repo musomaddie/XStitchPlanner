@@ -4,7 +4,7 @@ import resources.gui_strings as s
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
