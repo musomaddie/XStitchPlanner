@@ -35,7 +35,7 @@ def parking(starting_corner):
 def test_init(parking, starting_corner):
     assert parking.starting_corner == starting_corner
     assert parking.original_pattern == PATTERN
-    assert parking.num_skippable_columns == 1
+    assert parking.num_skippable_rows == 1
     assert parking.stitched_pattern == []
     if starting_corner.vertical == VerticalDirection.TOP:
         assert parking.next_row_to_stitch == PATTERN[0]
@@ -44,7 +44,7 @@ def test_init(parking, starting_corner):
 
     # Test no config
     parking = FullParking(PATTERN, starting_corner)
-    assert parking.num_skippable_columns == 0
+    assert parking.num_skippable_rows == 0
 
 
 def test_stitch_this_colour_one():
@@ -221,3 +221,75 @@ def test_park_colour_multiple_rows(starting_corner, parking):
             assert cell.parked
         else:
             assert not cell.parked
+
+
+""" Find rows to park """
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
+def test_find_rows_to_park_one_from_first_row(starting_corner, parking):
+    actual_rows = parking.find_rows_to_park()
+    expected_rows = (["babac"] if starting_corner == TOP_LEFT else ["bbaaa"])
+
+    for actual_row, expected_row in zip(actual_rows, expected_rows):
+        for actual, expected in zip(actual_row, expected_row):
+            assert actual.display_symbol == expected
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
+def test_find_rows_to_park_multiple_rows(starting_corner, parking):
+    parking.num_skippable_rows = 2
+    actual_rows = parking.find_rows_to_park()
+    expected_rows_symbols = (
+        ["babac", "cccba"] if starting_corner == TOP_LEFT else ["bbaaa", "cccba"])
+
+    for actual_row, expected_row in zip(actual_rows, expected_rows_symbols):
+        for actual, expected in zip(actual_row, expected_row):
+            assert actual.display_symbol == expected
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
+def test_find_rows_to_park_rows_left_matches_skippable_cols(starting_corner, parking):
+    parking.stitched_pattern = (
+        [parking.original_pattern[0], parking.original_pattern[1],
+         parking.original_pattern[2], parking.original_pattern[3]]
+        if starting_corner == TOP_LEFT
+        else [parking.original_pattern[4], parking.original_pattern[3],
+              parking.original_pattern[2], parking.original_pattern[1]])
+
+    actual_rows = parking.find_rows_to_park()
+    expected_rows = ["aaccc"] if starting_corner == TOP_LEFT else ["abbac"]
+
+    for actual_row, expected_row in zip(actual_rows, expected_rows):
+        for actual, expected in zip(actual_row, expected_row):
+            assert actual.display_symbol == expected
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
+def test_find_rows_to_park_no_rows_left(starting_corner, parking):
+    parking.stitched_pattern = (
+        [parking.original_pattern[0], parking.original_pattern[1],
+         parking.original_pattern[2], parking.original_pattern[3], parking.original_pattern[4]]
+        if starting_corner == TOP_LEFT
+        else [parking.original_pattern[4], parking.original_pattern[3],
+              parking.original_pattern[2], parking.original_pattern[1],
+              parking.original_pattern[0]])
+    actual_rows = parking.find_rows_to_park()
+    assert len(actual_rows) == 0
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
+def test_find_rows_to_park_less_rows_than_skippable(starting_corner, parking):
+    parking.num_skippable_rows = 2
+    parking.stitched_pattern = (
+        [parking.original_pattern[0], parking.original_pattern[1],
+         parking.original_pattern[2], parking.original_pattern[3]]
+        if starting_corner == TOP_LEFT
+        else [parking.original_pattern[4], parking.original_pattern[3],
+              parking.original_pattern[2], parking.original_pattern[1]])
+    actual_rows = parking.find_rows_to_park()
+    expected_rows = ["aaccc"] if starting_corner == TOP_LEFT else ["abbac"]
+
+    for actual_row, expected_row in zip(actual_rows, expected_rows):
+        for actual, expected in zip(actual_row, expected_row):
+            assert actual.display_symbol == expected

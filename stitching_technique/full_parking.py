@@ -16,7 +16,7 @@ class FullParking:
         original_pattern: the starting pattern
         stitched_pattern: the stitched pattern
         starting_corner: the corner to start stitching
-        num_skippable_columns: the number of vertical columns that are appropriate to skip while
+        num_skippable_rows: the number of vertical columns that are appropriate to skip while
             still carrying the thread. (i.e. if this is 1 than any gap larger than one column will
             not be carried - the thread will be cut and then started again).
         next_row_to_stitch: the next row to be stitched, None if the entire passed pattern has been
@@ -28,7 +28,7 @@ class FullParking:
     original_pattern: list[list[StitchingCell]]
     stitched_pattern: list[list[StitchedCell]]
     starting_corner: StartingCorner
-    num_skippable_columns: int
+    num_skippable_rows: int
     next_row_to_stitch: list[StitchingCell]
 
     def __init__(
@@ -39,7 +39,7 @@ class FullParking:
         self.original_pattern = starting_pattern
         self.stitched_pattern = []
         self.starting_corner = starting_corner
-        self.num_skippable_columns = config.get("skippable-columns", 0)
+        self.num_skippable_rows = config.get("skippable-columns", 0)
         self.next_row_to_stitch = self.get_next_stitchable_row()
 
     def get_next_stitchable_row(self) -> list[StitchingCell]:
@@ -50,6 +50,34 @@ class FullParking:
         if self.starting_corner.vertical == VerticalDirection.TOP:
             return self.original_pattern[num_stitched]
         return self.original_pattern[num_to_stitch - 1 - num_stitched]
+
+    def find_rows_to_park(self) -> list[list[StitchingCell]]:
+        """ Returns the future rows in which parking is possible.
+        Needs to be called BEFORE the pattern moves to the next row. (TODO: can I enforce this?
+
+        Returns:
+            list[list[StitchingCell]: a list of all the rows in which parking is possible,
+                ordered in respect to the vertical direction of the starting corner
+        """
+        if self.num_skippable_rows == 0:
+            return []
+        num_just_stitched = len(self.stitched_pattern)
+        number_of_possible_rows = min(self.num_skippable_rows, len(self.original_pattern))
+        # Find the rows without overflowing
+        iter_rows = (self.original_pattern
+                     if self.starting_corner.vertical == VerticalDirection.TOP
+                     else list(reversed(self.original_pattern)))
+        row_from = min(num_just_stitched + 1, len(self.original_pattern))
+        row_to = min(len(self.original_pattern), num_just_stitched + number_of_possible_rows + 1)
+
+        possible_rows = []
+        for idx, row in enumerate(iter_rows):
+            if idx < row_from:
+                continue
+            if idx == row_to:
+                return possible_rows
+            possible_rows.append(row)
+        return possible_rows
 
     @staticmethod
     def stitch_this_colour(
