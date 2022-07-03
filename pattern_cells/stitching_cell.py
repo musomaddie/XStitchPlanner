@@ -16,3 +16,6 @@ class StitchingCell:
 
     def __eq__(self, other: 'StitchingCell') -> bool:
         return self.display_symbol == other.display_symbol
+
+    def __repr__(self):
+        return f"{self.display_symbol} (s)"

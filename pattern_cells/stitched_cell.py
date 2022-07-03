@@ -26,3 +26,6 @@ class StitchedCell:
     @staticmethod
     def create_when_found_in_row(cell: StitchingCell, num_stitched) -> 'StitchedCell':
         return StitchedCell(cell.display_symbol, StartedFrom.CONTINUED_FROM_ROW, num_stitched + 1)
+
+    def __repr__(self):
+        return f"{self.display_symbol} [{self.nth_stitched}] (sed)"
