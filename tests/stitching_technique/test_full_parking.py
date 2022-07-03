@@ -178,6 +178,12 @@ def test_stitch_next_row_one_row(starting_corner, parking):
         assert len(checker[1]) == 3
         assert checker[1] == [("c", 3), ("c", 4), ("c", 5)]
 
+    # TODO: test with stitch this colour from parked thread (might be worth testing stitching the
+    #  entire test pattern.
+
+
+""" park_colour """
+
 
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
 def test_park_colour_in_one_possible_row(starting_corner, parking):
@@ -187,6 +193,30 @@ def test_park_colour_in_one_possible_row(starting_corner, parking):
     assert result
     parked_idx = 0 if starting_corner == TOP_LEFT else 3
     for index, cell in enumerate(this_row[0]):
+        if index == parked_idx:
+            assert cell.parked
+        else:
+            assert not cell.parked
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
+def test_park_colour_no_position(parking):
+    this_row = [deepcopy(parking.original_pattern[3])]
+    result = parking.park_colour(StitchedCell("c", StartedFrom.STARTED_NEW, 1), this_row)
+    assert not result
+    for cell in this_row[0]:
+        assert not cell.parked
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
+def test_park_colour_multiple_rows(starting_corner, parking):
+    my_rows = [deepcopy(parking.original_pattern[3]), deepcopy(parking.original_pattern[4])]
+    result = parking.park_colour(StitchedCell("c", StartedFrom.STARTED_NEW, 1), my_rows)
+    assert result
+    for cell in my_rows[0]:
+        assert not cell.parked
+    parked_idx = 2 if starting_corner == TOP_LEFT else 4
+    for index, cell in enumerate(my_rows[1]):
         if index == parked_idx:
             assert cell.parked
         else:
