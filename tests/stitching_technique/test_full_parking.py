@@ -307,7 +307,6 @@ def test_stitch_next_row_one_row(starting_corner, parking):
         assert not parking.original_pattern[3][3].parked
         assert parking.original_pattern[3][4].parked
 
-
     elif starting_corner == BOTTOM_LEFT:
         assert len(checker) == 2
         assert len(checker[0]) == 2
@@ -320,5 +319,36 @@ def test_stitch_next_row_one_row(starting_corner, parking):
         assert parking.original_pattern[3][2].parked
         assert not parking.original_pattern[3][3].parked
         assert not parking.original_pattern[3][4].parked
-    # TODO: test with stitch this colour from parked thread (might be worth testing stitching the
-    #  entire test pattern.
+
+
+"""Stitch entire pattern """
+
+
+def helper_assert_stitched_cell(cell, sym, started, nth):
+    assert cell.display_symbol == sym
+    assert cell.started_from == started
+    assert cell.nth_stitched == nth
+
+
+def test_stitch_entire_pattern_top_left():
+    parking = FullParking(PATTERN, TOP_LEFT, config={"skippable-columns": 1})
+    stitched_rows = parking.stitch_entire_pattern()
+    row0 = stitched_rows[0]
+    helper_assert_stitched_cell(row0[0][0], "a", StartedFrom.STARTED_NEW, 1)
+    helper_assert_stitched_cell(row0[0][1], "a", StartedFrom.CONTINUED_FROM_ROW, 2)
+    helper_assert_stitched_cell(row0[1][0], "b", StartedFrom.STARTED_NEW, 3)
+    helper_assert_stitched_cell(row0[1][1], "b", StartedFrom.CONTINUED_FROM_ROW, 4)
+    helper_assert_stitched_cell(row0[2][0], "c", StartedFrom.STARTED_NEW, 5)
+
+    row1 = stitched_rows[1]
+    helper_assert_stitched_cell(row1[0][0], "b", StartedFrom.FROM_PARKED_THREAD, 1)
+    helper_assert_stitched_cell(row1[0][1], "b", StartedFrom.CONTINUED_FROM_ROW, 2)
+    helper_assert_stitched_cell(row1[1][0], "a", StartedFrom.FROM_PARKED_THREAD, 3)
+    helper_assert_stitched_cell(row1[1][1], "a", StartedFrom.CONTINUED_FROM_ROW, 4)
+    helper_assert_stitched_cell(row1[2][0], "c", StartedFrom.FROM_PARKED_THREAD, 5)
+
+    row2 = stitched_rows[2]
+    helper_assert_stitched_cell(row2[0][0], "c", StartedFrom.FROM_PARKED_THREAD, 1)
+    helper_assert_stitched_cell(row2[0][1], "c", StartedFrom.CONTINUED_FROM_ROW, 2)
+    helper_assert_stitched_cell(row2[0][2], "c", StartedFrom.CONTINUED_FROM_ROW, 3)
+    helper_assert_stitched_cell(row2[1][0], "b", StartedFrom.FROM_PARKED_THREAD, 4)

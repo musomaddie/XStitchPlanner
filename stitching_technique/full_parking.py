@@ -138,7 +138,7 @@ class FullParking:
                     return True
         return False
 
-    def stitch_next_row(self):
+    def stitch_next_row(self) -> [list[StitchedCell]]:
         """ Stitches the next row to stitch if it exists """
         if self.next_row_to_stitch is None:
             return
@@ -162,3 +162,12 @@ class FullParking:
         self.stitched_pattern.append(stitched_row)
         self.next_row_to_stitch = self.get_next_stitchable_row()
         return stitched_row
+
+    def stitch_entire_pattern(self) -> [list[list[StitchedCell]]]:
+        # TODO: possibly add stitch number for entire pattern not just in row
+        stitched_rows = []
+        cur_row = self.stitch_next_row()
+        while cur_row:
+            stitched_rows.append(cur_row)
+            cur_row = self.stitch_next_row()
+        return stitched_rows
