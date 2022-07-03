@@ -1,20 +1,22 @@
+from copy import copy, deepcopy
+
 import pytest
 
 from pattern_cells.starting_corner import (
     BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT,
     TOP_RIGHT, VerticalDirection)
-from pattern_cells.stitched_cell import StartedFrom
+from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
 from stitching_technique.full_parking import FullParking
 
 SC_A = StitchingCell("a", "310")
 SC_B = StitchingCell("b", "550")
 SC_C = StitchingCell("c", "666")
-PATTERN = [[SC_A, SC_B, SC_B, SC_A, SC_C],
-           [SC_B, SC_A, SC_B, SC_A, SC_C],
-           [SC_C, SC_C, SC_C, SC_B, SC_A],
-           [SC_B, SC_B, SC_A, SC_A, SC_A],
-           [SC_A, SC_A, SC_C, SC_C, SC_C]]
+PATTERN = [[copy(SC_A), copy(SC_B), copy(SC_B), copy(SC_A), copy(SC_C)],
+           [copy(SC_B), copy(SC_A), copy(SC_B), copy(SC_A), copy(SC_C)],
+           [copy(SC_C), copy(SC_C), copy(SC_C), copy(SC_B), copy(SC_A)],
+           [copy(SC_B), copy(SC_B), copy(SC_A), copy(SC_A), copy(SC_A)],
+           [copy(SC_A), copy(SC_A), copy(SC_C), copy(SC_C), copy(SC_C)]]
 
 """ Pattern is: 
 a b b a c
@@ -175,3 +177,17 @@ def test_stitch_next_row_one_row(starting_corner, parking):
         assert checker[0] == [("a", 1), ("a", 2)]
         assert len(checker[1]) == 3
         assert checker[1] == [("c", 3), ("c", 4), ("c", 5)]
+
+
+@pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
+def test_park_colour_in_one_possible_row(starting_corner, parking):
+    # Otherwise future calls will have changes from original.
+    this_row = [deepcopy(parking.original_pattern[0])]
+    result = parking.park_colour(StitchedCell("a", StartedFrom.STARTED_NEW, 1), this_row)
+    assert result
+    parked_idx = 0 if starting_corner == TOP_LEFT else 3
+    for index, cell in enumerate(this_row[0]):
+        if index == parked_idx:
+            assert cell.parked
+        else:
+            assert not cell.parked

@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 
 from pattern_cells.starting_corner import HorizontalDirection, StartingCorner, VerticalDirection
 from pattern_cells.stitched_cell import StitchedCell
@@ -83,13 +83,37 @@ class FullParking:
                 cell.stitched = True
         return found_colours, num_stitched_currently
 
+    def park_colour(self, colour: StitchedCell, future_rows: list[list[StitchingCell]]) -> bool:
+        """ Handles parking the thread and needle for this colour in a future row. Parking refers to
+        the act of pulling the thread through the starting hole for a future stitch but not
+        stitching it yet
+
+        Args:
+            colour: the colour we are parking
+            future_rows: the rows to search for where to park
+
+        Returns:
+            bool: true if this thread was parked.
+        """
+        # Iterate through all the rows: vertical direction should be already handled.
+        for future_row in future_rows:
+            # Iterate through every cell in this row in the correct horizontal direction
+            iter_row = (future_row if self.starting_corner.horizontal == HorizontalDirection.LEFT
+                        else reversed(future_row))
+            for cell in iter_row:
+                if cell.display_symbol == colour.display_symbol:
+                    cell.parked = True
+                    return True
+        return False
+
     def stitch_next_row(self):
         """ Stitches the next row to stitch if it exists """
         if self.next_row_to_stitch is None:
             return
-        current_row = (copy.deepcopy(self.next_row_to_stitch)
+        # TODO: deepcopying is an expensive operation it would be nice to avoid it if possible.
+        current_row = (deepcopy(self.next_row_to_stitch)
                        if self.starting_corner.horizontal == HorizontalDirection.LEFT
-                       else list(reversed(copy.deepcopy(self.next_row_to_stitch))))
+                       else list(reversed(deepcopy(self.next_row_to_stitch))))
         # Work through the row
         stitched_row = []
         num_stitched = 0
