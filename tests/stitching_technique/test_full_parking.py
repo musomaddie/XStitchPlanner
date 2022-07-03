@@ -9,6 +9,8 @@ from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
 from stitching_technique.full_parking import FullParking
 
+FILE_LOC = "stitching_technique.full_parking"
+
 SC_A = StitchingCell("a", "310")
 SC_B = StitchingCell("b", "550")
 SC_C = StitchingCell("c", "666")
@@ -47,19 +49,6 @@ def test_init(parking, starting_corner):
     assert parking.num_skippable_rows == 0
 
 
-def test_stitch_this_colour_one():
-    row = [StitchingCell("a", "310")]
-    cc_cell = StitchingCell("a", "310")
-
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
-    assert len(result) == 2
-    assert num_stitched == 2
-    assert result[0].started_from == StartedFrom.STARTED_NEW
-    assert result[1].started_from == StartedFrom.CONTINUED_FROM_ROW
-    assert cc_cell.stitched
-    assert row[0].stitched
-
-
 """ get_next_stitchable_row """
 
 
@@ -85,6 +74,19 @@ def test_get_next_stitchable_row_finished(starting_corner):
 
 
 """ stitch_this_colour """
+
+
+def test_stitch_this_colour_one():
+    row = [StitchingCell("a", "310")]
+    cc_cell = StitchingCell("a", "310")
+
+    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    assert len(result) == 2
+    assert num_stitched == 2
+    assert result[0].started_from == StartedFrom.STARTED_NEW
+    assert result[1].started_from == StartedFrom.CONTINUED_FROM_ROW
+    assert cc_cell.stitched
+    assert row[0].stitched
 
 
 def test_stitch_this_colour_empty_row():
@@ -131,55 +133,6 @@ def test_stitch_this_colour_already_stitched():
     result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 0
     assert num_stitched == 0
-
-
-""" Stitch Next Row """
-
-
-def make_result_checker_helper(result):
-    return [[(g.display_symbol, g.nth_stitched)
-             for g in group] for group in result]
-
-
-@pytest.mark.parametrize("starting_corner", [TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT])
-def test_stitch_next_row_one_row(starting_corner, parking):
-    result = parking.stitch_next_row()
-    checker = make_result_checker_helper(result)
-    assert parking.original_pattern == PATTERN
-    if starting_corner == TOP_RIGHT:
-        assert len(checker) == 3
-        assert len(checker[0]) == 1
-        assert checker[0] == [("c", 1)]
-        assert len(checker[1]) == 2
-        assert checker[1] == [("a", 2), ("a", 3)]
-        assert len(checker[2]) == 2
-        assert checker[2] == [("b", 4), ("b", 5)]
-
-    elif starting_corner == TOP_LEFT:
-        assert len(checker) == 3
-        assert len(checker[0]) == 2
-        assert checker[0] == [("a", 1), ("a", 2)]
-        assert len(checker[1]) == 2
-        assert checker[1] == [("b", 3), ("b", 4)]
-        assert len(checker[2]) == 1
-        assert checker[2] == [("c", 5)]
-
-    elif starting_corner == BOTTOM_RIGHT:
-        assert len(checker) == 2
-        assert len(checker[0]) == 3
-        assert checker[0] == [("c", 1), ("c", 2), ("c", 3)]
-        assert len(checker[1]) == 2
-        assert checker[1] == [("a", 4), ("a", 5)]
-
-    elif starting_corner == BOTTOM_LEFT:
-        assert len(checker) == 2
-        assert len(checker[0]) == 2
-        assert checker[0] == [("a", 1), ("a", 2)]
-        assert len(checker[1]) == 3
-        assert checker[1] == [("c", 3), ("c", 4), ("c", 5)]
-
-    # TODO: test with stitch this colour from parked thread (might be worth testing stitching the
-    #  entire test pattern.
 
 
 """ park_colour """
@@ -293,3 +246,79 @@ def test_find_rows_to_park_less_rows_than_skippable(starting_corner, parking):
     for actual_row, expected_row in zip(actual_rows, expected_rows):
         for actual, expected in zip(actual_row, expected_row):
             assert actual.display_symbol == expected
+
+
+""" Stitch next row """
+
+
+def make_result_checker_helper(result):
+    return [[(g.display_symbol, g.nth_stitched)
+             for g in group] for group in result]
+
+
+@pytest.mark.parametrize("starting_corner", [TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT])
+def test_stitch_next_row_one_row(starting_corner, parking):
+    parking.original_pattern = deepcopy(parking.original_pattern)
+    result = parking.stitch_next_row()
+    checker = make_result_checker_helper(result)
+
+    assert parking.original_pattern == PATTERN
+    if starting_corner == TOP_RIGHT:
+        assert len(checker) == 3
+        assert len(checker[0]) == 1
+        assert checker[0] == [("c", 1)]
+        assert len(checker[1]) == 2
+        assert checker[1] == [("a", 2), ("a", 3)]
+        assert len(checker[2]) == 2
+        assert checker[2] == [("b", 4), ("b", 5)]
+
+        assert not parking.original_pattern[1][0].parked
+        assert not parking.original_pattern[1][1].parked
+        assert parking.original_pattern[1][2].parked
+        assert parking.original_pattern[1][3].parked
+        assert parking.original_pattern[1][4].parked
+
+
+    elif starting_corner == TOP_LEFT:
+        assert len(checker) == 3
+        assert len(checker[0]) == 2
+        assert checker[0] == [("a", 1), ("a", 2)]
+        assert len(checker[1]) == 2
+        assert checker[1] == [("b", 3), ("b", 4)]
+        assert len(checker[2]) == 1
+        assert checker[2] == [("c", 5)]
+
+        assert parking.original_pattern[1][0].parked
+        assert parking.original_pattern[1][1].parked
+        assert not parking.original_pattern[1][2].parked
+        assert not parking.original_pattern[1][3].parked
+        assert parking.original_pattern[1][4].parked
+
+    elif starting_corner == BOTTOM_RIGHT:
+        assert len(checker) == 2
+        assert len(checker[0]) == 3
+        assert checker[0] == [("c", 1), ("c", 2), ("c", 3)]
+        assert len(checker[1]) == 2
+        assert checker[1] == [("a", 4), ("a", 5)]
+
+        assert not parking.original_pattern[3][0].parked
+        assert not parking.original_pattern[3][1].parked
+        assert not parking.original_pattern[3][2].parked
+        assert not parking.original_pattern[3][3].parked
+        assert parking.original_pattern[3][4].parked
+
+
+    elif starting_corner == BOTTOM_LEFT:
+        assert len(checker) == 2
+        assert len(checker[0]) == 2
+        assert checker[0] == [("a", 1), ("a", 2)]
+        assert len(checker[1]) == 3
+        assert checker[1] == [("c", 3), ("c", 4), ("c", 5)]
+
+        assert not parking.original_pattern[3][0].parked
+        assert not parking.original_pattern[3][1].parked
+        assert parking.original_pattern[3][2].parked
+        assert not parking.original_pattern[3][3].parked
+        assert not parking.original_pattern[3][4].parked
+    # TODO: test with stitch this colour from parked thread (might be worth testing stitching the
+    #  entire test pattern.

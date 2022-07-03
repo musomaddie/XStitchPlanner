@@ -123,12 +123,16 @@ class FullParking:
         Returns:
             bool: true if this thread was parked.
         """
-        # Iterate through all the rows: vertical direction should be already handled.
         for future_row in future_rows:
             # Iterate through every cell in this row in the correct horizontal direction
-            iter_row = (future_row if self.starting_corner.horizontal == HorizontalDirection.LEFT
-                        else reversed(future_row))
-            for cell in iter_row:
+            # iter_row = (future_row if self.starting_corner.horizontal == HorizontalDirection.LEFT
+            #             else reversed(future_row))
+            if self.starting_corner.horizontal == HorizontalDirection.LEFT:
+                for cell in future_row:
+                    if cell.display_symbol == colour.display_symbol:
+                        cell.parked = True
+                        return True
+            for cell in reversed(future_row):
                 if cell.display_symbol == colour.display_symbol:
                     cell.parked = True
                     return True
@@ -145,6 +149,7 @@ class FullParking:
         # Work through the row
         stitched_row = []
         num_stitched = 0
+        possible_parking_rows = self.find_rows_to_park()
         while len(current_row) > 0:
             this_cell = current_row.pop(0)
             if this_cell.stitched:
@@ -152,6 +157,8 @@ class FullParking:
             colours, num_stitched = FullParking.stitch_this_colour(
                 this_cell, current_row, num_stitched)
             stitched_row.append(colours)
-            # TODO: handle parking in the future rows
-            # TODO: handle moving to next row
+            self.park_colour(colours[0], possible_parking_rows)
+
+        self.stitched_pattern.append(stitched_row)
+        self.next_row_to_stitch = self.get_next_stitchable_row()
         return stitched_row
