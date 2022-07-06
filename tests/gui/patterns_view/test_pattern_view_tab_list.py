@@ -38,6 +38,18 @@ def test_init(add_tab_mock, set_tab_pos_mock, widget_mock, mod_mock, contents_mo
 
 @patch(f"{FILE_LOC}.PatternViewTabContents")
 @patch(f"{FILE_LOC}.Modification")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.PatternViewTabList.setTabPosition")
+@patch(f"{FILE_LOC}.PatternViewTabList.addTab")
+def test_load_stitch_view(add_tab_mock, set_tab_pos_mock, widget_mock, mod_mock, contents_mock):
+    model_mock, parent_mock = [MagicMock() for _ in range(2)]
+    view_tab = PatternViewTabList("Testing", MagicMock(), parent_mock)
+    view_tab.load_stitch_view(model_mock)
+    parent_mock.assert_has_calls([call.load_stitch_view("Testing", model_mock)])
+
+
+@patch(f"{FILE_LOC}.PatternViewTabContents")
+@patch(f"{FILE_LOC}.Modification")
 @patch(f"{FILE_LOC}.PatternDisplayModel")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.PatternViewTabList.setTabPosition")

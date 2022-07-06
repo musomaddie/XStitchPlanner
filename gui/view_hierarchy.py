@@ -26,10 +26,14 @@ class ViewHierarchy(QStackedWidget):
 
         self.pattern_chosen("hp")
 
-    def pattern_chosen(self, pattern_name):
-        """ Loads the default display window for this pattern.
-        """
+    def pattern_chosen(self, pattern_name: str) -> None:
+        """ Loads the default display window for this pattern. """
         self.model = PatternDisplayModel.load_from_pattern_file(pattern_name)
         self.view_widget = PatternViewTabList(pattern_name, self.model, self)
         self.addWidget(self.view_widget)
         self.setCurrentWidget(self.view_widget)
+
+    def load_stitch_view(self, pattern_name: str, pattern_model: PatternDisplayModel) -> None:
+        """ Loads the stitching technique window for the given pattern model and name."""
+        print("Load stitch view")
+        pass

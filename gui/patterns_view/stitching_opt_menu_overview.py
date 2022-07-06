@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
+import resources.gui_strings as s
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
 from gui.patterns_view.modifications.load_overlay import LoadOverlay
 from gui.patterns_view.modifications.save_button import SaveButton
@@ -14,6 +15,8 @@ class StitchingOptMenuOverview(QVBoxLayout):
 
     TODO: make undo / back button
    +---------------+
+   |   STITCH      |
+   +---------------+
    |    LOAD       |
    +---------------+
    |    LIMIT BY   |
@@ -26,6 +29,8 @@ class StitchingOptMenuOverview(QVBoxLayout):
    +---------------+
     """
     parent: 'PatternDisplayOverlay'
+    stitch_button: QPushButton
+    model: 'PatternDisplayModel'
     load_overlay: LoadOverlay
     column_overlay: LimiterOverlay
     row_overlay: LimiterOverlay
@@ -40,6 +45,11 @@ class StitchingOptMenuOverview(QVBoxLayout):
             parent: 'PatternDisplayOverlay' = None):
         super().__init__()
         self.parent = parent
+        self.model = model
+
+        self.stitch_button = QPushButton(s.start_stitching_title())
+        self.stitch_button.pressed.connect(self.load_stitch_view)
+        self.addWidget(self.stitch_button)
 
         self.load_overlay = LoadOverlay(pattern_name, self)
         load_overlay_layout_widget = QWidget()
@@ -66,11 +76,15 @@ class StitchingOptMenuOverview(QVBoxLayout):
         row_overlay_layout_widget.setLayout(self.row_overlay)
         self.addWidget(row_overlay_layout_widget)
 
-        save_button = SaveButton(
+        self.save_button = SaveButton(
             pattern_name, model,
             {LimiterDirection.COLUMN: self.column_overlay.get_all_modifiers(),
              LimiterDirection.ROW: self.row_overlay.get_all_modifiers()}, self)
-        self.addWidget(save_button)
+        self.addWidget(self.save_button)
+
+    def load_stitch_view(self):
+        """ Loads the view for stitching this pattern. """
+        self.parent.load_stitch_view(self.model)
 
     def create_new_pattern_tab(
             self,

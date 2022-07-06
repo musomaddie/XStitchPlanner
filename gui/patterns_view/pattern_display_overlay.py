@@ -51,6 +51,10 @@ class PatternDisplayOverlay(QHBoxLayout):
             QSize(300, opt_menu_layout_widget.maximumSize().height()))
         self.addWidget(opt_menu_layout_widget)
 
+    def load_stitch_view(self, model: 'PatternDisplayModel') -> None:
+        """ Loads the stitch view: echoes call all the way to view hierarchy """
+        self.parent.load_stitch_view(model)
+
     # TODO: as a random thought maybe instead I could just pass a method reference to the call
     #  that actually does the useful thing all through the constructors and use that directly
     #  where required

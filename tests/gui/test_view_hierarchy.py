@@ -1,4 +1,4 @@
-from unittest.mock import call, patch
+from unittest.mock import MagicMock, call, patch
 
 from PyQt6.QtWidgets import QWidget
 from calleee import InstanceOf
@@ -51,3 +51,21 @@ def test_pattern_chosen(
     add_widget_mock.assert_has_calls([call(InstanceOf(QWidget)), call(tablist_mock.return_value)])
     set_layout_mock.assert_called_once_with(selector_mock.return_value)
     set_current_widget_mock.assert_called_once_with(tablist_mock.return_value)
+
+
+@patch(f"{FILE_LOC}.PatternSelectorLayout")
+@patch(f"{FILE_LOC}.PatternDisplayModel.load_from_pattern_file")
+@patch(f"{FILE_LOC}.PatternViewTabList")
+@patch(f"{FILE_LOC}.ViewHierarchy.addWidget")
+@patch(f"{FILE_LOC}.QWidget.setLayout")
+@patch(f"{FILE_LOC}.ViewHierarchy.setCurrentWidget")
+def test_load_stitch_view(
+        set_current_widget_mock,
+        set_layout_mock,
+        add_widget_mock,
+        tablist_mock,
+        model_mock,
+        selector_mock):
+    model_mock = MagicMock()
+    view_hierarchy = ViewHierarchy()
+    view_hierarchy.load_stitch_view("Testing", model_mock)

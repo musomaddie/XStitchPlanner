@@ -89,3 +89,7 @@ def pattern_selector_select() -> str:
 
 def program_title() -> str:
     return "Stitch Please!"
+
+
+def start_stitching_title() -> str:
+    return "Stitch This!"
