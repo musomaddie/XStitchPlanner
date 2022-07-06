@@ -208,7 +208,6 @@ def get_all_characters():
     char_list.extend(from_gothic())
     char_list.extend(from_phoenician())
     char_list.extend(from_misc_symbols())
-
     return char_list
 
 
