@@ -20,6 +20,7 @@ class LoadOverlay(QHBoxLayout):
     load_impl_button: QPushButton
 
     # TODO: don't show if no pattern modifiers saved!
+    # TODO: refresh once something has been saved!
 
     def __init__(self, pattern_name: str, parent: 'StitchingOptMenuOverview' = None):
         super().__init__()
