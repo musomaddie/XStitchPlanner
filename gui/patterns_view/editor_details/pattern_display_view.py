@@ -6,7 +6,7 @@ from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayo
 
 class PatternDisplayView(QTableView):
     """ Responsible for actually displaying the pattern in a table form. """
-    model: 'PatternDisplayModel'
+    model: PatternDisplayModel
     parent: 'PatternEditorView'
 
     def __init__(
