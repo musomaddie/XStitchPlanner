@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 from gui.patterns_view.pattern_view_tab_list import PatternViewTabList
+from gui.stitching.prepare_stitching_display_model import PrepareStitchingDisplayModel
+from gui.stitching.stitching_overlay import StitchingOverlay
 
 
 class ViewHierarchy(QStackedWidget):
@@ -11,6 +13,8 @@ class ViewHierarchy(QStackedWidget):
     model: PatternDisplayModel
     selector_widget: QWidget
     view_widget: QWidget
+    stitching_layout: StitchingOverlay
+    stitching_widget: QWidget
 
     def __init__(
             self,
@@ -33,7 +37,14 @@ class ViewHierarchy(QStackedWidget):
         self.addWidget(self.view_widget)
         self.setCurrentWidget(self.view_widget)
 
+    # TODO: update calls to use the data not the model
     def load_stitch_view(self, pattern_name: str, pattern_model: PatternDisplayModel) -> None:
         """ Loads the stitching technique window for the given pattern model and name."""
-        print("Load stitch view")
-        pass
+        self.stitching_layout = StitchingOverlay(
+            pattern_name,
+            PrepareStitchingDisplayModel(pattern_model._data),
+            self)
+        self.stitching_widget = QWidget()
+        self.stitching_widget.setLayout(self.stitching_layout)
+        self.addWidget(self.stitching_widget)
+        self.setCurrentWidget(self.stitching_widget)
