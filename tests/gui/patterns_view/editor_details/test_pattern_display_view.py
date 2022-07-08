@@ -5,16 +5,11 @@ from gui.patterns_view.editor_details.pattern_display_view import PatternDisplay
 FILE_LOC = "gui.patterns_view.editor_details.pattern_display_view"
 
 
-@patch(f"{FILE_LOC}.PatternDisplayView.setModel")
-def test_init_view(set_model_mock):
-    model_mock = MagicMock()
-    display_view = PatternDisplayView(model_mock, MagicMock())
+@patch(f"{FILE_LOC}.PatternView.setModel")
+@patch(f"{FILE_LOC}.PatternView.clicked")
+def test_init(clicked_mock, set_model_mock, qtbot):
+    parent_mock, cc_mock = [MagicMock() for _ in range(2)]
+    display_view = PatternDisplayView(MagicMock(), cc_mock, parent_mock)
 
-    set_model_mock.assert_called_once_with(model_mock)
-    model_mock.assert_has_calls([call.add_display(display_view)])
-
-    assert display_view.horizontalHeader().defaultSectionSize() == 20
-    assert display_view.verticalHeader().defaultSectionSize() == 20
-
-    assert display_view.horizontalHeader().font().pointSize() == 8
-    assert display_view.verticalHeader().font().pointSize() == 8
+    clicked_mock.assert_has_calls([call.connect(cc_mock.update_values)])
+    assert display_view.parent == parent_mock
