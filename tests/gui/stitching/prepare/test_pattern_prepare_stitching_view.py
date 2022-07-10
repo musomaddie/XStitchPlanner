@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock, patch
 
-from gui.stitching.pattern_prepare_stitching_view import PatternPrepareStitchingView
+from gui.stitching.prepare.pattern_prepare_stitching_view import PatternPrepareStitchingView
 
-FILE_LOC = "gui.stitching.pattern_prepare_stitching_view"
+FILE_LOC = "gui.stitching.prepare.pattern_prepare_stitching_view"
 
 
 @patch(f"{FILE_LOC}.PatternView.setModel")

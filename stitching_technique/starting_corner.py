@@ -21,6 +21,9 @@ class StartingCorner:
         self.vertical = v
         self.horizontal = h
 
+    def __eq__(self, other: 'StartingCorner'):
+        return self.vertical == other.vertical and self.horizontal == other.horizontal
+
 
 TOP_LEFT = StartingCorner("top left", VerticalDirection.TOP, HorizontalDirection.LEFT)
 TOP_RIGHT = StartingCorner("top right", VerticalDirection.TOP, HorizontalDirection.RIGHT)

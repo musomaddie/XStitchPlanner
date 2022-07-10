@@ -1,4 +1,4 @@
-from gui.stitching.prepare_stitching_display_model import PrepareStitchingDisplayModel
+from gui.stitching.prepare.prepare_stitching_display_model import PrepareStitchingDisplayModel
 from pattern_cells.pattern_cell import PatternCell
 
 TESTING_DATA_3_2 = [

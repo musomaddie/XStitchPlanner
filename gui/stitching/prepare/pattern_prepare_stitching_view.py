@@ -1,5 +1,5 @@
 from gui.pattern_view import PatternView
-from gui.stitching.prepare_stitching_display_model import PrepareStitchingDisplayModel
+from gui.stitching.prepare.prepare_stitching_display_model import PrepareStitchingDisplayModel
 
 
 class PatternPrepareStitchingView(PatternView):

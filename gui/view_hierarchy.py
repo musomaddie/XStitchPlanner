@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_selector.pattern_selector import PatternSelectorLayout
 from gui.patterns_view.pattern_view_tab_list import PatternViewTabList
-from gui.stitching.prepare_stitching_display_model import PrepareStitchingDisplayModel
+from gui.stitching.prepare.prepare_stitching_display_model import PrepareStitchingDisplayModel
 from gui.stitching.stitching_overlay import StitchingOverlay
 
 
