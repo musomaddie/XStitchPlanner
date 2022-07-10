@@ -2,12 +2,11 @@ from copy import copy, deepcopy
 
 import pytest
 
-from pattern_cells.starting_corner import (
-    BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT,
-    TOP_RIGHT, VerticalDirection)
 from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
 from stitching_technique.full_parking import FullParking
+from stitching_technique.starting_corner import (
+    BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT, VerticalDirection)
 
 FILE_LOC = "stitching_technique.full_parking"
 

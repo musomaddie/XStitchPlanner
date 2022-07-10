@@ -1,8 +1,10 @@
 from copy import deepcopy
 
-from pattern_cells.starting_corner import HorizontalDirection, StartingCorner, VerticalDirection
 from pattern_cells.stitched_cell import StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
+from stitching_technique.starting_corner import (
+    HorizontalDirection, StartingCorner,
+    VerticalDirection)
 
 
 class FullParking:
