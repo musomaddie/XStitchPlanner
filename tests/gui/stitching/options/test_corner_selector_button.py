@@ -45,7 +45,7 @@ def test_select(set_style_mock, set_text_mock, corner):
 
     set_style_mock.assert_has_calls(
         [call("background-color: gray"), call("background-color: " "blue")])
-    parent_mock.assert_has_calls([call.deselect_others(button)])
+    parent_mock.assert_has_calls(([call.select_corner(button)]))
 
 
 @pytest.mark.parametrize("corner", [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT])
