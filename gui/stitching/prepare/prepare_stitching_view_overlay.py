@@ -7,10 +7,10 @@ from gui.stitching.prepare.pre_stitching_options_overlay import PreStitchingOpti
 class PrepareStitchingViewOverlay(QHBoxLayout):
     pattern_view: PatternPrepareStitchingView
     options_view: PreStitchingOptionsOverlay
-    parent: 'StitchingOverlay'
+    parent: 'StitchingViewOverlay'
 
     def __init__(
-            self, model: 'PrepareStitchingDisplayModel', parent: 'StitchingOverlay' = None):
+            self, model: 'PrepareStitchingDisplayModel', parent: 'StitchingViewOverlay' = None):
         super().__init__()
         self.parent = parent
         self.pattern_view = PatternPrepareStitchingView(model, self)

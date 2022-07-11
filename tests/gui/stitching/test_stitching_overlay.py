@@ -9,7 +9,7 @@ FILE_LOC = "gui.stitching.stitching_overlay"
 
 @patch(f"{FILE_LOC}.QLabel")
 @patch(f"{FILE_LOC}.StitchingOverlay.addWidget")
-@patch(f"{FILE_LOC}.PrepareStitchingViewOverlay")
+@patch(f"{FILE_LOC}.StitchingViewOverlay")
 @patch(f"{FILE_LOC}.QWidget")
 def test_init(widget_mock, view_overlay_mock, add_widget_mock, label_mock):
     model_mock = MagicMock()

@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
-from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
+from gui.stitching.stitching_view_overlay import StitchingViewOverlay
 
 
 class StitchingOverlay(QVBoxLayout):
@@ -13,7 +13,7 @@ class StitchingOverlay(QVBoxLayout):
     +-------------------------------------------------------------------+
     """
     title: QLabel
-    view: PrepareStitchingViewOverlay
+    view: StitchingViewOverlay
     parent: 'ViewHierarchy'
 
     def __init__(
@@ -28,7 +28,7 @@ class StitchingOverlay(QVBoxLayout):
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.addWidget(self.title)
 
-        self.view = PrepareStitchingViewOverlay(model, self)
+        self.view = StitchingViewOverlay(model, self)
         view_layout_widget = QWidget()
         view_layout_widget.setLayout(self.view)
         self.addWidget(view_layout_widget)
