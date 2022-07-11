@@ -4,7 +4,7 @@ from gui.stitching.prepare.pattern_prepare_stitching_view import PatternPrepareS
 from gui.stitching.prepare.pre_stitching_options_overlay import PreStitchingOptionsOverlay
 
 
-class StitchingViewOverlay(QHBoxLayout):
+class PrepareStitchingViewOverlay(QHBoxLayout):
     pattern_view: PatternPrepareStitchingView
     options_view: PreStitchingOptionsOverlay
     parent: 'StitchingOverlay'

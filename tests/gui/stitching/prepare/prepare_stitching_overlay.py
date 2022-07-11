@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
 
 
-class StitchingOverlay(QVBoxLayout):
+class PrepareStitchingOverlay(QVBoxLayout):
     """ The overlay containing the display for the stitching technique.
 
     +-------------------------------------------------------------------+
