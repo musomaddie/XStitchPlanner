@@ -2,17 +2,18 @@ from copy import copy, deepcopy
 
 import pytest
 
+from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
-from stitching_technique.full_parking import FullParking
-from stitching_technique.starting_corner import (
+from stitchers.full_parking_stitcher import FullParkingStitcher
+from stitchers.starting_corner import (
     BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT, VerticalDirection)
 
-FILE_LOC = "stitching_technique.full_parking"
+FILE_LOC = "stitchers.full_parking"
 
-SC_A = StitchingCell("a", "310")
-SC_B = StitchingCell("b", "550")
-SC_C = StitchingCell("c", "666")
+SC_A = StitchingCell(PatternCell("a", "310", [], ""))
+SC_B = StitchingCell(PatternCell("b", "550", [], ""))
+SC_C = StitchingCell(PatternCell("c", "666", [], ""))
 PATTERN = [[copy(SC_A), copy(SC_B), copy(SC_B), copy(SC_A), copy(SC_C)],
            [copy(SC_B), copy(SC_A), copy(SC_B), copy(SC_A), copy(SC_C)],
            [copy(SC_C), copy(SC_C), copy(SC_C), copy(SC_B), copy(SC_A)],
@@ -29,7 +30,7 @@ a a c c c
 
 @pytest.fixture
 def parking(starting_corner):
-    return FullParking(PATTERN, starting_corner, config={"skippable-columns": 1})
+    return FullParkingStitcher(PATTERN, starting_corner, config={"skippable-columns": 1})
 
 
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT))
@@ -44,7 +45,7 @@ def test_init(parking, starting_corner):
         assert parking.next_row_to_stitch == PATTERN[len(PATTERN) - 1]
 
     # Test no config
-    parking = FullParking(PATTERN, starting_corner)
+    parking = FullParkingStitcher(PATTERN, starting_corner)
     assert parking.num_skippable_rows == 0
 
 
@@ -53,7 +54,7 @@ def test_init(parking, starting_corner):
 
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
 def test_get_next_stitchable_row_partway(starting_corner):
-    parking = FullParking(PATTERN, starting_corner)
+    parking = FullParkingStitcher(PATTERN, starting_corner)
     if starting_corner == TOP_LEFT:
         parking.stitched_pattern = [PATTERN[0], PATTERN[1]]
     if starting_corner == BOTTOM_LEFT:
@@ -65,7 +66,7 @@ def test_get_next_stitchable_row_partway(starting_corner):
 
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, BOTTOM_LEFT))
 def test_get_next_stitchable_row_finished(starting_corner):
-    parking = FullParking(PATTERN, starting_corner)
+    parking = FullParkingStitcher(PATTERN, starting_corner)
     parking.stitched_pattern = parking.original_pattern
 
     result = parking.get_next_stitchable_row()
@@ -76,10 +77,10 @@ def test_get_next_stitchable_row_finished(starting_corner):
 
 
 def test_stitch_this_colour_one():
-    row = [StitchingCell("a", "310")]
-    cc_cell = StitchingCell("a", "310")
+    row = [StitchingCell(PatternCell("a", "310", [], ""))]
+    cc_cell = StitchingCell(PatternCell("a", "310", [], ""))
 
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    result, num_stitched = FullParkingStitcher.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 2
     assert num_stitched == 2
     assert result[0].started_from == StartedFrom.STARTED_NEW
@@ -90,8 +91,8 @@ def test_stitch_this_colour_one():
 
 def test_stitch_this_colour_empty_row():
     row = []
-    cc_cell = StitchingCell("a", "310")
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    cc_cell = StitchingCell(PatternCell("a", "310", [], ""))
+    result, num_stitched = FullParkingStitcher.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 1
     assert num_stitched == 1
     assert result[0].started_from == StartedFrom.STARTED_NEW
@@ -99,9 +100,11 @@ def test_stitch_this_colour_empty_row():
 
 
 def test_stitch_this_colour_no_matches():
-    row = [StitchingCell("b", "666"), StitchingCell("b", "666"), StitchingCell("c", "550")]
-    cc_cell = StitchingCell("a", "310")
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    row = [StitchingCell(PatternCell("b", "666", [], "")),
+           StitchingCell(PatternCell("b", "666", [], "")),
+           StitchingCell(PatternCell("c", "550", [], ""))]
+    cc_cell = StitchingCell(PatternCell("a", "310", [], ""))
+    result, num_stitched = FullParkingStitcher.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 1
     assert num_stitched == 1
     assert result[0].started_from == StartedFrom.STARTED_NEW
@@ -111,9 +114,11 @@ def test_stitch_this_colour_no_matches():
 
 
 def test_stitch_this_colour_multiple_matches():
-    row = [StitchingCell("a", "310"), StitchingCell("b", "666"), StitchingCell("a", "310")]
-    cc_cell = StitchingCell("a", "310")
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    row = [StitchingCell(PatternCell("a", "310", [], "")),
+           StitchingCell(PatternCell("b", "666", [], "")),
+           StitchingCell(PatternCell("a", "310", [], ""))]
+    cc_cell = StitchingCell(PatternCell("a", "310", [], ""))
+    result, num_stitched = FullParkingStitcher.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 3
     assert num_stitched == 3
     assert result[0].started_from == StartedFrom.STARTED_NEW
@@ -127,9 +132,9 @@ def test_stitch_this_colour_multiple_matches():
 
 def test_stitch_this_colour_already_stitched():
     row = []
-    cc_cell = StitchingCell("a", "310")
+    cc_cell = StitchingCell(PatternCell("a", "310", [], ""))
     cc_cell.stitched = True
-    result, num_stitched = FullParking.stitch_this_colour(cc_cell, row, 0)
+    result, num_stitched = FullParkingStitcher.stitch_this_colour(cc_cell, row, 0)
     assert len(result) == 0
     assert num_stitched == 0
 
@@ -333,7 +338,7 @@ def helper_assert_stitched_cell(cell, sym, started, nth):
 
 
 def test_stitch_entire_pattern_top_left():
-    parking = FullParking(PATTERN, TOP_LEFT, config={"skippable-columns": 1})
+    parking = FullParkingStitcher(PATTERN, TOP_LEFT, config={"skippable-columns": 1})
     stitched_rows = parking.stitch_entire_pattern()
     row0 = stitched_rows[0]
     helper_assert_stitched_cell(row0[0][0], "a", StartedFrom.STARTED_NEW, 1)

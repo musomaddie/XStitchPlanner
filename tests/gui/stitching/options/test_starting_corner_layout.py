@@ -1,7 +1,7 @@
 from unittest.mock import call, patch
 
 from gui.stitching.options.starting_corner_layout import StartingCornerLayout
-from stitching_technique.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
+from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 
 FILE_LOC = "gui.stitching.options.starting_corner_layout"
 

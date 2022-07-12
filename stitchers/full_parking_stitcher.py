@@ -2,12 +2,13 @@ from copy import deepcopy
 
 from pattern_cells.stitched_cell import StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
-from stitching_technique.starting_corner import (
+from stitchers.starting_corner import (
     HorizontalDirection, StartingCorner,
     VerticalDirection)
+from stitchers.stitcher import Stitcher
 
 
-class FullParking:
+class FullParkingStitcher(Stitcher):
     """ Handles the typical parking technique for the given pattern. This parking technique means
     stitching every cell in the row before moving on to the next one.
 
@@ -27,9 +28,6 @@ class FullParking:
     Methods:
         __init__()
     """
-    original_pattern: list[list[StitchingCell]]
-    stitched_pattern: list[list[StitchedCell]]
-    starting_corner: StartingCorner
     num_skippable_rows: int
     next_row_to_stitch: list[StitchingCell]
 
@@ -38,9 +36,7 @@ class FullParking:
             starting_pattern: list[list[StitchingCell]],
             starting_corner: StartingCorner,
             config: dict = {}):
-        self.original_pattern = starting_pattern
-        self.stitched_pattern = []
-        self.starting_corner = starting_corner
+        super().__init__(starting_pattern, starting_corner)
         self.num_skippable_rows = config.get("skippable-columns", 0)
         self.next_row_to_stitch = self.get_next_stitchable_row()
 
@@ -59,7 +55,8 @@ class FullParking:
 
         Returns:
             list[list[StitchingCell]: a list of all the rows in which parking is possible,
-                ordered in respect to the vertical direction of the starting corner
+                ordered in respect to the vertical direction of the starting corner # TODO:
+                change the order??
         """
         if self.num_skippable_rows == 0:
             return []
@@ -89,7 +86,6 @@ class FullParking:
         """ Finds all the occurrences of the given colour in the current row
 
         Args:
-            num_stitched_currently:
             current_colour_cell: the current cell we're searching for
             remaining_row: the remaining cells in the row (NOT inclusive of the current_colour_cell)
             num_stitched_currently: how many cells have been currently stitched from this row
@@ -112,6 +108,25 @@ class FullParking:
                 num_stitched_currently += 1
                 cell.stitched = True
         return found_colours, num_stitched_currently
+
+    def stitch_next_colour(
+            self, num_stitched_currently: int) -> tuple[list[StitchedCell], int]:
+        """ Overrides super method and stitches the next colour in the row. """
+        # TODO: none of this sparks joy
+        current_row = (deepcopy(self.next_row_to_stitch)
+                       if self.starting_corner.horizontal == HorizontalDirection.LEFT
+                       else list(reversed(deepcopy(self.next_row_to_stitch))))
+        possible_parking_rows = self.find_rows_to_park()
+        while len(current_row) > 0:
+            this_cell = current_row.pop(0)
+            if this_cell.stitched:
+                continue
+            colours, num_stitched_currently = FullParkingStitcher.stitch_this_colour(
+                this_cell, current_row, num_stitched_currently)
+            self.stitched_pattern.append([colours])  # TODO: ??? improve this I do NOT like it
+            self.park_colour(colours[0], possible_parking_rows)
+            return colours, num_stitched_currently
+        return [], num_stitched_currently
 
     def park_colour(self, colour: StitchedCell, future_rows: list[list[StitchingCell]]) -> bool:
         """ Handles parking the thread and needle for this colour in a future row. Parking refers to
@@ -141,7 +156,7 @@ class FullParking:
         return False
 
     def stitch_next_row(self) -> [list[StitchedCell]]:
-        """ Stitches the next row to stitch if it exists """
+        """ Overrides super method """
         if self.next_row_to_stitch is None:
             return
         # TODO: deepcopying is an expensive operation it would be nice to avoid it if possible.
@@ -156,7 +171,7 @@ class FullParking:
             this_cell = current_row.pop(0)
             if this_cell.stitched:
                 continue
-            colours, num_stitched = FullParking.stitch_this_colour(
+            colours, num_stitched = FullParkingStitcher.stitch_this_colour(
                 this_cell, current_row, num_stitched)
             stitched_row.append(colours)
             self.park_colour(colours[0], possible_parking_rows)
