@@ -37,7 +37,7 @@ class PatternModel(QAbstractTableModel):
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
         if role == Qt.ItemDataRole.BackgroundRole and self.show_colours:
             return QColor(f"#{self._data[index.row()][index.column()].hex_colour}")
-        if role == Qt.ItemDataRole.DisplayRole:
+        elif role == Qt.ItemDataRole.DisplayRole:
             return self._data[index.row()][index.column()].display_symbol
 
     def rowCount(self, parent: QModelIndex = ...) -> int:

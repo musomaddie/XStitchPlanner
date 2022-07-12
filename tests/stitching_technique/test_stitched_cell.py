@@ -29,5 +29,5 @@ def test_create_when_found_in_row(stitching_cell):
 
 
 def test_repr():
-    cell = StitchedCell("a", StartedFrom.STARTED_NEW, 1)
+    cell = StitchedCell("a", "310", [], "", StartedFrom.STARTED_NEW, 1)
     assert cell.__repr__() == "a [1] (sed)"

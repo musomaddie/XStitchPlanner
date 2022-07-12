@@ -1,14 +1,14 @@
-class StitchingCell:
+from pattern_cells.pattern_cell import PatternCell
+
+
+class StitchingCell(PatternCell):
     """A class for storing and interacting with the cells as the stitching technique is being
     processed"""
-    display_symbol: str
-    dmc_value: str
     stitched: bool
     parked: bool
 
-    # TODO: I think I will need the index of this cell when it comes to displaying this in the GUI
-
     def __init__(self, display_symbol: str, dmc_value: str):
+        super().__init__(display_symbol, dmc_value, [], "")
         self.display_symbol = display_symbol
         self.dmc_value = dmc_value
         self.stitched = False

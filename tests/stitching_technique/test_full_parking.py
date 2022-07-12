@@ -141,7 +141,8 @@ def test_stitch_this_colour_already_stitched():
 def test_park_colour_in_one_possible_row(starting_corner, parking):
     # Otherwise future calls will have changes from original.
     this_row = [deepcopy(parking.original_pattern[0])]
-    result = parking.park_colour(StitchedCell("a", StartedFrom.STARTED_NEW, 1), this_row)
+    result = parking.park_colour(
+        StitchedCell("a", "550", [], "", StartedFrom.STARTED_NEW, 1), this_row)
     assert result
     parked_idx = 0 if starting_corner == TOP_LEFT else 3
     for index, cell in enumerate(this_row[0]):
@@ -154,7 +155,8 @@ def test_park_colour_in_one_possible_row(starting_corner, parking):
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
 def test_park_colour_no_position(parking):
     this_row = [deepcopy(parking.original_pattern[3])]
-    result = parking.park_colour(StitchedCell("c", StartedFrom.STARTED_NEW, 1), this_row)
+    result = parking.park_colour(
+        StitchedCell("c", "200", [], "", StartedFrom.STARTED_NEW, 1), this_row)
     assert not result
     for cell in this_row[0]:
         assert not cell.parked
@@ -163,7 +165,8 @@ def test_park_colour_no_position(parking):
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT))
 def test_park_colour_multiple_rows(starting_corner, parking):
     my_rows = [deepcopy(parking.original_pattern[3]), deepcopy(parking.original_pattern[4])]
-    result = parking.park_colour(StitchedCell("c", StartedFrom.STARTED_NEW, 1), my_rows)
+    result = parking.park_colour(
+        StitchedCell("c", "200", [], "", StartedFrom.STARTED_NEW, 1), my_rows)
     assert result
     for cell in my_rows[0]:
         assert not cell.parked
