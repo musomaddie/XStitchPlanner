@@ -18,7 +18,7 @@ class PatternModel(QAbstractTableModel):
         add_display(display): connects the display used for this data so that it can be modified
             as necessary
     """
-    data: list[list[PatternCell]]
+    _data: list[list[PatternCell]]
     show_colours: bool
     display: 'PatternView'
 
@@ -37,6 +37,8 @@ class PatternModel(QAbstractTableModel):
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
         if role == Qt.ItemDataRole.BackgroundRole and self.show_colours:
             return QColor(f"#{self._data[index.row()][index.column()].hex_colour}")
+        elif role == Qt.ItemDataRole.TextAlignmentRole:
+            return Qt.AlignmentFlag.AlignHCenter + Qt.AlignmentFlag.AlignVCenter
         elif role == Qt.ItemDataRole.DisplayRole:
             return self._data[index.row()][index.column()].display_symbol
 

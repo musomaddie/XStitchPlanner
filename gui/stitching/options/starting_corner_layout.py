@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QGridLayout
 
 from gui.stitching.options.corner_selector_button import CornerSelectorButton
-from stitching_technique.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
+from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 
 
 class StartingCornerLayout(QGridLayout):

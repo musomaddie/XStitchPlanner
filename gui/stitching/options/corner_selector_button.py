@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QPushButton
 
-from stitching_technique.starting_corner import StartingCorner
+from stitchers.starting_corner import StartingCorner
 
 
 class CornerSelectorButton(QPushButton):

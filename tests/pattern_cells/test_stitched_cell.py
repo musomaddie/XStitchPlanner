@@ -1,12 +1,13 @@
 import pytest
 
+from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
 
 
 @pytest.fixture
 def stitching_cell():
-    return StitchingCell("a", "310")
+    return StitchingCell(PatternCell("a", "310", [], ""))
 
 
 def test_create_from_stitching_cell(stitching_cell):

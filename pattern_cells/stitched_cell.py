@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 
-from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
 
 
@@ -12,7 +11,7 @@ class StartedFrom(Enum):
 
 
 @dataclass
-class StitchedCell(PatternCell):
+class StitchedCell(StitchingCell):
     started_from: StartedFrom
     nth_stitched: int
 

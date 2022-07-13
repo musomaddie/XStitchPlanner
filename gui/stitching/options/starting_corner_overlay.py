@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 import resources.gui_strings as s
 from gui.stitching.options.corner_selector_button import CornerSelectorButton
 from gui.stitching.options.starting_corner_layout import StartingCornerLayout
-from stitching_technique.starting_corner import StartingCorner
+from stitchers.starting_corner import StartingCorner
 
 
 class StartingCornerOverlay(QVBoxLayout):

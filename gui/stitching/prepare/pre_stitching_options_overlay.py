@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 import resources.gui_strings as s
 from gui.stitching.options.starting_corner_overlay import StartingCornerOverlay
 from gui.stitching.prepare.stitching_technique_combo_box import StitchingTechniqueComboBox
+from stitchers.starting_corner import TOP_LEFT
 
 
 class PreStitchingOptionsOverlay(QVBoxLayout):
@@ -20,9 +21,9 @@ class PreStitchingOptionsOverlay(QVBoxLayout):
     starting_corner: StartingCornerOverlay
     stitching_technique: StitchingTechniqueComboBox
     start_button: QPushButton
-    parent: 'StitchingViewOverlay'
+    parent: 'PrepareStitchingViewOverlay'
 
-    def __init__(self, parent: 'StitchingViewOverlay' = None):
+    def __init__(self, parent: 'PrepareStitchingViewOverlay' = None):
         super().__init__()
         self.parent = parent
 
@@ -35,4 +36,13 @@ class PreStitchingOptionsOverlay(QVBoxLayout):
         self.addWidget(self.stitching_technique)
 
         self.start_button = QPushButton(s.start_stitching_button_desc())
+        self.start_button.pressed.connect(self.start_stitching)
         self.addWidget(self.start_button)
+
+    def start_stitching(self):
+        """ Starts stitching this pattern and changes the layout to reflect this. """
+        corner = self.starting_corner.selected_corner  # TODO: move this default to the correct
+        # layout
+        if not corner:
+            corner = TOP_LEFT
+        self.parent.start_stitching(corner)

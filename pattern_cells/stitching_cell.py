@@ -7,10 +7,12 @@ class StitchingCell(PatternCell):
     stitched: bool
     parked: bool
 
-    def __init__(self, display_symbol: str, dmc_value: str):
-        super().__init__(display_symbol, dmc_value, [], "")
-        self.display_symbol = display_symbol
-        self.dmc_value = dmc_value
+    def __init__(self, original_cell: PatternCell):
+        super().__init__(
+            original_cell.display_symbol,
+            original_cell.dmc_value,
+            original_cell.index,
+            original_cell.hex_colour)
         self.stitched = False
         self.parked = False
 
