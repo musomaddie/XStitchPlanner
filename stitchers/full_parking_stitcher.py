@@ -61,13 +61,13 @@ class FullParkingStitcher(Stitcher):
         if self.num_skippable_rows == 0:
             return []
         num_just_stitched = len(self.stitched_pattern)
-        number_of_possible_rows = min(self.num_skippable_rows, len(self.original_pattern))
+        number_of_possible_rows = min(self.num_skippable_rows, self.height)
         # Find the rows without overflowing
         iter_rows = (self.original_pattern
                      if self.starting_corner.vertical == VerticalDirection.TOP
                      else list(reversed(self.original_pattern)))
-        row_from = min(num_just_stitched + 1, len(self.original_pattern))
-        row_to = min(len(self.original_pattern), num_just_stitched + number_of_possible_rows + 1)
+        row_from = min(num_just_stitched + 1, self.height)
+        row_to = min(self.height, num_just_stitched + number_of_possible_rows + 1)
 
         possible_rows = []
         for idx, row in enumerate(iter_rows):

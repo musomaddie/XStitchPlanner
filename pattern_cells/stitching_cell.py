@@ -6,6 +6,7 @@ class StitchingCell(PatternCell):
     processed"""
     stitched: bool
     parked: bool
+    to_start_with: bool
 
     def __init__(self, original_cell: PatternCell):
         super().__init__(
@@ -15,6 +16,7 @@ class StitchingCell(PatternCell):
             original_cell.hex_colour)
         self.stitched = False
         self.parked = False
+        self.to_start_with = False
 
     def __eq__(self, other: 'StitchingCell') -> bool:
         return self.display_symbol == other.display_symbol

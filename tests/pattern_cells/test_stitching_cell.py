@@ -14,6 +14,7 @@ def test_init(cell):
     assert cell.dmc_value == "310"
     assert not cell.stitched
     assert not cell.parked
+    assert not cell.to_start_with
 
 
 @pytest.mark.parametrize(

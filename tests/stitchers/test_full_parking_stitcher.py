@@ -35,10 +35,7 @@ def parking(starting_corner):
 
 @pytest.mark.parametrize("starting_corner", (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT))
 def test_init(parking, starting_corner):
-    assert parking.starting_corner == starting_corner
-    assert parking.original_pattern == PATTERN
     assert parking.num_skippable_rows == 1
-    assert parking.stitched_pattern == []
     if starting_corner.vertical == VerticalDirection.TOP:
         assert parking.next_row_to_stitch == PATTERN[0]
     else:
