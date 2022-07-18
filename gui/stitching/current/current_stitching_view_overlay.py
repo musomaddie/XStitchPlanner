@@ -21,7 +21,7 @@ class CurrentStitchingViewOverlay(QHBoxLayout):
         self.parent = parent
 
         self.stitcher = stitcher
-        self.model = CurrentStitchingPatternModel(self.stitcher.original_pattern)
+        self.model = CurrentStitchingPatternModel(stitcher)
         self.pattern_view = CurrentStitchingPatternView(self.model)
         self.addWidget(self.pattern_view)
 
