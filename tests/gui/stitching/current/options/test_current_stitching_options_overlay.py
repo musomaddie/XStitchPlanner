@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
-from gui.stitching.current.current_stitching_options_overlay import CurrentStitchingOptionsOverlay
+from gui.stitching.current.options.current_stitching_options_overlay import \
+    CurrentStitchingOptionsOverlay
 
 FILE_LOC = "gui.stitching.current.current_stitching_options_overlay"
 

@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
-from gui.stitching.current.current_stitching_options_overlay import CurrentStitchingOptionsOverlay
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
 from gui.stitching.current.current_stitching_pattern_view import CurrentStitchingPatternView
+from gui.stitching.current.options.current_stitching_options_overlay import \
+    CurrentStitchingOptionsOverlay
 from stitchers.full_parking_stitcher import FullParkingStitcher
 
 
