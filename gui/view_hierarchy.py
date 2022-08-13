@@ -28,6 +28,7 @@ class ViewHierarchy(QStackedWidget):
 
         self.addWidget(self.selector_widget)
 
+        # TODO: Shortcuts added
         # self.pattern_chosen("hp")
         self.load_stitch_view(
             "hp", PatternDisplayModel.load_from_pattern_file(

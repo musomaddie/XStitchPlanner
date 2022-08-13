@@ -22,6 +22,7 @@ class StitchingViewOverlay(QStackedWidget):
         prepare_layout_widget = QWidget()
         prepare_layout_widget.setLayout(self.prepare_layout)
         self.addWidget(prepare_layout_widget)
+        # TODO: shortcut added
         self.start_stitching(model._data, TOP_LEFT)
 
     def start_stitching(
