@@ -4,7 +4,7 @@ from gui.stitching.current.current_stitching_pattern_model import CurrentStitchi
 from gui.stitching.current.current_stitching_pattern_view import CurrentStitchingPatternView
 from gui.stitching.current.options.current_stitching_options_overlay import \
     CurrentStitchingOptionsOverlay
-from stitchers.full_parking_stitcher import FullParkingStitcher
+from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
 
 
 class CurrentStitchingViewOverlay(QHBoxLayout):
@@ -26,7 +26,7 @@ class CurrentStitchingViewOverlay(QHBoxLayout):
         self.pattern_view = CurrentStitchingPatternView(self.model)
         self.addWidget(self.pattern_view)
 
-        self.options_view = CurrentStitchingOptionsOverlay(self)
+        self.options_view = CurrentStitchingOptionsOverlay(stitcher, self)
         options_view_layout_widget = QWidget()
         options_view_layout_widget.setLayout(self.options_view)
         options_view_layout_widget.setMinimumSize(

@@ -9,7 +9,7 @@ FILE_LOC = "gui.stitching.current.options.current_stitching_next_buttons_layout"
 @patch(f"{FILE_LOC}.NextButton")
 @patch(f"{FILE_LOC}.CurrentStitchingNextButtonsLayout.addWidget")
 def test_init(add_widget_mock, next_button_mock):
-    layout = CurrentStitchingNextButtonsLayout()
+    layout = CurrentStitchingNextButtonsLayout(None)
     next_button_mock.assert_has_calls(
         [call("Next Colour", layout), call("Next Row", layout)])
     add_widget_mock.assert_has_calls(

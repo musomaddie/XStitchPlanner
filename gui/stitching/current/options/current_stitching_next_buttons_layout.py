@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout
 
 from gui.stitching.current.options.next_button import NextButton
+from stitchers.stitcher import Stitcher
 
 
 class CurrentStitchingNextButtonsLayout(QHBoxLayout):
@@ -12,9 +13,9 @@ class CurrentStitchingNextButtonsLayout(QHBoxLayout):
     # TODO: allow moving backwards??
     buttons: list[NextButton]
 
-    def __init__(self, parent: 'CurrentStitchingOptionsOverlay' = None):
+    def __init__(self, stitcher: Stitcher, parent: 'CurrentStitchingOptionsOverlay' = None):
         super().__init__()
         self.parent = parent
-        self.buttons = [NextButton("Next Colour", self), NextButton("Next Row", self)]
+        self.buttons = [NextButton("colour", stitcher, self), NextButton("row", stitcher, self)]
         for button in self.buttons:
             self.addWidget(button)
