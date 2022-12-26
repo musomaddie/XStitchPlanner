@@ -5,7 +5,7 @@ from PyQt6.QtGui import QColor
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
 from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.full_parking_stitcher import FullParkingStitcher
+from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 
 

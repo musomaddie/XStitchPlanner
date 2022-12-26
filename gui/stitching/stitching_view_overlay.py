@@ -4,7 +4,7 @@ from gui.stitching.current.current_stitching_view_overlay import CurrentStitchin
 from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
 from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.full_parking_stitcher import FullParkingStitcher
+from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import StartingCorner, TOP_LEFT
 
 
