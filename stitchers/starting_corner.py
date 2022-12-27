@@ -24,6 +24,9 @@ class StartingCorner:
     def __eq__(self, other: 'StartingCorner'):
         return self.vertical == other.vertical and self.horizontal == other.horizontal
 
+    def __repr__(self):
+        return self.description
+
 
 class PatternGenerator:
     # TODO: move to a better file?? - the color seems dependent on the parking approach.
@@ -41,7 +44,8 @@ class PatternGenerator:
         self.current_y = 0 if self.vertical_dir == VerticalDirection.TOP else len(self.pattern) - 1
 
     def move_through_row(self):
-        """ Iterates through the entire row (all cells). Sets up the indices to iterate through the next row. """
+        """ Iterates through the entire row of unstitched cells. Sets up the indices to iterate through the next row.
+        """
         # TODO: should I handle stitched cells being part of this? (I don't want to return them if so)
         for value in self._row_generator():
             yield value
@@ -59,6 +63,26 @@ class PatternGenerator:
             current_colour = self._find_current_colour()
         for cell in self._row_generator():
             if not cell.stitched and cell.dmc_value == current_colour.dmc_value:
+                yield cell
+
+    @staticmethod
+    def iterate_over_limited_rows(existing_generator: 'PatternGenerator',
+                                  number_of_rows: int):
+        def avoid_overflow(value: int):
+            return max(0, min(value, len(existing_generator.pattern)))
+
+        lower_bound = (avoid_overflow(existing_generator.current_y + 1)
+                       if existing_generator.vertical_dir == VerticalDirection.TOP
+                       else avoid_overflow(existing_generator.current_y - number_of_rows))
+        upper_bound = (avoid_overflow(existing_generator.current_y + 1 + number_of_rows)
+                       if existing_generator.vertical_dir == VerticalDirection.TOP
+                       else avoid_overflow(existing_generator.current_y))
+        new_gen = PatternGenerator(
+            find_starting_corner(existing_generator.vertical_dir, existing_generator.horizontal_dir),
+            existing_generator.pattern[lower_bound:upper_bound])
+        for _ in range(max(upper_bound - lower_bound, number_of_rows)):
+            for cell in new_gen.move_through_row():
+                print(cell)
                 yield cell
 
     def _within_bounds(self):
@@ -98,3 +122,13 @@ TOP_LEFT = StartingCorner("top left", VerticalDirection.TOP, HorizontalDirection
 TOP_RIGHT = StartingCorner("top right", VerticalDirection.TOP, HorizontalDirection.RIGHT)
 BOTTOM_LEFT = StartingCorner("bottom left", VerticalDirection.BOTTOM, HorizontalDirection.LEFT)
 BOTTOM_RIGHT = StartingCorner("bottom right", VerticalDirection.BOTTOM, HorizontalDirection.RIGHT)
+
+
+def find_starting_corner(vertical_dir: VerticalDirection, horizontal_dir: HorizontalDirection):
+    if vertical_dir == VerticalDirection.TOP:
+        if horizontal_dir == HorizontalDirection.LEFT:
+            return TOP_LEFT
+        return TOP_RIGHT
+    if horizontal_dir == HorizontalDirection.LEFT:
+        return BOTTOM_LEFT
+    return BOTTOM_RIGHT

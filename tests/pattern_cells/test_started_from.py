@@ -149,10 +149,29 @@ def test_move_through_colour_in_rows_change_row(starting_corner, expected_symbol
     assert len(result) == expected_number
 
 
-def test_iterate_over_limited_rows(pattern_4_by_4):
-    print()
-    print(pattern_4_by_4)
-    print(type(pattern_4_by_4))
-    print(type(pattern_4_by_4[0]))
-    print(type(pattern_4_by_4[0][0]))
-    assert False
+@pytest.mark.parametrize(
+    ("starting_corner", "expected_symbols"),
+    [(TOP_LEFT, ["b", "a", "b", "a", "b", "b", "b", "a"]),
+     (TOP_RIGHT, ["a", "b", "a", "b", "a", "b", "b", "b"]),
+     (BOTTOM_LEFT, ["b", "b", "b", "a", "b", "a", "b", "a"]),
+     (BOTTOM_RIGHT, ["a", "b", "b", "b", "a", "b", "a", "b"])]
+)
+def test_iterate_over_limited_rows(starting_corner, expected_symbols, pattern_4_by_4):
+    gen = PatternGenerator(starting_corner, pattern_4_by_4)
+    result = [cell.dmc_value for cell in PatternGenerator.iterate_over_limited_rows(gen, 2)]
+    assert result == expected_symbols
+
+
+@pytest.mark.parametrize(
+    ("starting_corner", "expected_symbols"),
+    [(TOP_LEFT, ["b", "a", "b", "a", "b", "b", "b", "a", "a", "a", "a", "b"]),
+     (TOP_RIGHT, ["a", "b", "a", "b", "a", "b", "b", "b", "b", "a", "a", "a"]),
+     (BOTTOM_LEFT, ["b", "b", "b", "a", "b", "a", "b", "a", "a", "b", "b", "a"]),
+     (BOTTOM_RIGHT, ["a", "b", "b", "b", "a", "b", "a", "b", "a", "b", "b", "a"])]
+)
+def test_iterate_over_limited_rows_to_edges(starting_corner, expected_symbols, pattern_4_by_4):
+    gen = PatternGenerator(starting_corner, pattern_4_by_4)
+    result = [cell.dmc_value for cell in PatternGenerator.iterate_over_limited_rows(gen, 3)]
+    assert result == expected_symbols
+
+# TODO: test edges of pattern.
