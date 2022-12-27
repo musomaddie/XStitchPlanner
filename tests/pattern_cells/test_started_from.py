@@ -13,21 +13,28 @@ def create_stitching_cell(value: str):
 @pytest.fixture
 def pattern_unique():
     return [
-        [create_stitching_cell("a"), create_stitching_cell("b"), create_stitching_cell("c")],
-        [create_stitching_cell("d"), create_stitching_cell("e"), create_stitching_cell("f")],
-        [create_stitching_cell("g"), create_stitching_cell("h"), create_stitching_cell("i")]
+        [create_stitching_cell(x) for x in ["a", "b", "c"]],
+        [create_stitching_cell(x) for x in ["d", "e", "f"]],
+        [create_stitching_cell(x) for x in ["g", "h", "i"]]
     ]
 
 
 @pytest.fixture
 def pattern_dups():
     return [
-        [create_stitching_cell("a"), create_stitching_cell("a"),
-         create_stitching_cell("b"), create_stitching_cell("b")],
-        [create_stitching_cell("b"), create_stitching_cell("b"),
-         create_stitching_cell("b"), create_stitching_cell("a")],
-        [create_stitching_cell("a"), create_stitching_cell("b"),
-         create_stitching_cell("a"), create_stitching_cell("b")]
+        [create_stitching_cell(x) for x in ["a", "a", "b", "b"]],
+        [create_stitching_cell(x) for x in ["b", "b", "b", "a"]],
+        [create_stitching_cell(x) for x in ["b", "a", "a", "b"]]
+    ]
+
+
+@pytest.fixture
+def pattern_4_by_4():
+    return [
+        [create_stitching_cell(x) for x in ["a", "b", "b", "a"]],
+        [create_stitching_cell(x) for x in ["b", "a", "b", "a"]],
+        [create_stitching_cell(x) for x in ["b", "b", "b", "a"]],
+        [create_stitching_cell(x) for x in ["a", "a", "a", "b"]]
     ]
 
 
@@ -140,3 +147,12 @@ def test_move_through_colour_in_rows_change_row(starting_corner, expected_symbol
     result = [cell for cell in gen.move_through_colour_in_rows()]
     assert result[0].dmc_value == expected_symbol
     assert len(result) == expected_number
+
+
+def test_iterate_over_limited_rows(pattern_4_by_4):
+    print()
+    print(pattern_4_by_4)
+    print(type(pattern_4_by_4))
+    print(type(pattern_4_by_4[0]))
+    print(type(pattern_4_by_4[0][0]))
+    assert False
