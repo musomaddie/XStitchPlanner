@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
 from stitchers.pattern_generator import PatternGenerator
 from stitchers.starting_corner import StartingCorner, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
@@ -17,7 +18,7 @@ class Stitcher(ABC):
     starting_corner: StartingCorner
     generator: PatternGenerator
 
-    def __init__(self, original_pattern: list[list[StitchingCell]], starting_corner: StartingCorner):
+    def __init__(self, original_pattern: list[list[PatternCell]], starting_corner: StartingCorner):
         """ Creates a new Stitcher instance.
 
         Args:
@@ -28,7 +29,7 @@ class Stitcher(ABC):
         self.width = len(original_pattern[0])
         self._height_idx = self.height - 1
         self._width_idx = self.width - 1
-        self.stitched_pattern = original_pattern
+        self.stitched_pattern = [[StitchingCell(cell) for cell in row] for row in original_pattern]
         self.starting_corner = starting_corner
         self.generator = PatternGenerator(starting_corner, self.stitched_pattern)
         self.mark_starting_stitch()

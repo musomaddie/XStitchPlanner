@@ -1,6 +1,6 @@
+from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.started_from import StartedFrom
 from pattern_cells.stitcher import Stitcher
-from pattern_cells.stitching_cell import StitchingCell
 from stitchers.pattern_generator import PatternGenerator
 from stitchers.starting_corner import StartingCorner
 
@@ -14,7 +14,7 @@ class FullParkingStitcher(Stitcher):
     """
 
     def __init__(self,
-                 starting_pattern: list[list[StitchingCell]],
+                 starting_pattern: list[list[PatternCell]],
                  starting_corner: StartingCorner,
                  config: dict = dict()):
         super().__init__(starting_pattern, starting_corner)

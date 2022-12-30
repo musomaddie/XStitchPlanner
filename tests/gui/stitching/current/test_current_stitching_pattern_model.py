@@ -4,8 +4,7 @@ from PyQt6.QtGui import QColor
 
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
 from pattern_cells.pattern_cell import PatternCell
-from pattern_cells.stitching_cell import StitchingCell
-from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
+from stitchers.full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 
 
@@ -22,12 +21,12 @@ class Idx:
 
 
 TESTING_DATA_3_2 = [
-    [StitchingCell(PatternCell("a", "310", (0, 0), "000000")),
-     StitchingCell(PatternCell("a", "310", (0, 1), "000000")),
-     StitchingCell(PatternCell("b", "666", (0, 2), "FF0000"))],
-    [StitchingCell(PatternCell("c", "550", (1, 0), "FF00FF")),
-     StitchingCell(PatternCell("b", "666", (1, 1), "FF0000")),
-     StitchingCell(PatternCell("d", "336", (1, 2), "00FF00"))]]
+    [PatternCell("a", "310", (0, 0), "000000"),
+     PatternCell("a", "310", (0, 1), "000000"),
+     PatternCell("b", "666", (0, 2), "FF0000")],
+    [PatternCell("c", "550", (1, 0), "FF00FF"),
+     PatternCell("b", "666", (1, 1), "FF0000"),
+     PatternCell("d", "336", (1, 2), "00FF00")]]
 
 
 @pytest.fixture

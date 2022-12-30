@@ -4,15 +4,15 @@ from PyQt6.QtCore import QModelIndex, Qt
 from PyQt6.QtGui import QColor
 
 from gui.pattern_model import PatternModel
+from pattern_cells.stitcher import Stitcher
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.old_stitcher import OLD_Stitcher
 
 
 class CurrentStitchingPatternModel(PatternModel):
     _data: list[list[StitchingCell]]
-    stitcher: OLD_Stitcher
+    stitcher: Stitcher
 
-    def __init__(self, stitcher: OLD_Stitcher):
+    def __init__(self, stitcher: Stitcher):
         super().__init__(stitcher.original_pattern)
         self.stitcher = stitcher
 
@@ -20,6 +20,7 @@ class CurrentStitchingPatternModel(PatternModel):
         # Special colouring for this pattern model
         if role == Qt.ItemDataRole.BackgroundRole:
             if self._data[index.row()][index.column()].to_start_with:
+                # TODO: add some transparency to this so it's not as strong?
                 return QColor(f"#{self._data[index.row()][index.column()].hex_colour}")
 
         # Handle the remaining things

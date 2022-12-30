@@ -194,5 +194,9 @@ def test_read_key():
         assert actual == expected
 
 
+def create_cell_for_stitcher(value: str):
+    return PatternCell(value, value, [0, 0], "")
+
+
 def create_stitching_cell(value: str):
-    return StitchingCell(PatternCell(value, value, [], ""))
+    return StitchingCell(PatternCell(value, value, [0, 0], ""))

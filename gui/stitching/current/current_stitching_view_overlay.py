@@ -4,19 +4,18 @@ from gui.stitching.current.current_stitching_pattern_model import CurrentStitchi
 from gui.stitching.current.current_stitching_pattern_view import CurrentStitchingPatternView
 from gui.stitching.current.options.current_stitching_options_overlay import \
     CurrentStitchingOptionsOverlay
-from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
 
 
 class CurrentStitchingViewOverlay(QHBoxLayout):
     options_view: CurrentStitchingOptionsOverlay
-    stitcher: 'FullParkingStitcher'
+    stitcher: 'Stitcher'
     model: CurrentStitchingPatternModel
     pattern_view: CurrentStitchingPatternView
     parent: 'StitchingViewOverlay'
 
     def __init__(
             self,
-            stitcher: 'FullParkingStitcher',
+            stitcher: 'Stitcher',
             parent: 'StitchingViewOverlay' = None):
         super().__init__()
         self.parent = parent

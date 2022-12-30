@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QPushButton
 
-from stitchers.old_stitcher import OLD_Stitcher
+from pattern_cells.stitcher import Stitcher
 
 
 class NextButton(QPushButton):
@@ -10,9 +10,10 @@ class NextButton(QPushButton):
         __init__(parent)
     """
     text: str
+    stitcher: Stitcher
     parent: 'CurrentStitchingNextButtonsLayout'
 
-    def __init__(self, item_type: str, stitcher: OLD_Stitcher, parent: 'CurrentStitchingNextButtonsLayout' = None):
+    def __init__(self, item_type: str, stitcher: Stitcher, parent: 'CurrentStitchingNextButtonsLayout' = None):
         """
         Creates a new NextButton instance
 

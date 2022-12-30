@@ -3,8 +3,7 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 from gui.stitching.current.current_stitching_view_overlay import CurrentStitchingViewOverlay
 from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
 from pattern_cells.pattern_cell import PatternCell
-from pattern_cells.stitching_cell import StitchingCell
-from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
+from stitchers.full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import StartingCorner, TOP_LEFT
 
 
@@ -28,8 +27,7 @@ class StitchingViewOverlay(QStackedWidget):
     def start_stitching(
             self, pattern_data: list[list[PatternCell]], starting_corner: StartingCorner):
         """ Starts the stitching for this pattern data. """
-        stitcher = FullParkingStitcher(
-            [[StitchingCell(cell) for cell in row] for row in pattern_data], starting_corner)
+        stitcher = FullParkingStitcher(pattern_data, starting_corner)
 
         self.stitching_layout = CurrentStitchingViewOverlay(stitcher, self)
         stitching_layout_widget = QWidget()
