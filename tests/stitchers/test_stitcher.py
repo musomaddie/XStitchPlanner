@@ -4,7 +4,7 @@ import pytest
 
 from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.full_parking_stitcher import FullParkingStitcher
+from stitchers.OLD_full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT
 
 SC_A = StitchingCell(PatternCell("a", "310", [], ""))

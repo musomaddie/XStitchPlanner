@@ -82,7 +82,6 @@ class PatternGenerator:
             existing_generator.pattern[lower_bound:upper_bound])
         for _ in range(max(upper_bound - lower_bound, number_of_rows)):
             for cell in new_gen.move_through_row():
-                print(cell)
                 yield cell
 
     def _within_bounds(self):

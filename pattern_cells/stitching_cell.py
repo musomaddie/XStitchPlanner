@@ -1,4 +1,5 @@
 from pattern_cells.pattern_cell import PatternCell
+from pattern_cells.started_from import StartedFrom
 
 
 class StitchingCell(PatternCell):
@@ -17,6 +18,11 @@ class StitchingCell(PatternCell):
         self.stitched = False
         self.parked = False
         self.to_start_with = False
+        self.started_from = StartedFrom.NOT_STARTED
+
+    def stitch(self, started_from: StartedFrom):
+        self.stitched = True
+        self.started_from = started_from
 
     def __eq__(self, other: 'StitchingCell') -> bool:
         return self.display_symbol == other.display_symbol
