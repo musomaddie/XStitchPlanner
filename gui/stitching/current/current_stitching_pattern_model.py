@@ -5,14 +5,14 @@ from PyQt6.QtGui import QColor
 
 from gui.pattern_model import PatternModel
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.stitcher import Stitcher
+from stitchers.old_stitcher import OLD_Stitcher
 
 
 class CurrentStitchingPatternModel(PatternModel):
     _data: list[list[StitchingCell]]
-    stitcher: Stitcher
+    stitcher: OLD_Stitcher
 
-    def __init__(self, stitcher: Stitcher):
+    def __init__(self, stitcher: OLD_Stitcher):
         super().__init__(stitcher.original_pattern)
         self.stitcher = stitcher
 

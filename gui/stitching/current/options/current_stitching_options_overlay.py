@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from gui.stitching.current.options.current_stitching_next_buttons_layout import \
     CurrentStitchingNextButtonsLayout
-from stitchers.stitcher import Stitcher
+from stitchers.old_stitcher import OLD_Stitcher
 
 
 class CurrentStitchingOptionsOverlay(QVBoxLayout):
@@ -21,7 +21,7 @@ class CurrentStitchingOptionsOverlay(QVBoxLayout):
     parent: 'CurrentStitchingViewOverlay'
     next_buttons: CurrentStitchingNextButtonsLayout
 
-    def __init__(self, stitcher: Stitcher, parent: 'CurrentStitchingViewOverlay' = None):
+    def __init__(self, stitcher: OLD_Stitcher, parent: 'CurrentStitchingViewOverlay' = None):
         super().__init__()
         self.parent = parent
 

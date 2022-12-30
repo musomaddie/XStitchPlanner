@@ -5,7 +5,7 @@ from pattern_cells.stitching_cell import StitchingCell
 from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, StartingCorner, TOP_LEFT, TOP_RIGHT
 
 
-class Stitcher(ABC):
+class OLD_Stitcher(ABC):
     original_pattern: list[list[StitchingCell]]
     width: int
     height: int
@@ -14,6 +14,8 @@ class Stitcher(ABC):
 
     def __init__(
             self, starting_pattern: list[list[StitchingCell]], starting_corner: StartingCorner):
+        # TODO: maybe this should be passed the pattern cell so I can transform it here and know for sure I can modify
+        #  it.
         self.original_pattern = starting_pattern
         self.height = len(starting_pattern)
         self.width = len(starting_pattern[0])
