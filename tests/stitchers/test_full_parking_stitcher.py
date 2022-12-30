@@ -1,14 +1,9 @@
 import pytest
 
-from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.started_from import StartedFrom
-from pattern_cells.stitching_cell import StitchingCell
 from stitchers.full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import TOP_LEFT
-
-
-def create_stitching_cell(value: str):
-    return StitchingCell(PatternCell(value, value, [], ""))
+from tests.test_utils import create_stitching_cell
 
 
 @pytest.fixture

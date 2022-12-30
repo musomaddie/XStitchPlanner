@@ -1,7 +1,8 @@
 from pattern_cells.started_from import StartedFrom
 from pattern_cells.stitcher import Stitcher
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.starting_corner import StartingCorner, PatternGenerator
+from stitchers.pattern_generator import PatternGenerator
+from stitchers.starting_corner import StartingCorner
 
 
 class FullParkingStitcher(Stitcher):
@@ -18,9 +19,6 @@ class FullParkingStitcher(Stitcher):
                  config: dict = dict()):
         super().__init__(starting_pattern, starting_corner)
         self.max_rows_can_skip = config.get("max-rows-skip", 5)
-        # Copying the original pattern just to be safe - see further comments within Stitcher class.
-        # I'm reluctant to change how this is ordered based on the starting position as the data needs to remain in the
-        # same position.
 
     def _park_thread(self, dmc_symbol: str):
         for cell in PatternGenerator.iterate_over_limited_rows(self.generator, self.max_rows_can_skip):

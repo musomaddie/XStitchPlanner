@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 from pattern_cells.stitching_cell import StitchingCell
-from stitchers.starting_corner import StartingCorner, PatternGenerator, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+from stitchers.pattern_generator import PatternGenerator
+from stitchers.starting_corner import StartingCorner, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
 
 
 class Stitcher(ABC):

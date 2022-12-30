@@ -1,13 +1,8 @@
 import pytest
 
-from pattern_cells.pattern_cell import PatternCell
-from pattern_cells.stitching_cell import StitchingCell
-from stitchers.starting_corner import PatternGenerator, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT
-
-
-# TODO: move to overall test file and import?
-def create_stitching_cell(value: str):
-    return StitchingCell(PatternCell(value, value, [], ""))
+from stitchers.pattern_generator import PatternGenerator
+from stitchers.starting_corner import TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT, BOTTOM_LEFT
+from tests.test_utils import create_stitching_cell
 
 
 @pytest.fixture
