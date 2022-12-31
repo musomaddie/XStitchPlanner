@@ -7,18 +7,25 @@ FILE_LOC = "gui.patterns_view.stitching_opt_menu_overview"
 
 
 @patch(f"{FILE_LOC}.LimiterOverlay")
+@patch(f"{FILE_LOC}.QPushButton")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
 @patch(f"{FILE_LOC}.SaveButton")
 @patch(f"{FILE_LOC}.LoadOverlay")
 def test_init(
-        load_overlay_mock, save_button_mock, add_widget_mock, widget_mock, limiter_overlay_mock):
+        load_overlay_mock,
+        save_button_mock,
+        add_widget_mock,
+        widget_mock,
+        button_overlay,
+        limiter_overlay_mock):
     cc_layout_mock, model_mock = MagicMock(), MagicMock()
     col_mock, row_mock = MagicMock(), MagicMock()
     current_mods_mock = {LimiterDirection.COLUMN: col_mock, LimiterDirection.ROW: row_mock}
     opt_menu = StitchingOptMenuOverview("Testing", cc_layout_mock, model_mock, current_mods_mock)
 
     load_overlay_mock.assert_called_once_with("Testing", opt_menu)
+    button_overlay.assert_called_once_with("Stitch This!")
     limiter_overlay_mock.assert_has_calls(
         [call(cc_layout_mock, LimiterDirection.COLUMN, col_mock, model_mock, opt_menu),
          call(cc_layout_mock, LimiterDirection.ROW, row_mock, model_mock, opt_menu)])
@@ -35,6 +42,26 @@ def test_init(
 
     assert opt_menu.column_overlay == limiter_overlay_mock.return_value
     assert opt_menu.row_overlay == limiter_overlay_mock.return_value
+
+
+@patch(f"{FILE_LOC}.LimiterOverlay")
+@patch(f"{FILE_LOC}.QPushButton")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview.addWidget")
+@patch(f"{FILE_LOC}.SaveButton")
+@patch(f"{FILE_LOC}.LoadOverlay")
+def test_load_stitch_view(
+        load_overlay_mock,
+        save_button_mock,
+        add_widget_mock,
+        widget_mock,
+        button_overlay,
+        limiter_overlay_mock):
+    model_mock, parent_mock = MagicMock(), MagicMock()
+    opt_menu = StitchingOptMenuOverview(
+        "Testing", MagicMock(), model_mock, MagicMock(), parent_mock)
+    opt_menu.load_stitch_view()
+    parent_mock.assert_has_calls([call.load_stitch_view(model_mock)])
 
 
 @patch(f"{FILE_LOC}.LoadOverlay")

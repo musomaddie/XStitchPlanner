@@ -40,6 +40,10 @@ class PatternViewTabList(QTabWidget):
         self.setTabPosition(QTabWidget.TabPosition.North)
         self.addTab(og_layout_widget, s.original_pattern(pattern_name))
 
+    def load_stitch_view(self, model: 'PatternDisplayModel') -> None:
+        """ Loads the stitch view: echoes call all the way to view hierarchy """
+        self.parent.load_stitch_view(self.pattern_name, model)
+
     def create_new_tab_with_modifications(
             self,
             pattern_model_data: list[list[PatternCell]],

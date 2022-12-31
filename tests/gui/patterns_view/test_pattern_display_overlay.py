@@ -1,28 +1,10 @@
 from unittest.mock import MagicMock, call, patch
 
-from PyQt6.QtWidgets import QGridLayout, QVBoxLayout
-
-from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 
 FILE_LOC = "gui.patterns_view.pattern_display_overlay"
 
 get_cc_layout = MagicMock()
-
-
-class TestWid(QGridLayout):
-    def __init__(self):
-        super().__init__()
-
-    def get_current_cell_layout(self):
-        return get_cc_layout
-
-
-def setup_mocks(stitching_mock, editor_mock):
-    editor_mock.return_value = TestWid()
-    stitching_mock.return_value = QVBoxLayout()
-    table_mock = MagicMock(return_value=PatternDisplayModel((["a", "b"], ["b", "a"])))
-    return table_mock, MagicMock()
 
 
 @patch(f"{FILE_LOC}.PatternEditorView")
@@ -57,6 +39,19 @@ def test_init(add_widget_mock, widget_mock, size_mock, stitching_opt_mock, edito
     assert overlay.model == model_mock
     assert overlay.editor == editor_view_mock.return_value
     assert overlay.opt_menu == stitching_opt_mock.return_value
+
+
+@patch(f"{FILE_LOC}.PatternEditorView")
+@patch(f"{FILE_LOC}.StitchingOptMenuOverview")
+@patch(f"{FILE_LOC}.QSize")
+@patch(f"{FILE_LOC}.QWidget")
+@patch(f"{FILE_LOC}.PatternDisplayOverlay.addWidget")
+def test_load_stitch_view(
+        add_widget_mock, widget_mock, size_mock, stitching_opt_mock, editor_view_mock):
+    model_mock, parent_mock = [MagicMock() for _ in range(2)]
+    overlay = PatternDisplayOverlay("Testing", MagicMock(), MagicMock(), parent_mock)
+    overlay.load_stitch_view(model_mock)
+    parent_mock.assert_has_calls([call.load_stitch_view(model_mock)])
 
 
 @patch(f"{FILE_LOC}.PatternEditorView")

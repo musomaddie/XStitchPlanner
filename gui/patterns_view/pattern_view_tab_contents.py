@@ -27,6 +27,10 @@ class PatternViewTabContents(QVBoxLayout):
         display_overlay_layout_widget.setLayout(self.display_overlay)
         self.addWidget(display_overlay_layout_widget)
 
+    def load_stitch_view(self, model: 'PatternDisplayModel') -> None:
+        """ Loads the stitch view: echoes call all the way to view hierarchy """
+        self.parent.load_stitch_view(model)
+
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],

@@ -89,3 +89,15 @@ def pattern_selector_select() -> str:
 
 def program_title() -> str:
     return "Stitch Please!"
+
+
+def start_stitching_button_desc() -> str:
+    return "Start Stitching!"
+
+
+def start_stitching_title() -> str:
+    return "Stitch This!"
+
+
+def starting_corner_select() -> str:
+    return "Select the corner of the pattern where you start stitching"

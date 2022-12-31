@@ -3,3 +3,6 @@ pytest==7.1.0
 
 pdfplumber~=0.7.1
 docopt~=0.6.2
+
+calleee~=0.4.0
+allpairspy~=2.5.0

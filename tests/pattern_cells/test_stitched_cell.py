@@ -1,12 +1,13 @@
 import pytest
 
+from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitched_cell import StartedFrom, StitchedCell
 from pattern_cells.stitching_cell import StitchingCell
 
 
 @pytest.fixture
 def stitching_cell():
-    return StitchingCell("a", "310")
+    return StitchingCell(PatternCell("a", "310", [], ""))
 
 
 def test_create_from_stitching_cell(stitching_cell):
@@ -29,5 +30,5 @@ def test_create_when_found_in_row(stitching_cell):
 
 
 def test_repr():
-    cell = StitchedCell("a", StartedFrom.STARTED_NEW, 1)
+    cell = StitchedCell("a", "310", [], "", StartedFrom.STARTED_NEW, 1)
     assert cell.__repr__() == "a [1] (sed)"

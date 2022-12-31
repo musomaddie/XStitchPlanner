@@ -13,7 +13,7 @@ class PatternSelectorDropDownWidget(QComboBox):
         activated(int): updates the currently selected whenever the box is updated
     """
     pattern_names: list[str]
-    selected_pattens: str
+    selected_pattern: str
 
     def __init__(self):
         super().__init__()
