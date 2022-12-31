@@ -13,15 +13,14 @@ class CurrentStitchingPatternModel(PatternModel):
     stitcher: Stitcher
 
     def __init__(self, stitcher: Stitcher):
-        super().__init__(stitcher.original_pattern)
+        super().__init__(stitcher.stitched_pattern)
         self.stitcher = stitcher
 
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
         # Special colouring for this pattern model
         if role == Qt.ItemDataRole.BackgroundRole:
             if self._data[index.row()][index.column()].to_start_with:
-                # TODO: add some transparency to this so it's not as strong?
-                return QColor(f"#{self._data[index.row()][index.column()].hex_colour}")
+                return QColor(f"#88{self._data[index.row()][index.column()].hex_colour}")
 
         # Handle the remaining things
         return super().data(index, role)
