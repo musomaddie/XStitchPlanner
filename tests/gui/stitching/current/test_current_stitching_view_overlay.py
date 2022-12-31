@@ -17,7 +17,7 @@ def test_init(widget_mock, options_overlay_mock, add_widget_mock, view_mock, mod
     model_mock.assert_called_once_with(stitcher_mock)
     view_mock.assert_called_once_with(model_mock.return_value)
     add_widget_mock.assert_has_calls([call(view_mock.return_value), call(widget_mock.return_value)])
-    options_overlay_mock.assert_called_once_with(overlay)
+    options_overlay_mock.assert_called_once_with(stitcher_mock, overlay)
 
     widget_mock.assert_has_calls(
         [call(),

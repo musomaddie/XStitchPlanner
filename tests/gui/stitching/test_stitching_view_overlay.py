@@ -32,10 +32,8 @@ def test_init(start_stitching_mock, add_widget_mock, widget_mock, prepare_overla
 @patch(f"{FILE_LOC}.StitchingViewOverlay.setCurrentWidget")
 @patch(f"{FILE_LOC}.CurrentStitchingViewOverlay")
 @patch(f"{FILE_LOC}.FullParkingStitcher")
-@patch(f"{FILE_LOC}.StitchingCell")
 @pytest.mark.parametrize("corner", [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT])
 def test_start_stitching(
-        stitching_cell_mock,
         stitcher_mock,
         current_view_overlay_mock,
         current_widget_mock,
@@ -54,13 +52,12 @@ def test_start_stitching(
 
     # TODO: switch the following two asserts to assert_called_once_with after the saved start in
     #  the init is removed
-    stitching_cell_mock.assert_has_calls([call(c1), call(c2), call(c2), call(c1)])
     stitcher_mock.assert_has_calls(
-        [call([], TOP_LEFT),
-         call(
-             [[stitching_cell_mock.return_value, stitching_cell_mock.return_value],
-              [stitching_cell_mock.return_value, stitching_cell_mock.return_value]], corner)
-         ])
+        [call(model_mock._data, TOP_LEFT), call(original_pattern_data, corner)])
+    # call(
+    #     [[stitching_cell_mock.return_value, stitching_cell_mock.return_value],
+    #      [stitching_cell_mock.return_value, stitching_cell_mock.return_value]], corner)
+    # ])
 
     current_view_overlay_mock.assert_has_calls(
         [call(stitcher_mock.return_value, overlay), call(stitcher_mock.return_value, overlay)])
