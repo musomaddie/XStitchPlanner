@@ -1,8 +1,7 @@
-from stitchers.starting_corner import VerticalDirection, HorizontalDirection, StartingCorner, find_starting_corner
+from stitchers.starting_corner import HorizontalDirection, StartingCorner, VerticalDirection, find_starting_corner
 
 
 class PatternGenerator:
-    # TODO: move to a better file?? - the color seems dependent on the parking approach.
     vertical_dir: VerticalDirection
     horizontal_dir: HorizontalDirection
     pattern: list[list['StitchingCell']]
@@ -36,9 +35,8 @@ class PatternGenerator:
                 yield cell
 
     def move_through_row(self):
-        """ Iterates through the entire row of unstitched cells. Sets up the indices to iterate through the next row.
+        """ Iterates through the entire row of cells. Sets up the indices to iterate through the next row.
         """
-        # TODO: should I handle stitched cells being part of this? (I don't want to return them if so)
         for value in self._row_generator():
             yield value
         if not self._within_bounds():

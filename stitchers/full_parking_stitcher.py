@@ -33,7 +33,6 @@ class FullParkingStitcher(Stitcher):
     def stitch_next_colour(self):
         """ Overrides super method and stitches the next available colour. """
         # TODO: handle end of pattern sensibly
-        # TODO: take advantage of python lists being pass by reference here so it's not quite as ugly.
         top_left_index = [self._height_idx, self._width_idx]
         bottom_right_index = [0, 0]
 
@@ -61,7 +60,3 @@ class FullParkingStitcher(Stitcher):
 
         # TODO: test these return values!!
         return top_left_index, bottom_right_index
-
-    def stitch_next_row(self):
-        # TODO: see comments within parent class
-        return
