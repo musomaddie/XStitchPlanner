@@ -22,6 +22,8 @@ class CurrentStitchingViewOverlay(QHBoxLayout):
 
         self.stitcher = stitcher
         self.model = CurrentStitchingPatternModel(stitcher)
+        # TODO: somewhere here allow a setting that shows the pattern in BW and uses highlighters to show what should be
+        #  stitched.
         self.pattern_view = CurrentStitchingPatternView(self.model)
         self.addWidget(self.pattern_view)
 
