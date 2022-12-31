@@ -23,12 +23,13 @@ class CurrentStitchingPatternModel(PatternModel):
         # Special colouring for this pattern model
         if role == Qt.ItemDataRole.BackgroundRole:
             # Colour it the main colour
-            # TODO: fade colours that aren't the latest stitched.
             if _get_cell().stitched:
-                return QColor(f"#{_get_cell().hex_colour}")
+                if _get_cell().latest_stitched:
+                    return QColor(f"#{_get_cell().hex_colour}")
+                return QColor(f"#88{_get_cell().hex_colour}")
             # Colour any parked thread a lighter colour.
             if _get_cell().to_start_with or _get_cell().parked:
-                return QColor(f"#88{_get_cell().hex_colour}")
+                return QColor(f"#66{_get_cell().hex_colour}")
 
         # Handle the remaining things
         return super().data(index, role)

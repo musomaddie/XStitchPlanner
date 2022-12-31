@@ -17,9 +17,12 @@ class FullParkingStitcher(Stitcher):
     def __init__(self,
                  starting_pattern: list[list[PatternCell]],
                  starting_corner: StartingCorner,
-                 config: dict = dict()):
+                 config: dict = {}):
         super().__init__(starting_pattern, starting_corner)
         self.max_rows_can_skip = config.get("max-rows-skip", 5)
+        self.highlight_latest_stitched = config.get("highlight_latest_stitched", True)
+        # TODO: test latest stitched
+        self.latest_stitched = []
 
     @staticmethod
     def _maybe_update_idx(
@@ -39,9 +42,18 @@ class FullParkingStitcher(Stitcher):
     def stitch_next_colour(self):
         """ Overrides super method and stitches the next available colour. """
         # TODO: handle end of pattern sensibly
+        # TODO: take advantage of python lists being pass by reference here so it's not quite as ugly.
         top_left_index = [self._height_idx, self._width_idx]
         bottom_right_index = [0, 0]
+
+        if self.highlight_latest_stitched:
+            for cell in self.latest_stitched:
+                cell.latest_stitched = False
+                top_left_index, bottom_right_index = FullParkingStitcher._maybe_update_idx(
+                    top_left_index, bottom_right_index, cell)
+
         to_stitch_cells = [cell for cell in self.generator.move_through_colour_in_rows()]
+
         to_stitch_cells[0].stitch(
             StartedFrom.FROM_PARKED_THREAD if to_stitch_cells[0].parked else StartedFrom.STARTED_NEW)
         top_left_index, bottom_right_index = FullParkingStitcher._maybe_update_idx(
@@ -51,6 +63,9 @@ class FullParkingStitcher(Stitcher):
             cell.stitch(StartedFrom.CONTINUED_FROM_ROW)
             top_left_index, bottom_right_index = FullParkingStitcher._maybe_update_idx(
                 top_left_index, bottom_right_index, cell)
+
+        if self.highlight_latest_stitched:
+            self.latest_stitched = to_stitch_cells
 
         parked_cell = self._park_thread(to_stitch_cells[0].dmc_value)
         if parked_cell:
