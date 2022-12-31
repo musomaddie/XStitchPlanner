@@ -17,10 +17,18 @@ class CurrentStitchingPatternModel(PatternModel):
         self.stitcher = stitcher
 
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
+        def _get_cell():
+            return self._data[index.row()][index.column()]
+
         # Special colouring for this pattern model
         if role == Qt.ItemDataRole.BackgroundRole:
-            if self._data[index.row()][index.column()].to_start_with:
-                return QColor(f"#88{self._data[index.row()][index.column()].hex_colour}")
+            # Colour it the main colour
+            # TODO: fade colours that aren't the latest stitched.
+            if _get_cell().stitched:
+                return QColor(f"#{_get_cell().hex_colour}")
+            # Colour any parked thread a lighter colour.
+            if _get_cell().to_start_with or _get_cell().parked:
+                return QColor(f"#88{_get_cell().hex_colour}")
 
         # Handle the remaining things
         return super().data(index, role)

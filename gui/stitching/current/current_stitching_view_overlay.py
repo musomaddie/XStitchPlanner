@@ -25,7 +25,7 @@ class CurrentStitchingViewOverlay(QHBoxLayout):
         self.pattern_view = CurrentStitchingPatternView(self.model)
         self.addWidget(self.pattern_view)
 
-        self.options_view = CurrentStitchingOptionsOverlay(stitcher, self)
+        self.options_view = CurrentStitchingOptionsOverlay(stitcher, self.model, self)
         options_view_layout_widget = QWidget()
         options_view_layout_widget.setLayout(self.options_view)
         options_view_layout_widget.setMinimumSize(

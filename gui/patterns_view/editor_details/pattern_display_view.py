@@ -16,3 +16,4 @@ class PatternDisplayView(PatternView):
         super().__init__(model)
         self.parent = parent
         self.clicked.connect(current_cell_layout.update_values)
+        # model.dataChanged()

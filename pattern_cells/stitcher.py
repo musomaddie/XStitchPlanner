@@ -50,8 +50,11 @@ class Stitcher(ABC):
         raise NotImplementedError("Invalid starting corner")
 
     @abstractmethod
-    def stitch_next_row(self):
-        """ Stitches the entire next row if it exists, by marking the cells as stitched. """
+    def stitch_next_row(self) -> list[list[int, int], list[int, int]]:
+        """ Stitches the entire next row if it exists, by marking the cells as stitched.
+        Returns a list containing the range of indices that have been modified. (In order from top left to bottom right
+        based on the original pattern apperance).
+        """
         # TODO - I'm not convinced this will be useful (but I do have a "next row" button - but I'm not convinced
         #  that's useful either. Could control the granularity of the stitcher ??
         pass
