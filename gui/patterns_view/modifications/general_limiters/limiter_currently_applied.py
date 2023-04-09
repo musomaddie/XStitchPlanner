@@ -3,8 +3,8 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout
 import resources.gui_strings as s
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limit_applier import LimitApplier
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 from pattern_modifiers.limiters.modification import Modification
 
 
@@ -22,14 +22,14 @@ class LimiterCurrentlyApplied(QVBoxLayout):
     +---------------+
     """
     parent: 'LimiterOverlay'
-    direction: LimiterDirection
+    direction: LimiterType
     current_mods: dict[Modification: QLabel]
     applier: LimitApplier
 
     def __init__(
             self,
             model: 'PatternDisplayModel',
-            direction: LimiterDirection,
+            direction: LimiterType,
             current_mods: list[Modification],
             parent: 'LimiterOverlay' = None):
         super().__init__()

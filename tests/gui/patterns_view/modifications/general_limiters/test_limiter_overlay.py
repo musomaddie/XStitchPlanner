@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QComboBox, QLabel, QStackedWidget, QVBoxLayout, QWid
 from calleee import InstanceOf
 
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_overlay"
 
@@ -17,7 +17,7 @@ def setup_patched_mocks(cur_applied_mock, dropdown_mock, stack_mock):
     return MagicMock(), MagicMock(), MagicMock()
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.ROW, LimiterDirection.COLUMN])
+@pytest.mark.parametrize("direction", [LimiterType.ROW, LimiterType.COLUMN])
 @patch(f"{FILE_LOC}.LimiterSelectorStack")
 @patch(f"{FILE_LOC}.LimiterDropDown")
 @patch(f"{FILE_LOC}.LimiterCurrentlyApplied")
@@ -42,7 +42,7 @@ def test_init(cur_applied_mock, dropdown_mock, stack_mock, direction):
     assert type(test_widget.children()[4]) == QStackedWidget
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.ROW, LimiterDirection.COLUMN])
+@pytest.mark.parametrize("direction", [LimiterType.ROW, LimiterType.COLUMN])
 @patch(f"{FILE_LOC}.LimiterSelectorStack")
 @patch(f"{FILE_LOC}.LimiterDropDown")
 @patch(f"{FILE_LOC}.LimiterCurrentlyApplied")
@@ -72,8 +72,8 @@ def test_get_all_modifiers(
 
 @pytest.mark.parametrize(
     ("direction", "other_direction"),
-    [(LimiterDirection.ROW, LimiterDirection.COLUMN),
-     (LimiterDirection.COLUMN, LimiterDirection.ROW)]
+    [(LimiterType.ROW, LimiterType.COLUMN),
+     (LimiterType.COLUMN, LimiterType.ROW)]
 )
 @patch(f"{FILE_LOC}.LimiterSelectorStack")
 @patch(f"{FILE_LOC}.LimiterDropDown")

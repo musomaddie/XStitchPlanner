@@ -2,22 +2,22 @@ from PyQt6.QtWidgets import QStackedWidget, QWidget
 
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import \
     LimiterValueSelector
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class LimiterSelectorStack(QStackedWidget):
     """ The stacked widget that contains all the different column limits """
 
     parent: 'LimiterOverlay'
-    limiter_direction: LimiterDirection
+    limiter_direction: LimiterType
     selection_dictionary: dict[LimiterMode, QWidget]
 
     def __init__(
             self,
             applier: 'LimiterCurrentlyApplied',
             current_cell_layout: 'reader',
-            limiter_direction: LimiterDirection,
+            limiter_direction: LimiterType,
             parent: 'LimiterOverlay' = None):
         super().__init__()
         self.parent = parent

@@ -4,8 +4,8 @@ import pytest
 
 from gui.patterns_view.modifications.save_button import SaveButton
 from pattern_cells.pattern_cell import PatternCell
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 from pattern_modifiers.limiters.modification import Modification
 
 FILE_LOC = "gui.patterns_view.modifications.save_button"
@@ -14,8 +14,8 @@ FILE_LOC = "gui.patterns_view.modifications.save_button"
 @patch(f"{FILE_LOC}.SaveButton.setText")
 def test_init(set_text_mock):
     save_button = SaveButton(
-        "Testing", None, {LimiterDirection.ROW: [Modification(LimiterMode.NO_SELECTOR, [])],
-                          LimiterDirection.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]})
+        "Testing", None, {LimiterType.ROW: [Modification(LimiterMode.NO_SELECTOR, [])],
+                          LimiterType.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]})
 
     set_text_mock.assert_called_once_with("Save these modifications")
     assert len(save_button.applied_modifications) == 2
@@ -23,11 +23,11 @@ def test_init(set_text_mock):
 
 @pytest.mark.parametrize(
     ("modifications, expected_filename"),
-    [({LimiterDirection.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])],
-       LimiterDirection.ROW: [Modification(LimiterMode.NO_SELECTOR, [])]},
+    [({LimiterType.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])],
+       LimiterType.ROW: [Modification(LimiterMode.NO_SELECTOR, [])]},
       "Testing-row--col--variant"),
-     ({LimiterDirection.COLUMN: [Modification(LimiterMode.BETWEEN, [2, 3])],
-       LimiterDirection.ROW: [
+     ({LimiterType.COLUMN: [Modification(LimiterMode.BETWEEN, [2, 3])],
+       LimiterType.ROW: [
            Modification(LimiterMode.FROM, [5]), Modification(LimiterMode.TO, [12])]},
       "Testing-row-from[5]to[12]-col-between[2_3]-variant")]
 )
@@ -50,8 +50,8 @@ def test_save_pattern_variant(label_mock, save_pattern_mock, set_text_mock):
     save_button = SaveButton(
         "Testing",
         model_mock,
-        {LimiterDirection.ROW: [Modification(LimiterMode.NO_SELECTOR, [])],
-         LimiterDirection.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]},
+        {LimiterType.ROW: [Modification(LimiterMode.NO_SELECTOR, [])],
+         LimiterType.COLUMN: [Modification(LimiterMode.NO_SELECTOR, [])]},
         parent_mock
     )
     save_button.save_pattern_variant()

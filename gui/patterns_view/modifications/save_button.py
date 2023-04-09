@@ -1,15 +1,14 @@
 from PyQt6.QtWidgets import QLabel, QPushButton
 
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 from pattern_modifiers.limiters.modification import Modification
 from utils import save_pattern
 
 
 class SaveButton(QPushButton):
-
     parent: 'StitchingOptMenuOverview'
-    applied_modifications: dict[LimiterDirection, list[Modification]]
+    applied_modifications: dict[LimiterType, list[Modification]]
     pattern_name: str
     model: 'PatternModel'
 
@@ -17,7 +16,7 @@ class SaveButton(QPushButton):
             self,
             pattern_name,
             model,
-            applied_modifications: dict[LimiterDirection, list[Modification]],
+            applied_modifications: dict[LimiterType, list[Modification]],
             parent: 'StitchingOptMenuOverview' = None):
         super().__init__()
 
@@ -30,11 +29,11 @@ class SaveButton(QPushButton):
 
     def _make_filename(self):
         row_mods_string = ""
-        for mod in self.applied_modifications[LimiterDirection.ROW]:
+        for mod in self.applied_modifications[LimiterType.ROW]:
             if mod.mode != LimiterMode.NO_SELECTOR:
                 row_mods_string += f"{mod.mode.value}[{'_'.join(str(v) for v in mod.values)}]"
         col_mods_string = ""
-        for mod in self.applied_modifications[LimiterDirection.COLUMN]:
+        for mod in self.applied_modifications[LimiterType.COLUMN]:
             if mod.mode != LimiterMode.NO_SELECTOR:
                 col_mods_string += f"{mod.mode.value}[{'_'.join(str(v) for v in mod.values)}]"
 

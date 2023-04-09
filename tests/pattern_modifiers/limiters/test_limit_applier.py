@@ -3,7 +3,7 @@ import pytest
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limit_applier import LimitApplier
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_direction import LimiterType
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 
 
@@ -55,7 +55,7 @@ def applier(pattern, og_mod, direction):
     return LimitApplier(direction, pattern, [og_mod])
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_init(pattern, og_mod, applier):
     assert applier.currently_applied == [og_mod]
     assert applier.original_pattern == pattern
@@ -74,7 +74,7 @@ def test_init(pattern, og_mod, applier):
     assert applier.original_pattern != applier.pattern_current_state
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_apply_limit_from(applier):
     pat = applier.apply_limit(Modification(LimiterMode.FROM, [1]))
 
@@ -82,7 +82,7 @@ def test_apply_limit_from(applier):
     assert len(applier.currently_applied) == 1
     assert applier.currently_applied[0] == Modification(LimiterMode.FROM, [1])
 
-    if applier.direction == LimiterDirection.ROW:
+    if applier.direction == LimiterType.ROW:
         assert len(pat) == 2
         assert len(pat[0]) == 3
         assert "".join([c.display_symbol for c in pat[0]]) == "ABD"
@@ -95,7 +95,7 @@ def test_apply_limit_from(applier):
         assert "".join([c.display_symbol for c in pat[2]]) == "BD"
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_apply_limit_no_selections(pattern, applier):
     applier.apply_limit(Modification(LimiterMode.TO, [2]))
     pat = applier.apply_limit(Modification(LimiterMode.NO_SELECTOR, []))
@@ -106,7 +106,7 @@ def test_apply_limit_no_selections(pattern, applier):
     assert pat != applier.pattern_current_state
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_apply_limit_to(applier):
     pat = applier.apply_limit(Modification(LimiterMode.TO, [1]))
 
@@ -114,7 +114,7 @@ def test_apply_limit_to(applier):
     assert len(applier.currently_applied) == 1
     assert applier.currently_applied[0] == Modification(LimiterMode.TO, [1])
 
-    if applier.direction == LimiterDirection.ROW:
+    if applier.direction == LimiterType.ROW:
         assert len(pat) == 2
         assert len(pat[0]) == 3
         assert "".join([c.display_symbol for c in pat[0]]) == "AAD"
@@ -127,7 +127,7 @@ def test_apply_limit_to(applier):
         assert "".join([c.display_symbol for c in pat[2]]) == "BB"
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_apply_limit_between(applier_larger_pattern):
     mod = Modification(LimiterMode.BETWEEN, [1, 2])
     pat = applier_larger_pattern.apply_limit(mod)
@@ -136,7 +136,7 @@ def test_apply_limit_between(applier_larger_pattern):
     assert len(applier_larger_pattern.currently_applied) == 1
     assert applier_larger_pattern.currently_applied[0] == mod
 
-    if applier_larger_pattern.direction == LimiterDirection.ROW:
+    if applier_larger_pattern.direction == LimiterType.ROW:
         assert len(pat) == 2
         assert len(pat[0]) == 4
         assert "".join([c.display_symbol for c in pat[0]]) == "BAAB"
@@ -150,7 +150,7 @@ def test_apply_limit_between(applier_larger_pattern):
         assert "".join([c.display_symbol for c in pat[3]]) == "AB"
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_apply_multiple_limits(applier_larger_pattern):
     mod_1 = Modification(LimiterMode.TO, [2])
     mod_2 = Modification(LimiterMode.FROM, [1])
@@ -161,7 +161,7 @@ def test_apply_multiple_limits(applier_larger_pattern):
     assert len(applier_larger_pattern.currently_applied) == 2
     assert applier_larger_pattern.currently_applied == [mod_1, mod_2]
 
-    if applier_larger_pattern.direction == LimiterDirection.ROW:
+    if applier_larger_pattern.direction == LimiterType.ROW:
         assert len(pat) == 2
         assert len(pat[0]) == 4
         assert "".join([c.display_symbol for c in pat[0]]) == "BAAB"

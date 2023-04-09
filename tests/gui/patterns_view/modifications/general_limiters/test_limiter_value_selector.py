@@ -10,8 +10,8 @@ from calleee import InstanceOf
 
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import (
     LimiterValueSelector, ValueWidget)
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters" \
            ".limiter_value_selector"
@@ -38,7 +38,7 @@ def setup_mocks(creator_mock):
     return MagicMock(), m
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 def test_value_widget_init_no_selector(direction):
     cc_mock = MagicMock()
     value_wid = ValueWidget(cc_mock, direction, LimiterMode.NO_SELECTOR)
@@ -50,7 +50,7 @@ def test_value_widget_init_no_selector(direction):
     assert value_wid.set_current_value_buttons == []
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 @patch(f"{FILE_LOC}.QLabel")
 @patch(f"{FILE_LOC}.QVBoxLayout")
 @patch(f"{FILE_LOC}.QLineEdit")
@@ -72,7 +72,7 @@ def test_value_widget_init_from(
     line_edit_mock.assert_has_calls(
         [call(), call().setValidator(InstanceOf(QIntValidator))])
     button_mock_string = ("Use current column"
-                          if direction == LimiterDirection.COLUMN
+                          if direction == LimiterType.COLUMN
                           else "Use current row")
     button_mock.assert_has_calls([call(button_mock_string), call().clicked.connect(ANY)])
     hbox_layout_mock.assert_has_calls(
@@ -89,7 +89,7 @@ def test_value_widget_init_from(
     assert value_wid.set_current_value_buttons == [button_mock.return_value]
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 @patch(f"{FILE_LOC}.QLabel")
 @patch(f"{FILE_LOC}.QVBoxLayout")
 @patch(f"{FILE_LOC}.QLineEdit")
@@ -111,7 +111,7 @@ def test_value_widget_init_to(
     line_edit_mock.assert_has_calls(
         [call(), call().setValidator(InstanceOf(QIntValidator))])
     button_mock_string = ("Use current column"
-                          if direction == LimiterDirection.COLUMN
+                          if direction == LimiterType.COLUMN
                           else "Use current row")
     button_mock.assert_has_calls([call(button_mock_string), call().clicked.connect(ANY)])
     hbox_layout_mock.assert_has_calls(
@@ -128,7 +128,7 @@ def test_value_widget_init_to(
     assert value_wid.set_current_value_buttons == [button_mock.return_value]
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 @patch(f"{FILE_LOC}.QLabel")
 @patch(f"{FILE_LOC}.QVBoxLayout")
 @patch(f"{FILE_LOC}.QLineEdit")
@@ -151,7 +151,7 @@ def test_value_widget_init_between(
         [call(), call().setValidator(InstanceOf(QIntValidator)),
          call(), call().setValidator(InstanceOf(QIntValidator))])
     button_mock_string = ("Use current column"
-                          if direction == LimiterDirection.COLUMN
+                          if direction == LimiterType.COLUMN
                           else "Use current row")
     button_mock.assert_has_calls(
         [call(button_mock_string), call().clicked.connect(ANY),
@@ -169,7 +169,7 @@ def test_value_widget_init_between(
     set_layout_mock.assert_called_once_with(vbox_layout_mock.return_value)
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
+@pytest.mark.parametrize("direction", [LimiterType.COLUMN, LimiterType.ROW])
 @patch(f"{FILE_LOC}.ValueWidget")
 @patch(f"{FILE_LOC}.QPushButton")
 @patch(f"{FILE_LOC}.QLabel")
@@ -182,7 +182,7 @@ def test_init_general(add_widget_mock, label_mock, button_mock, value_mock, dire
     value_mock.assert_called_once_with(cc_layout_mock, direction, LimiterMode.NO_SELECTOR)
     button_mock.assert_has_calls([call("Apply!"), call().pressed.connect(ANY)])
     label_text = ("Removes any currently applied column limits"
-                  if direction == LimiterDirection.COLUMN
+                  if direction == LimiterType.COLUMN
                   else "Removes any currently applied row limits")
     label_mock.assert_has_calls([call(label_text), call().setWordWrap(True)])
     add_widget_mock.assert_has_calls(
@@ -195,7 +195,7 @@ def test_init_general(add_widget_mock, label_mock, button_mock, value_mock, dire
     ("direction", "mode"),
     [values for values in AllPairs(
         [
-            [LimiterDirection.COLUMN, LimiterDirection.ROW],
+            [LimiterType.COLUMN, LimiterType.ROW],
             [LimiterMode.NO_SELECTOR, LimiterMode.BETWEEN, LimiterMode.TO, LimiterMode.FROM]
         ])
      ]
@@ -210,26 +210,26 @@ def test_init_explanation_text(value_mock, direction, mode):
     actual_text = test_widget.children()[1].text()
 
     if mode == LimiterMode.NO_SELECTOR:
-        if direction == LimiterDirection.COLUMN:
+        if direction == LimiterType.COLUMN:
             assert actual_text == "Removes any currently applied column limits"
         else:
             assert actual_text == "Removes any currently applied row limits"
     elif mode == LimiterMode.BETWEEN:
-        if direction == LimiterDirection.COLUMN:
+        if direction == LimiterType.COLUMN:
             assert actual_text == "Only shows the pattern between " \
                                   "(inclusive) the provided column values"
         else:
             assert actual_text == "Only shows the pattern between " \
                                   "(inclusive) the provided row values"
     elif mode == LimiterMode.FROM:
-        if direction == LimiterDirection.COLUMN:
+        if direction == LimiterType.COLUMN:
             assert actual_text == "Only shows the pattern right " \
                                   "(inclusive) of the provided column value"
         else:
             assert actual_text == "Only shows the pattern below " \
                                   "(inclusive) the provided row value"
     else:
-        if direction == LimiterDirection.COLUMN:
+        if direction == LimiterType.COLUMN:
             assert actual_text == "Only shows the pattern left (inclusive) " \
                                   "of the provided column value"
         else:
@@ -237,10 +237,10 @@ def test_init_explanation_text(value_mock, direction, mode):
                                   "the provided row value"
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
+@pytest.mark.parametrize("direction", [LimiterType.COLUMN, LimiterType.ROW])
 def test_use_current_value_button(direction, qtbot):
     def mock_get_cur_value_method(direction):
-        if direction == LimiterDirection.COLUMN:
+        if direction == LimiterType.COLUMN:
             return 100
         else:
             return 200
@@ -251,5 +251,5 @@ def test_use_current_value_button(direction, qtbot):
     qtbot.addWidget(wid)
 
     qtbot.mouseClick(wid.children()[2].children()[2], Qt.MouseButton.LeftButton)
-    expected_value = 101 if direction == LimiterDirection.COLUMN else 201
+    expected_value = 101 if direction == LimiterType.COLUMN else 201
     assert str(expected_value) in wid.children()[2].children()[1].text()

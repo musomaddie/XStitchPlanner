@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 from gui.pattern_view_toolbar import PatternViewToolBar
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
 from pattern_cells.pattern_cell import PatternCell
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class PatternViewTabContents(QVBoxLayout):
@@ -15,7 +15,7 @@ class PatternViewTabContents(QVBoxLayout):
             self,
             pattern_name: str,
             model: 'PatternDisplayModel',
-            current_mods: dict[LimiterDirection, list['Modification']],
+            current_mods: dict[LimiterType, list['Modification']],
             parent: 'PatternViewTabList' = None):
         super().__init__()
         self.parent = parent
@@ -34,11 +34,11 @@ class PatternViewTabContents(QVBoxLayout):
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         self.parent.create_new_tab_with_modifications(new_model, modifications)
 
     def create_new_pattern_variant_tab(
             self,
             new_model_data: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         self.parent.create_new_tab_with_variant(new_model_data, modifications)

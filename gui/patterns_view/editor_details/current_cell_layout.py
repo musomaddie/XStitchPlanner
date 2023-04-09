@@ -2,7 +2,7 @@ from PyQt6.QtCore import QModelIndex
 from PyQt6.QtWidgets import QHBoxLayout, QLabel
 
 import resources.gui_strings as s
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class CurrentCellLayout(QHBoxLayout):
@@ -42,10 +42,10 @@ class CurrentCellLayout(QHBoxLayout):
         self.row_display.setText(s.cell_display("row", self.row_value))
         self.col_display.setText(s.cell_display("col", self.col_value))
 
-    def get_current_value(self, limiter_direction: LimiterDirection) -> int:
+    def get_current_value(self, limiter_direction: LimiterType) -> int:
         """ Returns the current value (i.e. the currently selected position) based on the limiter
         mode """
-        if limiter_direction == LimiterDirection.ROW:
+        if limiter_direction == LimiterType.ROW:
             return self.row_value
         else:
             return self.col_value

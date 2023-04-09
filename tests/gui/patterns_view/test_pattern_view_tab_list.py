@@ -3,8 +3,8 @@ from unittest.mock import ANY, MagicMock, call, patch
 from PyQt6.QtWidgets import QTabWidget
 
 from gui.patterns_view.pattern_view_tab_list import PatternViewTabList
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.pattern_view_tab_list"
 
@@ -20,8 +20,8 @@ def test_init(add_tab_mock, set_tab_pos_mock, widget_mock, mod_mock, contents_mo
 
     contents_mock.assert_called_once_with(
         "Testing", model_mock,
-        {LimiterDirection.ROW: [mod_mock.return_value],
-         LimiterDirection.COLUMN: [mod_mock.return_value]},
+        {LimiterType.ROW: [mod_mock.return_value],
+         LimiterType.COLUMN: [mod_mock.return_value]},
         view_tab)
     mod_mock.assert_has_calls(
         [call(LimiterMode.NO_SELECTOR, []), call(LimiterMode.NO_SELECTOR, [])])
@@ -73,8 +73,8 @@ def test_create_new_tab_with_modifications(
     display_model_mock.assert_called_once_with(model_data_mock)
     contents_mock.assert_has_calls(
         [call(
-            "Testing", model_mock, {LimiterDirection.ROW: [mod_mock.return_value],
-                                    LimiterDirection.COLUMN: [mod_mock.return_value]},
+            "Testing", model_mock, {LimiterType.ROW: [mod_mock.return_value],
+                                    LimiterType.COLUMN: [mod_mock.return_value]},
             view_tab_list),
             call("Testing", display_model_mock.return_value, new_mod_mock, view_tab_list)])
 

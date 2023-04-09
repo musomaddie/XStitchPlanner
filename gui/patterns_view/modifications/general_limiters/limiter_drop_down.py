@@ -1,19 +1,19 @@
 from PyQt6.QtWidgets import QComboBox
 
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class LimiterDropDown(QComboBox):
     """ Contains the dropdown with the choice of which column limiter to use
     """
     parent: 'LimiterOverlay'
-    limiter_direction: LimiterDirection
+    limiter_direction: LimiterType
     value_selector_stack: 'LimiterSelectorStack'
 
     def __init__(
             self,
-            limiter_direction: LimiterDirection,
+            limiter_direction: LimiterType,
             value_selector_stack: 'LimiterSelectorStack',
             parent: 'LimiterOverlay' = None):
         super().__init__()

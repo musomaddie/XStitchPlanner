@@ -5,7 +5,7 @@ from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.pattern_editor_view import PatternEditorView
 from gui.patterns_view.stitching_opt_menu_overview import StitchingOptMenuOverview
 from pattern_cells.pattern_cell import PatternCell
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class PatternDisplayOverlay(QHBoxLayout):
@@ -27,7 +27,7 @@ class PatternDisplayOverlay(QHBoxLayout):
             self,
             pattern_name: str,
             model: 'PatternDisplayModel',
-            current_mods: dict[LimiterDirection, list['Modification']],
+            current_mods: dict[LimiterType, list['Modification']],
             parent: 'PatternViewTabContents' = None):
         super().__init__()
 
@@ -61,13 +61,13 @@ class PatternDisplayOverlay(QHBoxLayout):
     def create_new_pattern_tab(
             self,
             new_model: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         """ Creates and displays a new tab with the current pattern modifications """
         self.parent.create_new_pattern_tab(new_model, modifications)
 
     def create_new_pattern_variant_tab(
             self,
             new_model_data: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         """ Creates and displays a new tab with the selected pattern variant """
         self.parent.create_new_pattern_variant_tab(new_model_data, modifications)
