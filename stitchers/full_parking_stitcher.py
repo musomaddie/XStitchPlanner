@@ -2,6 +2,7 @@ from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.started_from import StartedFrom
 from pattern_cells.stitcher import Stitcher
 from pattern_cells.stitching_cell import StitchingCell
+from stitchers.StitchedResult import StitchedResult
 from stitchers.pattern_generator import PatternGenerator
 from stitchers.starting_corner import StartingCorner
 
@@ -30,7 +31,7 @@ class FullParkingStitcher(Stitcher):
                 return cell
         return None
 
-    def stitch_next_colour(self):
+    def stitch_next_colour(self) -> StitchedResult:
         """ Overrides super method and stitches the next available colour. """
         # TODO: handle end of pattern sensibly
         top_left_index = [self._height_idx, self._width_idx]
@@ -59,4 +60,9 @@ class FullParkingStitcher(Stitcher):
             Stitcher.update_modified_idx(top_left_index, bottom_right_index, parked_cell)
 
         # TODO: test these return values!!
-        return top_left_index, bottom_right_index
+        return StitchedResult(
+            to_stitch_cells[0].display_symbol,
+            to_stitch_cells[0].dmc_value,
+            top_left_index,
+            bottom_right_index,
+            to_stitch_cells)

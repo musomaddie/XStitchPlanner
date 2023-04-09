@@ -30,9 +30,9 @@ class ViewHierarchy(QStackedWidget):
 
         # TODO: Shortcuts added
         # self.pattern_chosen("hp")
-        self.load_stitch_view(
-            "hp", PatternDisplayModel.load_from_pattern_file(
-                "hp-row-between[126_392]-col-to[39]-variant"))
+        # self.load_stitch_view(
+        #     "hp", PatternDisplayModel.load_from_pattern_file(
+        #         "hp-row-between[126_392]-col-to[39]-variant"))
 
     def pattern_chosen(self, pattern_name: str) -> None:
         """ Loads the default display window for this pattern. """

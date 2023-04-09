@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from pattern_cells.pattern_cell import PatternCell
 from pattern_cells.stitching_cell import StitchingCell
+from stitchers.StitchedResult import StitchedResult
 from stitchers.pattern_generator import PatternGenerator
 from stitchers.starting_corner import BOTTOM_LEFT, BOTTOM_RIGHT, StartingCorner, TOP_LEFT, TOP_RIGHT
 
@@ -68,6 +69,6 @@ class Stitcher(ABC):
         raise NotImplementedError("Invalid starting corner")
 
     @abstractmethod
-    def stitch_next_colour(self):
+    def stitch_next_colour(self) -> StitchedResult:
         """ Stitches the next colour. The exact details of this depend on the stitching method."""
         pass

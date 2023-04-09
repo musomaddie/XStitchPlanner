@@ -39,6 +39,7 @@ class NextButton(QPushButton):
         """
         Handles the behaviour of the next colour being clicked.
         """
-        top_left_index, bottom_right_index = self.stitcher.stitch_next_colour()
-        self.model.dataChanged.emit(self.model.index(top_left_index[0], top_left_index[1]),
-                                    self.model.index(bottom_right_index[0], bottom_right_index[1]))
+        stitched_result = self.stitcher.stitch_next_colour()
+        self.model.dataChanged.emit(
+            self.model.index(stitched_result.top_left_index[0], stitched_result.top_left_index[1]),
+            self.model.index(stitched_result.bottom_right_index[0], stitched_result.bottom_right_index[1]))

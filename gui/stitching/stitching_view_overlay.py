@@ -4,7 +4,7 @@ from gui.stitching.current.current_stitching_view_overlay import CurrentStitchin
 from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
 from pattern_cells.pattern_cell import PatternCell
 from stitchers.full_parking_stitcher import FullParkingStitcher
-from stitchers.starting_corner import StartingCorner, TOP_LEFT
+from stitchers.starting_corner import StartingCorner
 
 
 class StitchingViewOverlay(QStackedWidget):
@@ -22,7 +22,7 @@ class StitchingViewOverlay(QStackedWidget):
         prepare_layout_widget.setLayout(self.prepare_layout)
         self.addWidget(prepare_layout_widget)
         # TODO: shortcut added
-        self.start_stitching(model._data, TOP_LEFT)
+        # self.start_stitching(model._data, TOP_LEFT)
 
     def start_stitching(
             self, pattern_data: list[list[PatternCell]], starting_corner: StartingCorner):
