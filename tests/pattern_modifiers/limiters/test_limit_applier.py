@@ -3,8 +3,8 @@ import pytest
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limit_applier import LimitApplier
-from pattern_modifiers.limiters.limiter_direction import LimiterType
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 @pytest.fixture()
