@@ -9,3 +9,7 @@ class PatternCell:
     # TODO: consider making this a custom class for my ease of use
     index: tuple[int, int]
     hex_colour: str
+
+
+def missing_thread(x, y):
+    return PatternCell("", "0", (x, y), "FFFFFF")
