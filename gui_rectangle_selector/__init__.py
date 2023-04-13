@@ -199,7 +199,7 @@ class TableAndMenuView(QHBoxLayout):
         self.pattern = read_pattern_rows(self.key)
         self.model = DisplayModel(self.pattern)
         self.view = TableView(self.model, current_cell)
-        self.options_layout = OptionsView(current_cell, self)
+        self.options_layout = OptionsView(current_cell)
         self.addWidget(self.view)
         options_widget = QWidget()
         options_widget.setMaximumSize(QSize(300, options_widget.maximumSize().height()))
