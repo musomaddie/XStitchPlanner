@@ -2,12 +2,12 @@ from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
 import resources.gui_strings as s
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class ValueWidget(QWidget):
-    direction = LimiterDirection
+    direction = LimiterType
     mode = LimiterMode
     current_cell_layout: 'CurrentCellLayout'
     prompt: QLabel
@@ -17,7 +17,7 @@ class ValueWidget(QWidget):
     def __init__(
             self,
             current_cell_layout: 'CurrentCellLayout',
-            direction: LimiterDirection,
+            direction: LimiterType,
             mode: LimiterMode):
         super().__init__()
         self.current_cell_layout = current_cell_layout
@@ -68,7 +68,7 @@ class LimiterValueSelector(QVBoxLayout):
     Responsible for the actual content of the pattern general_limiters.
     """
     selector_mode: LimiterMode
-    selector_direction: LimiterDirection
+    selector_direction: LimiterType
     applier: 'LimiterCurrentlyApplied'
     apply_button: QPushButton
     explanation: QLabel
@@ -78,7 +78,7 @@ class LimiterValueSelector(QVBoxLayout):
             self,
             current_cell_layout: 'CurrentCellLayout',
             applier: 'LimiterCurentlyApplied',
-            selector_direction: LimiterDirection,
+            selector_direction: LimiterType,
             selector_mode: LimiterMode):
         super().__init__()
         self.selector_direction = selector_direction

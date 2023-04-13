@@ -3,7 +3,7 @@ from os.path import isfile, join
 
 from PyQt6.QtWidgets import QComboBox
 
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 from utils import load_from_pattern_file
 
 

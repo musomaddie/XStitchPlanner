@@ -7,13 +7,13 @@ from allpairspy import AllPairs
 
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import (
     LimiterCurrentlyApplied, Modification)
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_currently_applied"
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 @patch(f"{FILE_LOC}.QLabel")
 @patch(f"{FILE_LOC}.LimiterCurrentlyApplied.addWidget")
 @patch(f"{FILE_LOC}.LimitApplier")
@@ -35,7 +35,7 @@ def test_init(limiter_applier_mock, add_widget_mock, qlabel_mock, direction):
 @pytest.mark.parametrize(
     ("direction", "current_mods"),
     [values for values in AllPairs(
-        [list(LimiterDirection),
+        [list(LimiterType),
          [[Modification(LimiterMode.NO_SELECTOR, [])],
           [Modification(LimiterMode.FROM, [2]), Modification(LimiterMode.TO, [3])],
           [Modification(LimiterMode.BETWEEN, [3, 4]),
@@ -65,7 +65,7 @@ def test_add_modification(applier_mock, add_widget_mock, qlabel_mock, mode, valu
     parent_mock = MagicMock()
     original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
-        MagicMock(), LimiterDirection.COLUMN, original_mod, parent_mock)
+        MagicMock(), LimiterType.COLUMN, original_mod, parent_mock)
     created_mod = Modification(mode, values)
     cur_app.add_modification(mode, values)
 
@@ -81,7 +81,7 @@ def test_add_modification_multiple(applier_mock, add_widget_mock, qlabel_mock):
     parent_mock = MagicMock()
     original_mod = [Modification(LimiterMode.NO_SELECTOR, [])]
     cur_app = LimiterCurrentlyApplied(
-        MagicMock(), LimiterDirection.COLUMN, original_mod, parent_mock)
+        MagicMock(), LimiterType.COLUMN, original_mod, parent_mock)
 
     created_mod_1 = Modification(LimiterMode.FROM, [2])
     created_mod_2 = Modification(LimiterMode.TO, [5])
@@ -107,8 +107,8 @@ def test_multiple_mods_init(applier_mock, add_widget_mock, qlabel_mock):
     current_mods = [Modification(LimiterMode.TO, [6]),
                     Modification(LimiterMode.FROM, [2])]
 
-    cur_applied = LimiterCurrentlyApplied(model_mock, LimiterDirection.COLUMN, current_mods)
-    applier_mock.assert_called_once_with(LimiterDirection.COLUMN, model_mock._data, current_mods)
+    cur_applied = LimiterCurrentlyApplied(model_mock, LimiterType.COLUMN, current_mods)
+    applier_mock.assert_called_once_with(LimiterType.COLUMN, model_mock._data, current_mods)
     add_widget_mock.assert_has_calls(
         [call(qlabel_mock.return_value),
          call(qlabel_mock.return_value),

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, call, patch
 from calleee import InstanceOf
 
 from gui.patterns_view.editor_details.current_cell_layout import CurrentCellLayout
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.editor_details.current_cell_layout"
 
@@ -61,5 +61,5 @@ def test_get_current_value(add_widget_mock, qlabel_mock):
     current_cell_layout.row_value = 1
     current_cell_layout.col_value = 2
 
-    assert current_cell_layout.get_current_value(LimiterDirection.ROW) == 1
-    assert current_cell_layout.get_current_value(LimiterDirection.COLUMN) == 2
+    assert current_cell_layout.get_current_value(LimiterType.ROW) == 1
+    assert current_cell_layout.get_current_value(LimiterType.COLUMN) == 2

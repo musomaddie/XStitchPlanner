@@ -7,6 +7,8 @@ import pytest
 import resources.strings as s
 import utils
 from floss_thread import Thread
+from pattern_cells.pattern_cell import PatternCell
+from pattern_cells.stitching_cell import StitchingCell
 
 BOUNDING_BOX = [0, 0, 10, 10]
 PATTERN_SAVE_FN = "tests/resources/test_save_pattern.pat"
@@ -190,3 +192,11 @@ def test_read_key():
     assert len(result) == 5
     for actual, expected in zip([t.dmc_value for t in result], ideal_dmcs):
         assert actual == expected
+
+
+def create_cell_for_stitcher(value: str):
+    return PatternCell(value, value, [0, 0], "")
+
+
+def create_stitching_cell(value: str):
+    return StitchingCell(PatternCell(value, value, [0, 0], ""))

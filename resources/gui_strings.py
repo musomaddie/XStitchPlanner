@@ -3,8 +3,8 @@
 Try and keep in alphabetical order
 
 """
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 def apply_button() -> str:
@@ -43,31 +43,31 @@ def limiter_currently_applied_title() -> str:
     return "Limits Currently Applied:"
 
 
-def limiter_from_desc(direction: LimiterDirection) -> str:
-    if direction == LimiterDirection.COLUMN:
+def limiter_from_desc(direction: LimiterType) -> str:
+    if direction == LimiterType.COLUMN:
         return "Only shows the pattern right (inclusive) of the provided column value"
     return "Only shows the pattern below (inclusive) the provided row value"
 
 
-def limiter_between_desc(direction: LimiterDirection) -> str:
+def limiter_between_desc(direction: LimiterType) -> str:
     return f"Only shows the pattern between (inclusive) the provided {direction} values"
 
 
-def limiter_remove_desc(direction: LimiterDirection) -> str:
+def limiter_remove_desc(direction: LimiterType) -> str:
     return f"Removes any currently applied {direction.value} limits"
 
 
-def limiter_title(direction: LimiterDirection) -> str:
+def limiter_title(direction: LimiterType) -> str:
     return f"Limit patterns via {direction.value.lower()}s"
 
 
-def limiter_to_desc(direction: LimiterDirection) -> str:
-    if direction == LimiterDirection.COLUMN:
+def limiter_to_desc(direction: LimiterType) -> str:
+    if direction == LimiterType.COLUMN:
         return "Only shows the pattern left (inclusive) of the provided column value"
     return "Only shows the pattern above (inclusive) the provided row value"
 
 
-def limiter_use_current_cell_desc(direction: LimiterDirection) -> str:
+def limiter_use_current_cell_desc(direction: LimiterType) -> str:
     return f"Use current {direction.value}"
 
 
@@ -89,3 +89,15 @@ def pattern_selector_select() -> str:
 
 def program_title() -> str:
     return "Stitch Please!"
+
+
+def start_stitching_button_desc() -> str:
+    return "Start Stitching!"
+
+
+def start_stitching_title() -> str:
+    return "Stitch This!"
+
+
+def starting_corner_select() -> str:
+    return "Select the corner of the pattern where you start stitching"

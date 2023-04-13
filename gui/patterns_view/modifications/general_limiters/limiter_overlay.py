@@ -6,8 +6,8 @@ from gui.patterns_view.modifications.general_limiters.limiter_currently_applied 
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
-from pattern_cell import PatternCell
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_cells.pattern_cell import PatternCell
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class LimiterOverlay(QVBoxLayout):
@@ -28,7 +28,7 @@ class LimiterOverlay(QVBoxLayout):
    +---------------+
     """
     parent: 'StitchingOptMenuOverview'
-    direction: LimiterDirection
+    direction: LimiterType
     title: QLabel
     currently_applied: LimiterCurrentlyApplied
     mode_selector_dropdown: LimiterDropDown
@@ -37,7 +37,7 @@ class LimiterOverlay(QVBoxLayout):
     def __init__(
             self,
             current_cell_layout: 'CurrentCellLayout',
-            direction: LimiterDirection,
+            direction: LimiterType,
             current_mods: list['Modification'],
             model: 'PatternDisplayModel',
             parent: 'StitchingOptMenuOverview' = None):
@@ -67,10 +67,10 @@ class LimiterOverlay(QVBoxLayout):
             new_model: list[list[PatternCell]],
             modifications: list['Modification']) -> None:
         mod_dict = {self.direction: modifications}
-        if self.direction == LimiterDirection.ROW:
-            mod_dict[LimiterDirection.COLUMN] = self.parent.get_modifiers_for_direction(
-                LimiterDirection.COLUMN)
+        if self.direction == LimiterType.ROW:
+            mod_dict[LimiterType.COLUMN] = self.parent.get_modifiers_for_direction(
+                LimiterType.COLUMN)
         else:
-            mod_dict[LimiterDirection.ROW] = self.parent.get_modifiers_for_direction(
-                LimiterDirection.ROW)
+            mod_dict[LimiterType.ROW] = self.parent.get_modifiers_for_direction(
+                LimiterType.ROW)
         self.parent.create_new_pattern_tab(new_model, mod_dict)

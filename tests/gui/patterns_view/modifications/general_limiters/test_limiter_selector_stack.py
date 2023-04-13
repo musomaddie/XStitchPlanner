@@ -5,13 +5,13 @@ from PyQt6.QtWidgets import QVBoxLayout
 
 from gui.patterns_view.modifications.general_limiters.limiter_selector_stack import \
     LimiterSelectorStack
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_selector_stack"
 
 
-@pytest.mark.parametrize("direction", list(LimiterDirection))
+@pytest.mark.parametrize("direction", list(LimiterType))
 @patch(f"{FILE_LOC}.LimiterValueSelector")
 @patch(f"{FILE_LOC}.QWidget")
 @patch(f"{FILE_LOC}.LimiterSelectorStack.addWidget")
@@ -45,7 +45,7 @@ def test_change_selector(selector_mock):
     current_cc_layout_mock, applier_mock = MagicMock(), MagicMock()
 
     selector_stack = LimiterSelectorStack(
-        applier_mock, current_cc_layout_mock, LimiterDirection.ROW)
+        applier_mock, current_cc_layout_mock, LimiterType.ROW)
 
     selector_stack.change_selected(LimiterMode.BETWEEN)
     assert selector_stack.currentIndex() == 1

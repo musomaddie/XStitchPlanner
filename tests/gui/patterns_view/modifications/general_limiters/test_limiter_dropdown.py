@@ -4,13 +4,13 @@ import pytest
 from calleee import InstanceOf
 
 from gui.patterns_view.modifications.general_limiters.limiter_drop_down import LimiterDropDown
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 FILE_LOC = "gui.patterns_view.modifications.general_limiters.limiter_drop_down"
 
 
-@pytest.mark.parametrize("direction", [LimiterDirection.COLUMN, LimiterDirection.ROW])
+@pytest.mark.parametrize("direction", [LimiterType.COLUMN, LimiterType.ROW])
 @patch(f"{FILE_LOC}.LimiterDropDown.addItems")
 def test_init_dropdown(add_items_mock, direction):
     value_selector_mock = MagicMock()
@@ -22,7 +22,7 @@ def test_init_dropdown(add_items_mock, direction):
         LimiterMode.FROM,
         LimiterMode.TO]
 
-    if direction == LimiterDirection.ROW:
+    if direction == LimiterType.ROW:
         add_items_mock.assert_called_once_with(["No Rows", "Between Rows", "From Row", "To Row"])
     else:
         add_items_mock.assert_called_once_with(
@@ -33,7 +33,7 @@ def test_init_dropdown(add_items_mock, direction):
 @patch(f"{FILE_LOC}.LimiterDropDown.currentIndex")
 def test_update_currently_selected(current_index_mock, add_items_mock):
     value_selector_mock = MagicMock()
-    dropdown = LimiterDropDown(LimiterDirection.COLUMN, value_selector_mock)
+    dropdown = LimiterDropDown(LimiterType.COLUMN, value_selector_mock)
     dropdown.update_currently_selected()
 
     assert current_index_mock.called

@@ -1,6 +1,7 @@
 from enum import Enum
 
 
-class LimiterDirection(Enum):
+class LimiterType(Enum):
     ROW = "row"
     COLUMN = "column"
+    RECTANGLE = "rectangle"

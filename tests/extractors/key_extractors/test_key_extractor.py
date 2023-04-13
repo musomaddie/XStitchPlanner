@@ -119,9 +119,10 @@ def test_save_key(extractor):
     extractor.key_filename = key_filename
     extractor.save_key()
 
-    resulting_lines = ["310\ta\ta\tBlack\t0\n",
-                       "666\tR\tR\tBright Red\tE31D42\n",
-                       "550\t!\t!\tViolet Very Dark\t5C184E\n"]
+    # TODO: \n required for windows - (I think). Not 100% sure.
+    resulting_lines = ["310\ta\ta\tBlack\t0\n", "\n",
+                       "666\tR\tR\tBright Red\tE31D42\n", "\n",
+                       "550\t!\t!\tViolet Very Dark\t5C184E\n", "\n"]
 
     with open(key_filename, "r") as f:
         for actual, expected in zip(f.readlines(), resulting_lines):

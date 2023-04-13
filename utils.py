@@ -10,7 +10,7 @@ from pdfplumber.page import Page
 
 import resources.strings as s
 from floss_thread import Thread
-from pattern_cell import PatternCell
+from pattern_cells.pattern_cell import PatternCell
 
 DMC_KEY = "dmc"
 DESC_KEY = "desc"
@@ -147,10 +147,12 @@ def load_from_pattern_file(key_filename: str, pat_filename: str) -> list[list[Pa
     Raises:
         FileNotFoundError: if the key file or pattern file cannot be found.
     """
+    print("about to load key")
     key = {k.symbol: k for k in read_key(f"patterns/{key_filename}.key")}
+    print("loaded key")
 
     all_rows = []
-    with open(f"patterns/{pat_filename}.pat") as f:
+    with open(f"patterns/{pat_filename}.pat", encoding="utf-8") as f:
         for row_count, row in enumerate(f.readlines()):
             this_row = []
             for col_count, letter in enumerate(row.rstrip()):
@@ -199,7 +201,7 @@ def read_key(filename: str) -> list[Thread]:
     Raises:
         FileNotFoundError:  if the file with the given filename doesn't exist
     """
-    with open(filename) as key_file:
+    with open(filename, encoding="utf-8") as key_file:
         reader = csv.reader(key_file, delimiter="\t")
         # For whatever reason unpacking the arguments using *row isn't working,
         # so I'm doing it the more manual way.

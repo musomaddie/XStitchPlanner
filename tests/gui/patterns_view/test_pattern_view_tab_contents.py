@@ -36,6 +36,18 @@ def test_init(widget_mock, add_widget_mock, toolbar_mock, overlay_mock):
 @patch(f"{FILE_LOC}.PatternViewToolBar")
 @patch(f"{FILE_LOC}.PatternViewTabContents.addWidget")
 @patch(f"{FILE_LOC}.QWidget")
+def test_load_stitch_view(widget_mock, add_widget_mock, toolbar_mock, overlay_mock):
+    model_mock, parent_mock = [MagicMock() for _ in range(2)]
+    contents = PatternViewTabContents(MagicMock(), MagicMock(), MagicMock(), parent_mock)
+    contents.load_stitch_view(model_mock)
+
+    parent_mock.assert_has_calls([call.load_stitch_view(model_mock)])
+
+
+@patch(f"{FILE_LOC}.PatternDisplayOverlay")
+@patch(f"{FILE_LOC}.PatternViewToolBar")
+@patch(f"{FILE_LOC}.PatternViewTabContents.addWidget")
+@patch(f"{FILE_LOC}.QWidget")
 def test_create_new_pattern_tab_with_modifications(
         widget_mock, add_widget_mock, toolbar_mock, overlay_mock):
     model_mock, mod_mock, parent_mock = MagicMock(), MagicMock(), MagicMock()

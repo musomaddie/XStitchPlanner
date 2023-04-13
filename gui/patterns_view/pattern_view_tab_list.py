@@ -4,9 +4,9 @@ import resources.gui_strings as s
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
-from pattern_cell import PatternCell
-from pattern_modifiers.limiters.limiter_direction import LimiterDirection
+from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
+from pattern_modifiers.limiters.limiter_type import LimiterType
 
 
 class PatternViewTabList(QTabWidget):
@@ -31,7 +31,7 @@ class PatternViewTabList(QTabWidget):
         self.original_layout = PatternViewTabContents(
             pattern_name, pattern_model,
             {direction: [Modification(LimiterMode.NO_SELECTOR, [])]
-             for direction in list(LimiterDirection)}, self)
+             for direction in list(LimiterType)}, self)
         self.tab_list = []
         self.tab_counts = {"modifications": 0, "variants": 0}
 
@@ -40,10 +40,14 @@ class PatternViewTabList(QTabWidget):
         self.setTabPosition(QTabWidget.TabPosition.North)
         self.addTab(og_layout_widget, s.original_pattern(pattern_name))
 
+    def load_stitch_view(self, model: 'PatternDisplayModel') -> None:
+        """ Loads the stitch view: echoes call all the way to view hierarchy """
+        self.parent.load_stitch_view(self.pattern_name, model)
+
     def create_new_tab_with_modifications(
             self,
             pattern_model_data: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         """ Creates and displays a new tab containing the passed modifications """
         pattern_model = PatternDisplayModel(pattern_model_data)
         new_layout = PatternViewTabContents(self.pattern_name, pattern_model, modifications, self)
@@ -58,7 +62,7 @@ class PatternViewTabList(QTabWidget):
     def create_new_tab_with_variant(
             self,
             new_model_data: list[list[PatternCell]],
-            modifications: dict[LimiterDirection, list['Modification']]) -> None:
+            modifications: dict[LimiterType, list['Modification']]) -> None:
         """ Creates and displays a new tab containing the variant whose data has been passed """
         new_pattern_model = PatternDisplayModel(new_model_data)
         new_layout = PatternViewTabContents(
