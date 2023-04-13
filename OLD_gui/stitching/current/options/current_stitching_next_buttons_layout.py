@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout
-
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
 from gui.stitching.current.options.next_button import NextButton
+
 from pattern_cells.stitcher import Stitcher
 
 

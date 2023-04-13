@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
-
 from gui.patterns_view.modifications.general_limiters.limiter_value_selector import \
     LimiterValueSelector
+
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 from pattern_modifiers.limiters.limiter_type import LimiterType
 

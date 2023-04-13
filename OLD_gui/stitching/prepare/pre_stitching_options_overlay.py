@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
-
-import resources.gui_strings as s
 from gui.stitching.options.starting_corner_overlay import StartingCornerOverlay
 from gui.stitching.prepare.stitching_technique_combo_box import StitchingTechniqueComboBox
+
+import resources.gui_strings as s
 from stitchers.starting_corner import TOP_LEFT
 
 

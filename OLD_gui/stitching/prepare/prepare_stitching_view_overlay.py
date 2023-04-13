@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
-
 from gui.stitching.prepare.pattern_prepare_stitching_view import PatternPrepareStitchingView
 from gui.stitching.prepare.pre_stitching_options_overlay import PreStitchingOptionsOverlay
+
 from stitchers.starting_corner import StartingCorner
 
 

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
-
 from gui.pattern_view_toolbar import PatternViewToolBar
 from gui.patterns_view.pattern_display_overlay import PatternDisplayOverlay
+
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_type import LimiterType
 

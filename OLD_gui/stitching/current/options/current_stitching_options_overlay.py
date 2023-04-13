@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
-
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
 from gui.stitching.current.options.current_stitching_next_buttons_layout import \
     CurrentStitchingNextButtonsLayout
+
 from pattern_cells.stitcher import Stitcher
 
 

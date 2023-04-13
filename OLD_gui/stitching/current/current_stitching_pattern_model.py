@@ -2,8 +2,8 @@ import typing
 
 from PyQt6.QtCore import QModelIndex, Qt
 from PyQt6.QtGui import QColor
-
 from gui.pattern_model import PatternModel
+
 from pattern_cells.stitcher import Stitcher
 from pattern_cells.stitching_cell import StitchingCell
 

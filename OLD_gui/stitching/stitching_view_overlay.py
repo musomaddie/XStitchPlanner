@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QStackedWidget, QWidget
-
 from gui.stitching.current.current_stitching_view_overlay import CurrentStitchingViewOverlay
 from gui.stitching.prepare.prepare_stitching_view_overlay import PrepareStitchingViewOverlay
+
 from pattern_cells.pattern_cell import PatternCell
 from stitchers.full_parking_stitcher import FullParkingStitcher
 from stitchers.starting_corner import StartingCorner

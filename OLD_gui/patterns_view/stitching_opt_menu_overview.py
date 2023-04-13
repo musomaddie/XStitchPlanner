@@ -1,9 +1,9 @@
 from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
-
-import resources.gui_strings as s
 from gui.patterns_view.modifications.general_limiters.limiter_overlay import LimiterOverlay
 from gui.patterns_view.modifications.load_overlay import LoadOverlay
 from gui.patterns_view.modifications.save_button import SaveButton
+
+import resources.gui_strings as s
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_type import LimiterType
 

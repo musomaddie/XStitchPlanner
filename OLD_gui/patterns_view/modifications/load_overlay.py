@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton
+from gui.patterns_view.modifications.variants_load_dropdown import VariantsLoadDropDown
 
 import resources.gui_strings as s
-from gui.patterns_view.modifications.variants_load_dropdown import VariantsLoadDropDown
 
 
 class LoadOverlay(QHBoxLayout):

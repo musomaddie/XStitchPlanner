@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QPushButton
-
 from gui.stitching.current.current_stitching_pattern_model import CurrentStitchingPatternModel
+
 from pattern_cells.stitcher import Stitcher
 
 

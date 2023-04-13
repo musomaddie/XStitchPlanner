@@ -1,4 +1,5 @@
 from gui.pattern_model import PatternModel
+
 from pattern_cells.pattern_cell import PatternCell
 
 

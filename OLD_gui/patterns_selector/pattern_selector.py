@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from gui.patterns_selector.pattern_selector_choice import PatternSelectorChoiceLayout
 
 import resources.gui_strings as s
-from gui.patterns_selector.pattern_selector_choice import PatternSelectorChoiceLayout
 
 
 class PatternSelectorLayout(QVBoxLayout):

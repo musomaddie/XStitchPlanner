@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
-
-import resources.gui_strings as s
 from gui.stitching.options.corner_selector_button import CornerSelectorButton
 from gui.stitching.options.starting_corner_layout import StartingCornerLayout
+
+import resources.gui_strings as s
 from stitchers.starting_corner import StartingCorner
 
 

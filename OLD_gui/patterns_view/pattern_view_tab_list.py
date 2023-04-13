@@ -1,9 +1,9 @@
 from PyQt6.QtWidgets import QTabWidget, QWidget
-
-import resources.gui_strings as s
 from gui.pattern_display_model import PatternDisplayModel
 from gui.patterns_view.modifications.general_limiters.limiter_currently_applied import Modification
 from gui.patterns_view.pattern_view_tab_contents import PatternViewTabContents
+
+import resources.gui_strings as s
 from pattern_cells.pattern_cell import PatternCell
 from pattern_modifiers.limiters.limiter_mode import LimiterMode
 from pattern_modifiers.limiters.limiter_type import LimiterType

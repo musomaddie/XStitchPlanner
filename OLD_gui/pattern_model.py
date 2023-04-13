@@ -2,8 +2,8 @@ import typing
 
 from PyQt6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt6.QtGui import QColor
-
 from gui.pattern_view import PatternView
+
 from pattern_cells.pattern_cell import PatternCell
 
 
