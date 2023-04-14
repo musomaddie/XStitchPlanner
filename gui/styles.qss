@@ -1,0 +1,4 @@
+QLabel {
+    font-family: "Abril Fatface";
+    font-size: 20px;
+    }
