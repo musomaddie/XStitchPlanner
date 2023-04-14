@@ -2,3 +2,7 @@ QLabel {
     font-family: "Abril Fatface";
     font-size: 20px;
     }
+
+* {
+    background-color: "#EEF0FF";
+}

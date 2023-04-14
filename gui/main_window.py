@@ -10,6 +10,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(tmp)
         self.setStyleSheet(self._read_stylesheet())
 
-    def _read_stylesheet(self):
+    @staticmethod
+    def _read_stylesheet():
         with open("styles.qss") as f:
             return f.read()
