@@ -22,6 +22,10 @@ QWidget{
     background-color: purple;
     }
 
+#nd {
+    background-color: blueviolet;
+    }
+
 /*QWidget#nav-drawer {*/
 /*    background-color: darkred;*/
 /*}*/
