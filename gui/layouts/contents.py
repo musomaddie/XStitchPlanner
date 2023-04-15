@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
 from gui.layouts.current_page import CurrentPage
@@ -20,4 +21,8 @@ class Contents(QWidget):
         super().__init__()
 
         self.setLayout(ContentsLayout())
-        self.setStyleSheet(open("styles/layout/contents.qss").read())
+        self.setObjectName("contents")
+        self.setAutoFillBackground(True)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setStyleSheet(open("styles/global_styles.qss").read())
+        # self.setStyleSheet(open("styles/layout/contents.qss").read())

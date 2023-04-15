@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
 
@@ -27,5 +28,7 @@ class NavigationDrawer(QWidget):
         self.setLayout(NavigationDrawerLayout())
         self.setMinimumSize(80, self.minimumSize().height())
         self.setMaximumSize(80, self.maximumSize().height())
-        self.setStyleSheet(open("styles/layout/navigation_drawer.qss").read())
+        self.setObjectName("nd")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        # self.setStyleSheet(open("styles/layout/navigation_drawer.qss").read())
         print(self.styleSheet())
