@@ -3,6 +3,8 @@ QLabel {
     font-size: 20px;
     }
 
+/*    Other font family is poppins. */
+
 * {
     background-color: "#EEF0FF";
 }
