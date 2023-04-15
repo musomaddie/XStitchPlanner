@@ -8,6 +8,5 @@ class MainWindow(QMainWindow):
         super().__init__()
         # TODO: style window title.
         self.setWindowTitle("Stitch Please!")
-        self.setObjectName("testing")
 
         self.setCentralWidget(Contents())

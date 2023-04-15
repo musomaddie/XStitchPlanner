@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
 
 
 class NavigationDrawerLayout(QHBoxLayout):
@@ -7,8 +8,14 @@ class NavigationDrawerLayout(QHBoxLayout):
     def __init__(self):
         super().__init__()
 
-        self.addWidget(QLabel("nav drawer "))
-        self.setObjectName("nd")
+        button = QPushButton("")
+        button.setIcon(QIcon("styles/icons/home.svg"))
+        self.addWidget(button)
+        self.addWidget(QLabel("hello world"))
+
+    @staticmethod
+    def colour_svg(svg_filename):
+        pass
 
 
 class NavigationDrawer(QWidget):
@@ -18,6 +25,7 @@ class NavigationDrawer(QWidget):
         super().__init__()
 
         self.setLayout(NavigationDrawerLayout())
-        self.setObjectName("nd")
-        # self.setMinimumSize(300, self.minimumSize().height())
-        # self.setMaximumSize(300, self.maximumSize().height())
+        self.setMinimumSize(80, self.minimumSize().height())
+        self.setMaximumSize(80, self.maximumSize().height())
+        self.setStyleSheet(open("styles/layout/navigation_drawer.qss").read())
+        print(self.styleSheet())

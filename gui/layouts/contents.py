@@ -20,4 +20,4 @@ class Contents(QWidget):
         super().__init__()
 
         self.setLayout(ContentsLayout())
-        self.setObjectName("contents")
+        self.setStyleSheet(open("styles/layout/contents.qss").read())
