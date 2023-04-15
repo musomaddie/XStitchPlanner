@@ -1,24 +1,8 @@
-
-/*    Other font family is poppins. */
-
-/*QWidget{*/
-/*    background-color: lightcyan;*/
-/*    color: green;*/
-/*}*/
-
-/*Will highlight more than just QWidget as it is more specific. */
-/*QLabel {*/
-/*    font-family: "Abril Fatface";*/
-/*    font-size: 20px;*/
-/*    background-color: blue;*/
-/*    }*/
-
-
 #contents {
-    background-color: gold;
+    background-color: palegoldenrod;
 }
 
-#nd {
+#navigation-drawer {
     background-color: red;
 }
 
