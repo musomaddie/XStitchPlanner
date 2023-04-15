@@ -8,6 +8,8 @@ class NavigationDrawerLayout(QHBoxLayout):
         super().__init__()
 
         self.addWidget(QLabel("nav drawer "))
+        self.setObjectName("nd")
+        # self.setStyleSheet(self._read_stylesheet())
 
 
 class NavigationDrawer(QWidget):
@@ -17,6 +19,15 @@ class NavigationDrawer(QWidget):
         super().__init__()
 
         self.setLayout(NavigationDrawerLayout())
-        #
+        self.setObjectName("nd")
+        print(self.objectName())
         # self.setMinimumSize(300, self.minimumSize().height())
         # self.setMaximumSize(300, self.maximumSize().height())
+
+        self.setStyleSheet(
+            """
+                * {
+                    background-color: purple;
+                } 
+            """
+        )

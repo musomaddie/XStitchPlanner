@@ -4,6 +4,11 @@ from gui.layouts.current_page import CurrentPage
 from gui.layouts.navigation_drawer import NavigationDrawer
 
 
+def read_stylesheet():
+    with open("styles.qss") as f:
+        return f.read()
+
+
 class ContentsLayout(QHBoxLayout):
     """ Layout for all the contents. """
 
@@ -20,3 +25,5 @@ class Contents(QWidget):
         super().__init__()
 
         self.setLayout(ContentsLayout())
+        self.setObjectName("contents")
+        self.setStyleSheet(read_stylesheet())

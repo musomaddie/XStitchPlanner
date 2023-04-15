@@ -5,6 +5,23 @@ QLabel {
 
 /*    Other font family is poppins. */
 
-* {
-    background-color: "#EEF0FF";
+/** {*/
+/*    background-color: "#EEF0FF";*/
+/*}*/
+
+
+QWidget{
+    background-color: darkred;
 }
+
+#testing {
+    background-color: pink;
+}
+
+#contents {
+    background-color: purple;
+    }
+
+/*QWidget#nav-drawer {*/
+/*    background-color: darkred;*/
+/*}*/
