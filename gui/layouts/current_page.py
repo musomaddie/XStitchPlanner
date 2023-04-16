@@ -1,23 +1,20 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QStackedWidget
 
-from gui.layouts.styled_widget import StyledWidget
-
-
-class _CurrentPageLayout(QHBoxLayout):
-    """ ???? No idea if this is really the layout I want but I'll figure it out. """
-
-    def __init__(self):
-        super().__init__()
-
-        self.addWidget(QLabel("Current page contents :)"))
+from gui.layouts.choose_pattern import ChoosePattern
 
 
-class CurrentPage(StyledWidget):
+class CurrentPage(QStackedWidget):
     """
     Holds the content of the current page. Sits in between contents and something else - dunno what yet.
     """
 
     def __init__(self):
-        super().__init__("page")
+        super().__init__()
+        self.setObjectName("page")
+        self.setAutoFillBackground(True)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
-        self.setLayout(_CurrentPageLayout())
+        choose_page = ChoosePattern()
+        self.addWidget(choose_page)
+        self.setCurrentWidget(choose_page)

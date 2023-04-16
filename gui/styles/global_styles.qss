@@ -20,5 +20,11 @@ QPushButton {
 
 #page QLabel {
     margin-left: 50px;
-    }
+}
 
+#choose-pattern {
+    background-color: #FFF8F8;
+    margin-left: 24px;
+    margin-right: 24px;
+    border-radius: 12px;
+}
