@@ -1,5 +1,6 @@
+from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QHBoxLayout, QPushButton
 
 from gui.layouts.styled_widget import StyledWidget
 
@@ -12,8 +13,8 @@ class _NavigationDrawerLayout(QHBoxLayout):
 
         button = QPushButton("")
         button.setIcon(QIcon("styles/icons/home.svg"))
+        button.setIconSize(QSize(24, 24))
         self.addWidget(button)
-        self.addWidget(QLabel("hello world"))
 
 
 class NavigationDrawer(StyledWidget):

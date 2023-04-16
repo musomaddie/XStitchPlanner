@@ -3,6 +3,11 @@
 }
 
 #navigation-drawer {
-    background-color: red;
+    background-color: #FFF8F8;
+}
+
+QPushButton {
+    background-color: #FFF8F8;
+    border: none;
 }
 
