@@ -1,5 +1,5 @@
 #contents {
-    background-color: palegoldenrod;
+    background-color: #F2DDE1;
 }
 
 #navigation-drawer {
@@ -10,4 +10,15 @@ QPushButton {
     background-color: #FFF8F8;
     border: none;
 }
+
+#page {
+    background-color: #FFF8F8;
+    margin-left: 24px;
+    margin-right: 24px;
+    border-radius: 12px;
+}
+
+#page QLabel {
+    margin-left: 50px;
+    }
 
