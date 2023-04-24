@@ -1,14 +1,34 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel, QComboBox, QHBoxLayout
 
 from gui.layouts.styled_widget import StyledWidget
 
 
-class _ChoosePatternLayout(QVBoxLayout):
-    """ Layout for choosing the pattern! """
+class ChoosePatternDropdown(QComboBox):
 
     def __init__(self):
         super().__init__()
-        self.addWidget(QLabel("choose pattern"))
+        self.setObjectName("pattern-dropdown")
+        self.setAutoFillBackground(True)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        self.addItem("Item 1")
+        self.addItem("Item 2")
+
+
+class _ChoosePatternLayout(QHBoxLayout):
+    """ Layout for choosing the pattern!
+
+    We need a ~dropdown box~ LIST (m3) with a list of pattern names, and a button to load the selected one.
+
+    """
+
+    def __init__(self):
+        super().__init__()
+        title_label = QLabel("Select a pattern to load:")
+        dropdown = ChoosePatternDropdown()
+        self.addWidget(title_label)
+        self.addWidget(dropdown)
 
 
 class ChoosePattern(StyledWidget):
@@ -16,5 +36,4 @@ class ChoosePattern(StyledWidget):
 
     def __init__(self):
         super().__init__("choose-pattern")
-
         self.setLayout(_ChoosePatternLayout())

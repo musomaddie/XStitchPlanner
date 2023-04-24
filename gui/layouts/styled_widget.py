@@ -8,7 +8,7 @@ class StyledWidget(QWidget):
     This handles setting any attribute vaules so that my style changed actually show up.
     """
 
-    def __init__(self, object_name: str) -> 'StyledWidget':
+    def __init__(self, object_name: str):
         """
 
         Args:

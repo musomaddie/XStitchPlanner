@@ -15,7 +15,10 @@ class _ContentsLayout(QHBoxLayout):
 
 
 class Contents(StyledWidget):
-    """ Parent class of all layout contents. Does all the hard work (hopefully). """
+    """ Parent class of all layout contents. Does all the hard work (hopefully).
+
+    Responsible for handling interactions between all panels.
+    """
 
     def __init__(self):
         super().__init__("contents")
