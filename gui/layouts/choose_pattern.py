@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import QLabel, QComboBox, QHBoxLayout
 
 from gui.layouts.styled_widget import StyledWidget
@@ -14,6 +14,8 @@ class ChoosePatternDropdown(QComboBox):
 
         self.addItem("Item 1")
         self.addItem("Item 2")
+        # TODO - width (more dynamic)
+        self.setMaximumSize(QSize(200, self.maximumSize().height()))
 
 
 class _ChoosePatternLayout(QHBoxLayout):
@@ -37,3 +39,4 @@ class ChoosePattern(StyledWidget):
     def __init__(self):
         super().__init__("choose-pattern")
         self.setLayout(_ChoosePatternLayout())
+        self.setMaximumSize(QSize(500, self.maximumSize().height()))

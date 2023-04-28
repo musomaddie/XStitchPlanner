@@ -37,11 +37,27 @@ QPushButton {
 }
 
 QComboBox {
-    border: 4px solid purple;
+    border: 1px solid #837377;
+    background-color: #FFF8F8;
+    color: #201A1C;
+    font-size: 14px;
+    height: 20;
+    font-family: "Poppins";
+    font-weight: 500;
 }
 
+QComboBox::down-arrow {
+    image: url("styles/icons/expand_more.svg");
+    background-color:  #F2DDE1;
+    border-width: 0px;
+}
+
+/*This selects the ENTIRE item box */
 QComboBox QAbstractItemView {
-    border: 2px solid darkgray;
-    selection-background-color: lightcyan;
+    color: #201A1C;
+    font-family: "Poppins";
+    line-height: 20;
+    font-size: 14;
+    weight: 500;
+    background-color: #F3EDF7;
 }
-

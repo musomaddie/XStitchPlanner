@@ -1,0 +1,5 @@
+label large:
+    font-family: Poppins
+    line-height: 20
+    font-size: 14
+    weight: 500
