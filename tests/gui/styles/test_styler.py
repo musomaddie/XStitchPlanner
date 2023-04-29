@@ -1,6 +1,6 @@
 import string
 
-from gui.styles.styler import generate_style_sheet, _process_block, _get_value, _process_token
+from gui.styles.styler import (generate_style_sheet, _process_block, _get_value, _process_token)
 
 
 # TODO: add testing util to conftest to test strings without whitespace!
@@ -17,6 +17,9 @@ class TestGetValue:
     def test_simple_str(self):
         assert _get_value("simple-string") == "simple-string"
 
+    def test_list(self):
+        assert _get_value([1, 2, 3, "4"]) == "1px 2px 3px 4"
+
 
 class TestProcessBlock:
     def test_simple(self):
@@ -27,6 +30,9 @@ class TestProcessBlock:
 class TestProcessToken:
     def test_colour_token(self):
         assert _process_token("token-colour-primary") == "#6543D0"
+
+    def test_shape_token(self):
+        assert _process_token("token-shape-large") == "16px"
 
 
 def test_contents_example():

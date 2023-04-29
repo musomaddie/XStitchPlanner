@@ -11,17 +11,18 @@ MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TA
 _TOKENS = json.load(open("gui/styles/tokens/theme.json"))
 
 _TOKENS_LOOKUP = {
-    "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name]
+    "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name],
+    "shape": lambda shape_name: _get_value(_TOKENS["shapes"][shape_name])
 }
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 
-def _get_value(given_value: str | int) -> str:
+def _get_value(given_value: str | int | list) -> str:
     """ Given a value returns it formatted for use within CSS styling. 
 
     Args:
-        given_value (str | int): handles any conversions that must happen to the given value (e.g. replacing the
+        given_value (str | int | list): handles any conversions that must happen to the given value (e.g. replacing the
         token value with the actual value, and adding px to ints).
 
     Returns:
@@ -33,6 +34,9 @@ def _get_value(given_value: str | int) -> str:
         return given_value
     if type(given_value) == int:
         return f"{given_value}px"
+    if type(given_value) == list:
+        value_strs = [_get_value(value) for value in given_value]
+        return " ".join(value_strs)
 
 
 def _process_block(block_name: str, block_contents: dict) -> str:
