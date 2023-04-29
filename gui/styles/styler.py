@@ -8,14 +8,36 @@ from PyQt6.QtCore import QSize
 MINIMUM_TOUCH_TARGET_SIZE_PX = 48
 MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TARGET_SIZE_PX)
 
+_SPECIAL_CASES = {
+    "border-radius": lambda values: _calculate_border_radius(values)
+}
+
 _TOKENS = json.load(open("gui/styles/tokens/theme.json"))
 
+# Query this dictionary with the token of interesting to find its actual values.
 _TOKENS_LOOKUP = {
     "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name],
-    "shape": lambda shape_name: _get_value(_TOKENS["shapes"][shape_name])
+    "shape": lambda shape_name: _TOKENS["shapes"][shape_name],
 }
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+
+def _calculate_border_radius(given_value: str | int) -> str:
+    if type(given_value) != str:
+        # cheese this for now.
+        return f"border-radius: {_get_value(given_value)};"
+    if not given_value.startswith("token"):
+        return f"border-radius {_get_value(given_value)};"
+
+    token_parts = given_value.split("-")
+    values = _TOKENS_LOOKUP[token_parts[1]](token_parts[2])
+    ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
+    output_str = ""
+    for (value, ident) in zip(values, ident_list):
+        if value != 0:
+            output_str += f"border-{ident}-radius: {_get_value(value)};"
+    return output_str
 
 
 def _get_value(given_value: str | int | list) -> str:
@@ -33,7 +55,7 @@ def _get_value(given_value: str | int | list) -> str:
             return _process_token(given_value)
         return given_value
     if type(given_value) == int:
-        return f"{given_value}px"
+        return "0%" if given_value == 0 else f"{given_value}px"
     if type(given_value) == list:
         value_strs = [_get_value(value) for value in given_value]
         return " ".join(value_strs)
@@ -51,7 +73,10 @@ def _process_block(block_name: str, block_contents: dict) -> str:
     """
     block_str = f"{block_name} {{"
     for style in block_contents:
-        block_str += f"{style}: {_get_value(block_contents[style])};"
+        if style == "border-radius":
+            block_str += _SPECIAL_CASES["border-radius"](block_contents[style])
+        else:
+            block_str += f"{style}: {_get_value(block_contents[style])};"
     block_str += "}"
     logging.debug(f"\tgenerating {block_name} style block as - {block_str}")
 

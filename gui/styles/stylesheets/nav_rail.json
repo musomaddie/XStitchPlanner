@@ -1,5 +1,6 @@
 {
   "#nav-rail": {
-    "background-color": "token-colour-surface"
+    "background-color": "token-colour-surface",
+    "border-radius": "token-shape-largeEnd"
   }
 }
