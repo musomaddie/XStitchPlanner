@@ -1,15 +1,7 @@
-#contents {
-    background-color: #F2DDE1;
-}
-
 #navigation-drawer {
     background-color: #FFF8F8;
 }
 
-QPushButton {
-    background-color: #FFF8F8;
-/*    border: none;*/
-}
 
 #page {
     background-color: #FFF8F8;

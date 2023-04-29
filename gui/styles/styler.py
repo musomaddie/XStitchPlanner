@@ -1,12 +1,20 @@
 # """ This is how I'm doing tokens now. (?) """
 # SPECIAL_KEYS = {}
 import json
+import logging
 
-TOKENS = json.load(open("gui/styles/tokens/theme.json"))
+from PyQt6.QtCore import QSize
 
-TOKENS_LOOKUP = {
-    "colour": lambda colour_name: TOKENS["schemes"]["light"][colour_name]
+MINIMUM_TOUCH_TARGET_SIZE_PX = 48
+MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TARGET_SIZE_PX)
+
+_TOKENS = json.load(open("gui/styles/tokens/theme.json"))
+
+_TOKENS_LOOKUP = {
+    "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name]
 }
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 
 def _get_value(given_value: str | int) -> str:
@@ -41,6 +49,7 @@ def _process_block(block_name: str, block_contents: dict) -> str:
     for style in block_contents:
         block_str += f"{style}: {_get_value(block_contents[style])};"
     block_str += "}"
+    logging.debug(f"\tgenerating {block_name} style block as - {block_str}")
 
     return block_str
 
@@ -62,7 +71,8 @@ def _process_token(given_token_name: str) -> str:
         str: the actual value of the token
     """
     token_parts = given_token_name.split("-")
-    return TOKENS_LOOKUP[token_parts[1]](token_parts[2])
+    result = _TOKENS_LOOKUP[token_parts[1]](token_parts[2])
+    return result
 
 
 def generate_style_sheet(component_name: str) -> str:
@@ -75,6 +85,8 @@ def generate_style_sheet(component_name: str) -> str:
     Returns:
         str: the corresponding style sheet in qss syntax.
     """
+    logging.debug(f"generating stylesheet for {component_name}")
+
     provided_styles = json.load(open(f"gui/styles/stylesheets/{component_name}.json"))
     output_styles_str = ""
     for identifier in provided_styles:
