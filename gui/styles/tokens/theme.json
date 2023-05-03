@@ -395,6 +395,9 @@
     ],
     "full": 40
   },
+  "sizes": {
+    "minimumTouch": 48
+  },
   "extendedColors": [],
   "name": "M3",
   "version": 2

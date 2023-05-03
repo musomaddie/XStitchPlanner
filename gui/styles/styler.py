@@ -9,7 +9,9 @@ MINIMUM_TOUCH_TARGET_SIZE_PX = 48
 MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TARGET_SIZE_PX)
 
 _SPECIAL_CASES = {
-    "border-radius": lambda values: _calculate_border_radius(values)
+    "border-radius": lambda values: _calculate_border_radius(values),
+    "height": lambda value: _set_dimension("height", _get_value(value)),
+    "width": lambda value: _set_dimension("width", _get_value(value))
 }
 
 _TOKENS = json.load(open("gui/styles/tokens/theme.json"))
@@ -18,6 +20,7 @@ _TOKENS = json.load(open("gui/styles/tokens/theme.json"))
 _TOKENS_LOOKUP = {
     "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name],
     "shape": lambda shape_name: _TOKENS["shapes"][shape_name],
+    "size": lambda size_name: _TOKENS["sizes"][size_name]
 }
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
@@ -73,8 +76,8 @@ def _process_block(block_name: str, block_contents: dict) -> str:
     """
     block_str = f"{block_name} {{"
     for style in block_contents:
-        if style == "border-radius":
-            block_str += _SPECIAL_CASES["border-radius"](block_contents[style])
+        if style in _SPECIAL_CASES:
+            block_str += _SPECIAL_CASES[style](block_contents[style])
         else:
             block_str += f"{style}: {_get_value(block_contents[style])};"
     block_str += "}"
@@ -102,6 +105,10 @@ def _process_token(given_token_name: str) -> str:
     token_parts = given_token_name.split("-")
     result = _TOKENS_LOOKUP[token_parts[1]](token_parts[2])
     return result
+
+
+def _set_dimension(dimension: str, given_value: str):
+    return f"min-{dimension}: {given_value}; max-{dimension}: {given_value};"
 
 
 def generate_style_sheet(component_name: str) -> str:

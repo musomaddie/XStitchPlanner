@@ -1,6 +1,18 @@
 {
   "#nav-rail": {
+    "background-color": "token-colour-background",
+    "border-radius": "token-shape-largeEnd",
+    "width": 80
+  },
+  "#nav-rail QPushButton": {
     "background-color": "token-colour-surface",
-    "border-radius": "token-shape-largeEnd"
+    "color": "token-colour-onSurfaceVariant",
+    "width": "token-size-minimumTouch",
+    "height": "token-size-minimumTouch"
+  },
+  "#nav-rail QIcon": {
+    "width": 40,
+    "height": 40,
+    "border": "3px solid red"
   }
 }

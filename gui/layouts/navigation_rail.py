@@ -12,8 +12,11 @@ class _NavigationRailLayout(QHBoxLayout):
     def __init__(self):
         super().__init__()
 
+        # TODO: show if we are currently at this button or not.
         button = QPushButton("")
+        button.setAutoFillBackground(True)
         button.setIcon(QIcon("gui/styles/icons/home.svg"))
+        # TODO: look into setting the below using the style sheet instead.
         button.setIconSize(QSize(24, 24))
         button.setMinimumSize(MINIMUM_TOUCH_TARGET_SIZE)
         self.addWidget(button)
@@ -27,5 +30,3 @@ class NavigationRail(StyledWidget):
 
         self.setLayout(_NavigationRailLayout())
         self.setStyleSheet(generate_style_sheet("nav_rail"))
-        self.setMinimumSize(80, self.minimumSize().height())
-        self.setMaximumSize(80, self.maximumSize().height())
