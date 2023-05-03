@@ -19,7 +19,7 @@ _TOKENS = json.load(open("gui/styles/tokens/theme.json"))
 # Query this dictionary with the token of interesting to find its actual values.
 _TOKENS_LOOKUP = {
     "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name],
-    "shape": lambda shape_name: _TOKENS["shapes"][shape_name],
+    "shape": lambda shape_name: _get_value(_TOKENS["shapes"][shape_name]),
     "size": lambda size_name: _TOKENS["sizes"][size_name]
 }
 
@@ -34,11 +34,11 @@ def _calculate_border_radius(given_value: str | int) -> str:
         return f"border-radius {_get_value(given_value)};"
 
     token_parts = given_value.split("-")
-    values = _TOKENS_LOOKUP[token_parts[1]](token_parts[2])
+    values = _TOKENS_LOOKUP[token_parts[1]](token_parts[2]).split(" ")
     ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
     output_str = ""
     for (value, ident) in zip(values, ident_list):
-        if value != 0:
+        if value != "0%":
             output_str += f"border-{ident}-radius: {_get_value(value)};"
     return output_str
 

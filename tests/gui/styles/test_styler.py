@@ -1,6 +1,7 @@
 import string
 
-from gui.styles.styler import (generate_style_sheet, _process_block, _get_value, _process_token)
+from gui.styles.styler import (generate_style_sheet, _process_block, _get_value, _process_token,
+    _calculate_border_radius, _set_dimension)
 
 
 # TODO: add testing util to conftest to test strings without whitespace!
@@ -8,6 +9,17 @@ from gui.styles.styler import (generate_style_sheet, _process_block, _get_value,
 def remove_whitespace(s1, s2):
     remove = string.whitespace
     return s1.replace(remove, ""), s2.replace(remove, "")
+
+
+class TestCalculateBorderRadius:
+    def test_number(self):
+        assert _calculate_border_radius(10) == "border-radius: 10px;"
+
+    def test_string_with_tokens(self):
+        assert (
+                _calculate_border_radius("token-shape-largeEnd") ==
+                "border-top-right-radius: 16px;border-bottom-right-radius: 16px;"
+        )
 
 
 class TestGetValue:
@@ -35,8 +47,13 @@ class TestProcessToken:
         assert _process_token("token-shape-large") == "16px"
 
 
+class TestSetDimension:
+    def test_set_dimension(self):
+        assert _set_dimension("width", 20) == "min-width: 20; max-width: 20;"
+
+
 def test_contents_example():
     result = generate_style_sheet("contents")
     result, expected = remove_whitespace(
-        result, "#contents {background-color: #E0E2EC;}")
+        result, "#contents {background-color: #DAD9DD;}")
     assert result == expected
