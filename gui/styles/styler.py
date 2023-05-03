@@ -35,12 +35,15 @@ def _calculate_border_radius(given_value: str | int) -> str:
 
     token_parts = given_value.split("-")
     values = _TOKENS_LOOKUP[token_parts[1]](token_parts[2]).split(" ")
-    ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
-    output_str = ""
-    for (value, ident) in zip(values, ident_list):
-        if value != "0%":
-            output_str += f"border-{ident}-radius: {_get_value(value)};"
-    return output_str
+    if len(values) == 4:
+        ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
+        output_str = ""
+        for (value, ident) in zip(values, ident_list):
+            if value != "0%":
+                output_str += f"border-{ident}-radius: {_get_value(value)};"
+        return output_str
+    elif len(values) == 1:
+        return f"border-radius: {values[0]};"
 
 
 def _get_value(given_value: str | int | list) -> str:

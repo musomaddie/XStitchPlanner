@@ -1,0 +1,8 @@
+{
+  "#current-page": {
+    "background-color": "token-colour-background",
+    "border-radius": "token-shape-large",
+    "margin-left": 12,
+    "margin-right": 12
+  }
+}
