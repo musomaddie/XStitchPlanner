@@ -8,6 +8,10 @@ from PyQt6.QtCore import QSize
 MINIMUM_TOUCH_TARGET_SIZE_PX = 48
 MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TARGET_SIZE_PX)
 
+_SPECIAL_IDENTIFIERS = {
+    "additionally_generate": lambda values, style_name: _generate_parents(style_name, values)
+}
+
 _SPECIAL_CASES = {
     "border-radius": lambda values: _calculate_border_radius(values),
     "height": lambda value: _set_dimension("height", _get_value(value)),
@@ -44,6 +48,15 @@ def _calculate_border_radius(given_value: str | int) -> str:
         return output_str
     elif len(values) == 1:
         return f"border-radius: {values[0]};"
+
+
+def _generate_parents(style_name: str, parents: list[str]) -> str:
+    output_str = ""
+    for parent in parents:
+        parent_stylesheet = json.load(open(f"gui/styles/stylesheets/{parent}.json"))
+        for identifier in parent_stylesheet:
+            output_str += _process_block(identifier, parent_stylesheet[identifier])
+    return output_str
 
 
 def _get_value(given_value: str | int | list) -> str:
@@ -114,7 +127,7 @@ def _set_dimension(dimension: str, given_value: str):
     return f"min-{dimension}: {given_value}; max-{dimension}: {given_value};"
 
 
-def generate_style_sheet(component_name: str) -> str:
+def generate_style_sheet(component_name: str, style_name='') -> str:
     """ Given a component name, returns the corresponding style sheet as a string.
 
     Args:
@@ -129,6 +142,9 @@ def generate_style_sheet(component_name: str) -> str:
     provided_styles = json.load(open(f"gui/styles/stylesheets/{component_name}.json"))
     output_styles_str = ""
     for identifier in provided_styles:
-        output_styles_str += _process_block(identifier, provided_styles[identifier])
+        if identifier in _SPECIAL_IDENTIFIERS:
+            print(identifier)
+        else:
+            output_styles_str += _process_block(identifier, provided_styles[identifier])
 
     return output_styles_str
