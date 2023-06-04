@@ -2,149 +2,168 @@
 # SPECIAL_KEYS = {}
 import json
 import logging
+from abc import ABC, abstractmethod
+from enum import Enum, auto
 
 from PyQt6.QtCore import QSize
 
 MINIMUM_TOUCH_TARGET_SIZE_PX = 48
 MINIMUM_TOUCH_TARGET_SIZE = QSize(MINIMUM_TOUCH_TARGET_SIZE_PX, MINIMUM_TOUCH_TARGET_SIZE_PX)
 
-_SPECIAL_IDENTIFIERS = {
-    "additionally_generate": lambda values, style_name: _generate_parents(style_name, values)
-}
-
-_SPECIAL_CASES = {
-    "border-radius": lambda values: _calculate_border_radius(values),
-    "height": lambda value: _set_dimension("height", _get_value(value)),
-    "width": lambda value: _set_dimension("width", _get_value(value))
-}
-
-_TOKENS = json.load(open("gui/styles/tokens/theme.json"))
-
-# Query this dictionary with the token of interesting to find its actual values.
-_TOKENS_LOOKUP = {
-    "colour": lambda colour_name: _TOKENS["schemes"]["light"][colour_name],
-    "shape": lambda shape_name: _get_value(_TOKENS["shapes"][shape_name]),
-    "size": lambda size_name: _TOKENS["sizes"][size_name]
-}
-
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 
-def _calculate_border_radius(given_value: str | int) -> str:
-    if type(given_value) != str:
-        # cheese this for now.
-        return f"border-radius: {_get_value(given_value)};"
-    if not given_value.startswith("token"):
-        return f"border-radius {_get_value(given_value)};"
-
-    token_parts = given_value.split("-")
-    values = _TOKENS_LOOKUP[token_parts[1]](token_parts[2]).split(" ")
-    if len(values) == 4:
-        ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
-        output_str = ""
-        for (value, ident) in zip(values, ident_list):
-            if value != "0%":
-                output_str += f"border-{ident}-radius: {_get_value(value)};"
-        return output_str
-    elif len(values) == 1:
-        return f"border-radius: {values[0]};"
+class ProcessState(Enum):
+    UNGENERATED = auto()
+    GENERATED = auto()
 
 
-def _generate_parents(style_name: str, parents: list[str]) -> str:
-    output_str = ""
-    for parent in parents:
-        parent_stylesheet = json.load(open(f"gui/styles/stylesheets/{parent}.json"))
-        for identifier in parent_stylesheet:
-            output_str += _process_block(identifier, parent_stylesheet[identifier])
-    return output_str
+class StyleGenerator(ABC):
+
+    def __init__(self):
+        self.state = ProcessState.UNGENERATED
+        self.generated_style = ""
+
+    @abstractmethod
+    def _generate_style(self):
+        pass
+
+    def get_style(self):
+        if self.state == ProcessState.UNGENERATED:
+            self._generate_style()
+        return self.generated_style
 
 
-def _get_value(given_value: str | int | list) -> str:
-    """ Given a value returns it formatted for use within CSS styling. 
+class TokenGenerator(StyleGenerator):
+    """ Handles the lookup for token values passed.
 
-    Args:
-        given_value (str | int | list): handles any conversions that must happen to the given value (e.g. replacing the
-        token value with the actual value, and adding px to ints).
-
-    Returns:
-        str: qss string
+    Accepts the following token types:
+        - colour
+        - shape
+        - size
     """
-    if type(given_value) == str:
-        if given_value.startswith("token"):
-            return _process_token(given_value)
-        return given_value
-    if type(given_value) == int:
-        return "0%" if given_value == 0 else f"{given_value}px"
-    if type(given_value) == list:
-        value_strs = [_get_value(value) for value in given_value]
-        return " ".join(value_strs)
+    _tokens = json.load(open("gui/styles/tokens/theme.json"))
 
-
-def _process_block(block_name: str, block_contents: dict) -> str:
-    """ Processes a particular style block.
-
-    Args:
-        block_name: the name of the block (will be the qss selector).
-        block_contents: the values the block should contain.
-
-    Returns:
-        str: the qss string for the given block
-    """
-    block_str = f"{block_name} {{"
-    for style in block_contents:
-        if style in _SPECIAL_CASES:
-            block_str += _SPECIAL_CASES[style](block_contents[style])
+    def _generate_style(self):
+        token_parts = self.token_name.split("-")
+        if token_parts[1] == "colour":
+            self.generated_style = self._tokens["schemes"]["light"][token_parts[2]]
+        elif token_parts[1] == "shape":
+            self.generated_style = ValueGenerator(self._tokens["shapes"][token_parts[2]]).get_style()
+        elif token_parts[1] == "size":
+            self.generated_style = ValueGenerator(self._tokens["sizes"][token_parts[2]]).get_style()
         else:
-            block_str += f"{style}: {_get_value(block_contents[style])};"
-    block_str += "}"
-    logging.debug(f"\tgenerating {block_name} style block as - {block_str}")
+            raise NotImplementedError(f"The token generator does not yet support {token_parts[2]}.")
+        self.state = ProcessState.GENERATED
 
-    return block_str
+    def __init__(self, token_name: str):
+        super().__init__()
+        self.token_name = token_name
 
 
-def _process_token(given_token_name: str) -> str:
-    """ Replaces the given token with an actual(!) value. The given token name must be in the following form:
-        token-type-value
-        "token" identifies this as a token we should look up, "type" tells us the type of this token (and thus
-        directs us through the theme file) and value is the actual value of this token and should match the
-        corresponding value within theme.json.
+class ValueGenerator(StyleGenerator):
+    """ Wraps a value given after the colon, e.g. 40.
 
-    Args:
-        given_token_name: the name of the token to look up and must be in token-type-value form described above.
-
-        Should be able to be split into (at least) 3 parts using
-        the dash (-). The three parts are as follows: token-type-identifier. The tok
-
-    Returns:
-        str: the actual value of the token
+    Handles the following value types:
+        - string
+        - string (token)
+        - int
+        - list
     """
-    token_parts = given_token_name.split("-")
-    result = _TOKENS_LOOKUP[token_parts[1]](token_parts[2])
-    return result
 
+    def __init__(self, value: str | int | list):
+        super().__init__()
+        self.value = value
 
-def _set_dimension(dimension: str, given_value: str):
-    return f"min-{dimension}: {given_value}; max-{dimension}: {given_value};"
-
-
-def generate_style_sheet(component_name: str, style_name='') -> str:
-    """ Given a component name, returns the corresponding style sheet as a string.
-
-    Args:
-        component_name (object): the name of the stylesheet to load. Should correspond to a file name within
-        gui/styles/stylesheets/
-
-    Returns:
-        str: the corresponding style sheet in qss syntax.
-    """
-    logging.debug(f"generating stylesheet for {component_name}")
-
-    provided_styles = json.load(open(f"gui/styles/stylesheets/{component_name}.json"))
-    output_styles_str = ""
-    for identifier in provided_styles:
-        if identifier in _SPECIAL_IDENTIFIERS:
-            print(identifier)
+    def _generate_style(self):
+        if type(self.value) == str:
+            self.generated_style = (
+                TokenGenerator(self.value).get_style()
+                if self.value.startswith("token")
+                else self.value)
+        elif type(self.value) == int:
+            self.generated_style = "0%" if self.value == 0 else f"{self.value}px"
+        elif type(self.value) == list:
+            self.generated_style = " ".join(
+                [ValueGenerator(value).get_style() for value in self.value])
         else:
-            output_styles_str += _process_block(identifier, provided_styles[identifier])
+            raise NotImplementedError(f"Value of type {type(self.value)} is not supported")
+        self.state = ProcessState.GENERATED
 
-    return output_styles_str
+
+class LayoutTypeGenerator(StyleGenerator):
+    """ Wraps a style on a single line (e.g. font-size: 40).
+
+    Handles the following list of possible special cases:
+        - border-radius
+        - height
+        - width
+    """
+
+    def _generate_style(self):
+        if self.layout_type == "border-radius":
+            if type(self.layout_value) != str or not self.layout_value.startswith("token"):
+                value_style = ValueGenerator(self.layout_value).get_style()
+                self.generated_style = f"border-radius: {value_style};"
+            else:
+                values = TokenGenerator(self.layout_value).get_style().split(" ")
+                if len(values) == 4:
+                    ident_list = ["top-left", "top-right", "bottom-right", "bottom-left"]
+                    for (value, ident) in zip(values, ident_list):
+                        if value != "0%":
+                            self.generated_style += f"border-{ident}-radius: {value};"
+                else:
+                    self.generated_style = f"border-radius: {values[0]};"
+        elif self.layout_type == "height" or self.layout_type == "width":
+            self._set_dimension(ValueGenerator(self.layout_value).get_style())
+        else:
+            value_style = ValueGenerator(self.layout_value)
+            self.generated_style = f"{self.layout_type}: {value_style.get_style()};"
+        self.state = ProcessState.GENERATED
+
+    def _set_dimension(self, given_value: str):
+        self.generated_style = f"min-{self.layout_type}: {given_value}; max-{self.layout_type}: {given_value};"
+
+    def __init__(self, layout_type: str, layout_value: str | list | int):
+        super().__init__()
+        self.layout_type = layout_type
+        self.layout_value = layout_value
+
+
+class SelectorGenerator(StyleGenerator):
+    """ Wraps an entire style selector (e.g. h1 { ... } ).
+
+    Handles the following special cases:
+        - additionally_generate: also load the styles of the listed layout components.
+
+    """
+
+    def _generate_style(self):
+        if self.selector_name == "additionally_generate":
+            self.generated_style = "\n".join([Styler(component).get_style() for component in self.values])
+        else:
+            self.generated_style = f"{self.selector_name} {{"
+            for value in self.values:
+                self.generated_style += LayoutTypeGenerator(value, self.values[value]).get_style()
+            self.generated_style += "}"
+        self.state = ProcessState.GENERATED
+        logging.debug(f"\tgenerated style for {self.selector_name} as - {self.generated_style}")
+
+    def __init__(self, selector_name: str, values: dict | list):
+        super().__init__()
+        self.selector_name = selector_name
+        self.values = values
+
+
+class Styler(StyleGenerator):
+    """ Handles styling an entire file, given the component_name (filename). """
+
+    def _generate_style(self):
+        self.generated_style = "\n".join(
+            [SelectorGenerator(key, value).get_style() for key, value in self.provided_styles_json.items()])
+        self.state = ProcessState.GENERATED
+
+    def __init__(self, component_name: str):
+        super().__init__()
+        self.component_name = component_name
+        self.provided_styles_json = json.load(open(f"gui/styles/stylesheets/{self.component_name}.json"))

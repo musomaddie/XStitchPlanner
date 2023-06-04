@@ -1,6 +1,5 @@
 from gui.layouts.choose_pattern import ChoosePattern
 from gui.layouts.styled_widget import StyledStackedWidget
-from gui.styles.styler import generate_style_sheet
 
 
 class CurrentPage(StyledStackedWidget):
@@ -14,4 +13,4 @@ class CurrentPage(StyledStackedWidget):
         choose_page = ChoosePattern()
         self.addWidget(choose_page)
         self.setCurrentWidget(choose_page)
-        self.setStyleSheet(generate_style_sheet("current_page"))
+        # self.setStyleSheet(generate_style_sheet("current_page"))

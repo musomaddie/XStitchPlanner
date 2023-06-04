@@ -3,7 +3,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton
 
 from gui.layouts.styled_widget import StyledWidget
-from gui.styles.styler import MINIMUM_TOUCH_TARGET_SIZE, generate_style_sheet
+from gui.styles.styler import MINIMUM_TOUCH_TARGET_SIZE
 
 
 class _NavigationRailLayout(QHBoxLayout):
@@ -29,4 +29,4 @@ class NavigationRail(StyledWidget):
         super().__init__("nav-rail")
 
         self.setLayout(_NavigationRailLayout())
-        self.setStyleSheet(generate_style_sheet("nav_rail"))
+        # self.setStyleSheet(generate_style_sheet("nav_rail"))

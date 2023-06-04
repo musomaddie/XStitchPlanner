@@ -27,4 +27,4 @@ class StyledStackedWidget(QStackedWidget):
         super().__init__()
         self.setObjectName(object_name)
         self.setAutoFillBackground(True)
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        # self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
