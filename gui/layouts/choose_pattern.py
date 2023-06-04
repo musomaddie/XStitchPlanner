@@ -40,5 +40,4 @@ class ChoosePattern(StyledWidget):
         super().__init__("choose-pattern")
         self.setLayout(_ChoosePatternLayout())
         self.setMaximumSize(QSize(500, self.maximumSize().height()))
-        # self.setStyleSheet(
-        #     generate_style_sheet("choose_pattern", "choose-pattern"))
+        # self.setStyleSheet(Styler("choose_pattern").get_style())

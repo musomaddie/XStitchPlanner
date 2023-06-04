@@ -162,6 +162,7 @@ class Styler(StyleGenerator):
         self.generated_style = "\n".join(
             [SelectorGenerator(key, value).get_style() for key, value in self.provided_styles_json.items()])
         self.state = ProcessState.GENERATED
+        logging.debug(f" Completely generated style for {self.component_name} as: {self.generated_style}.\n")
 
     def __init__(self, component_name: str):
         super().__init__()
